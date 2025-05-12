@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 5 - 倒影模式</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .grid { display: grid; gap: 10px; margin-top: 10px; }
+        .card { width: 80px; height: 80px; background-color: lightblue; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; }
+        .hidden { background-color: gray; color: transparent; }
+        .matched { background-color: green; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Level 5 - 倒影模式</h2>
+    <p>剩余时间: <span id="timer">60</span> 秒</p>
+    <div class="container">
+        <div id="grid" class="grid"></div>
+    </div>
+    
+    <script>
+        const grid = document.getElementById("grid");
+        let timeLeft = 60;
+        let firstCard = null;
+        let lockBoard = false;
+        
+        function startGame() {
+            generateGrid(4, 4);
+            setTimeout(hideCards, 3000);
+            startTimer();
+        }
+
+        function generateGrid(rows, cols) {
+            grid.innerHTML = "";
+            grid.style.gridTemplateColumns = `repeat(${cols}, 80px)`;
+            let numbers = Array.from({ length: (rows * cols) / 2 }, (_, i) => i + 1);
+            let mirroredNumbers = numbers.map(num => `M${num}`);
+            let cardValues = [...numbers, ...mirroredNumbers].sort(() => Math.random() - 0.5);
+            
+            cardValues.forEach(value => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.dataset.value = value;
+                card.textContent = value;
+                card.addEventListener("click", flipCard);
+                grid.appendChild(card);
+            });
+        }
+
+        function hideCards() {
+            document.querySelectorAll(".card").forEach(card => {
+                card.classList.add("hidden");
+                card.textContent = "";
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard || this.classList.contains("matched")) return;
+            this.classList.remove("hidden");
+            this.textContent = this.dataset.value;
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+            if (firstCard.dataset.value.replace("M", "") === this.dataset.value.replace("M", "")) {
+                firstCard.classList.add("matched");
+                this.classList.add("matched");
+                firstCard = null;
+                checkWin();
+            } else {
+                lockBoard = true;
+                setTimeout(() => {
+                    firstCard.classList.add("hidden");
+                    firstCard.textContent = "";
+                    this.classList.add("hidden");
+                    this.textContent = "";
+                    firstCard = null;
+                    lockBoard = false;
+                }, 800);
+            }
+        }
+
+        function checkWin() {
+            if (document.querySelectorAll(".matched").length === 16) {
+                alert("恭喜！你完成了倒影模式！");
+                location.reload();
+            }
+        }
+
+        function startTimer() {
+            const timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    alert("时间结束，游戏失败！");
+                    location.reload();
+                }
+            }, 1000);
+        }
+
+        startGame();
+    </script>
+</body>
+</html>

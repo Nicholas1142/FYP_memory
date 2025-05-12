@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记忆健康分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f72585;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            margin: 0;
+            padding: 20px;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section {
+            background: #fff;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-box {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        #summary-text {
+            background-color: rgba(248, 249, 250, 0.8);
+            padding: 15px;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .ability-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .ability-list li {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ability-list li::before {
+            content: '•';
+            color: var(--accent-color);
+            font-size: 1.5rem;
+        }
+        
+        .record-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .record-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .record-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .record-table tr:nth-child(even) {
+            background-color: rgba(248, 249, 250, 0.5);
+        }
+        
+        .record-table tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .radar-container, .line-chart-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                flex-direction: column;
+            }
+            
+            .radar-container, .line-chart-container {
+                max-width: 100%;
+            }
+            
+            .ability-list {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* 图标样式 */
+        .icon {
+            font-size: 1.5rem;
+        }
+        
+        /* 分数颜色 */
+        .good-score {
+            color: var(--success-color);
+        }
+        
+        .average-score {
+            color: var(--warning-color);
+        }
+        
+        .poor-score {
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Memory Health Analysis Report</h1>
+
+        <!-- Section 1: 记忆能力分析 -->
+        <div class="section">
+            <h2><span class="icon">🧠</span> Memory Ability Analysis</h2>
+            <div class="score-box">
+                Overall Memory Score:<span id="overall-score" style="color: white;">-</span>
+            </div>
+            <p id="summary-text">Summary Analysis:</p>
+            <ul class="ability-list">
+                <li>Short-term Memory:</li>
+                <li>Attention Span:</li>
+                <li>Reaction Speed:</li>
+                <li>Sequential Memory: -</li>
+                <li>Distraction Resistance: -</li>
+            </ul>
+        </div>
+
+        <!-- Section 2: 通关记录数据 -->
+        <div class="section">
+            <h2><span class="icon">📊</span> Level Performance Data</h2>
+            <div style="overflow-x: auto;">
+                <table class="record-table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Time</th>
+                            <th>Mistakes</th>
+                            <th>Accuracy</th>
+                            <th>Score</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 动态插入行 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section 3: 图表区域 -->
+        <div class="section">
+            <h2><span class="icon">📈</span> Memory Ability Visualization</h2>
+            <div class="chart-container">
+                <div class="radar-container">
+                    <canvas id="memoryRadar"></canvas>
+                </div>
+                <div class="line-chart-container">
+                    <canvas id="scoreTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let radarChart;
+        let scoreTrendChart;
+        const today = new Date();
+
+        // 根据分数返回颜色类
+        function getScoreClass(score) {
+            if (score >= 80) return 'good-score';
+            if (score >= 50) return 'average-score';
+            return 'poor-score';
+        }
+
+        window.addEventListener("DOMContentLoaded", function () {
+            const data = JSON.parse(localStorage.getItem("memoryGameResult"));
+            
+            if (data) {
+                // 更新整体评分
+                const overallScoreElement = document.getElementById('overall-score');
+                overallScoreElement.textContent = `${data.overallScore} / 100`;
+                overallScoreElement.className = getScoreClass(data.overallScore);
+
+                // 更新分析总结
+                const summaryText = data.abilities.sequence < 70
+                    ? "Your short-term memory and reaction speed are good, but sequential memory is weaker. Consider focusing on improvement."
+                    : "All memory abilities are balanced. Keep it up!";
+                document.getElementById("summary-text").textContent = "Summary Analysis:" + summaryText;
+
+                // 更新各项能力分
+                const abilities = data.abilities;
+                const listItems = document.querySelectorAll(".ability-list li");
+                
+                listItems[0].textContent = `Short-term Memory: ${abilities.shortTerm}`;
+                listItems[0].classList.add(getScoreClass(abilities.shortTerm));
+                
+                listItems[1].textContent = `Attention Span: ${abilities.attention}`;
+                listItems[1].classList.add(getScoreClass(abilities.attention));
+                
+                listItems[2].textContent = `Reaction Speed: ${abilities.reaction}`;
+                listItems[2].classList.add(getScoreClass(abilities.reaction));
+                
+                listItems[3].textContent = `Sequential Memory: ${abilities.sequence}`;
+                listItems[3].classList.add(getScoreClass(abilities.sequence));
+                
+                listItems[4].textContent = `Distraction Resistance: ${abilities.resistance}`;
+                listItems[4].classList.add(getScoreClass(abilities.resistance));
+
+                // 更新表格
+                const tbody = document.querySelector(".record-table tbody");
+                tbody.innerHTML = "";
+                data.levels.forEach((lvl) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${lvl.level}</td>
+                        <td>${lvl.time}s</td>
+                        <td>${lvl.errors}</td>
+                        <td>${Math.round(lvl.accuracy * 100)}%</td>
+                        <td class="${getScoreClass(lvl.score)}">${lvl.score}</td>
+                        <td>${lvl.note}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // 更新雷达图数据
+                if (radarChart) {
+                    radarChart.data.datasets[0].data = [
+                        abilities.shortTerm,
+                        abilities.attention,
+                        abilities.reaction,
+                        abilities.sequence,
+                        abilities.resistance
+                    ];
+                    radarChart.update();
+                }
+            }
+
+            // 初始化雷达图
+            const radarCtx = document.getElementById('memoryRadar').getContext('2d');
+            radarChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Short-term Memory', 'Attention', 'Reaction Speed', 'Reaction Speed', 'Distraction Resistance'],
+                    datasets: [{
+                        label: 'Memory Score',
+                        data: [0, 0, 0, 0, 0], // 初始为空
+                        backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                        borderColor: 'rgba(67, 97, 238, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: 'rgba(67, 97, 238, 1)',
+                        pointHoverBorderColor: '#fff',
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                stepSize: 20,
+                                backdropColor: 'transparent'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 处理历史记录数据
+            const historyData = JSON.parse(localStorage.getItem("memoryGameHistory")) || [];
+            const last30Days = historyData.filter(item => {
+                const itemDate = new Date(item.date);
+                return (today - itemDate) <= (30 * 24 * 60 * 60 * 1000); // 过去30天的数据
+            });
+
+            const dates = last30Days.map(item => item.date);
+            const scores = last30Days.map(item => item.overallScore);
+
+            // 绘制折线图
+            const lineCtx = document.getElementById('scoreTrendChart').getContext('2d');
+            scoreTrendChart = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Memory Score',
+                        data: scores,
+                        fill: true,
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderColor: 'rgba(67, 97, 238, 1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                        pointBorderColor: '#fff',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                },
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 12
+                            },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
