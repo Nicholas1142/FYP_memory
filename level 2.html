@@ -155,6 +155,18 @@ body {
     text-shadow: 1px 1px 2px black;
 }
 
+
+.overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10000; cursor: pointer;
+    }
+    .overlay h2 {
+      color: #ff6347; font-size: 48px;
+      text-shadow: 2px 2px 4px black;
+    }
 .sequence-box {
     font-size: 28px;
     color: #ff6347;
@@ -261,6 +273,13 @@ body {
 
 </head>
 <body>
+
+   <!-- Start Overlay -->
+<div id="startOverlay" class="overlay">
+  <h2>Click Start</h2>
+</div>
+
+
     <audio id="bgMusic" src="Sound\background music.mp3" loop autoplay></audio>
     <audio id="flipSound" src="Sound/flip.mp3"></audio>
     <audio id="matchSound" src="Sound/match.mp3"></audio>
@@ -276,7 +295,7 @@ body {
         <h1>Level 2 </h2>
         <div class="info-container">
             <p>Current Round: <span id="roundNumber">1</span> / 3</p>
-            <p>Time Left: <span id="timer">45</span> </p>
+            <p>Time Left: <span id="timer">90</span> </p>
         </div>
     </div>
     
@@ -294,75 +313,251 @@ body {
 
         <script>
 
-            const flipSound = document.getElementById("flipSound");
-            const matchSound = document.getElementById("matchSound");
-       
+           const flipSound = document.getElementById("flipSound");
+const matchSound = document.getElementById("matchSound");
+
+const grid = document.getElementById("grid");
+const sequenceDisplay = document.getElementById("sequenceDisplay");
+const roundNumberDisplay = document.getElementById("roundNumber");
+const timerDisplay = document.getElementById("timer");
+
+// 原本每轮设置时间的数组，可以保留 pairs 设置，但忽略 time
+let rounds = [
+  { pairs: [[1, 2], [3, 4]] },
+  { pairs: [[1, 2], [3, 4], [5, 6], [7, 8]] },
+  { pairs: [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10],[11, 12]] }
+];
+
+let currentRound = 0;
+let totalTimeLimit = 90; // 总时间
+let totalTimeLeft = totalTimeLimit;
+let totalTimeUsed = 0;
+
+let sequence = [];
+let shuffledCards = [];
+let selectedCards = [];
+let correctIndex = 0;
+let totalSteps = 0;
+let correctMatches = 0;
+let wrongAttempts = 0;
+let reactionTime = 0;
+let lastClickTime = null;
+let timer = null;
+let isProcessing = false;
+
+function startRound() {
+  roundNumberDisplay.textContent = currentRound + 1;
+  sequence = [...rounds[currentRound].pairs].sort(() => Math.random() - 0.5);
+  shuffledCards = sequence.flat().sort(() => Math.random() - 0.5);
+  selectedCards = [];
+  correctIndex = 0;
+  grid.innerHTML = "";
+  shuffledCards.forEach(num => createCard(num));
+  displaySequence();
+}
+
+function displaySequence() {
+  sequenceDisplay.innerHTML = sequence.map(pair => `<span class="highlight">(${pair[0]}, ${pair[1]})</span>`).join(" → ");
+  showAllCards();
+  setTimeout(hideCards, 10000);
+}
+
+function showAllCards() {
+  document.querySelectorAll(".card").forEach(card => card.classList.add("revealed"));
+}
+
+function hideCards() {
+  document.querySelectorAll(".card").forEach(card => card.classList.remove("revealed"));
+  sequenceDisplay.innerHTML = "Match the cards by flipping them in the correct sequence.！";
+}
+
+function createCard(number) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.dataset.value = number;
+
+  const front = document.createElement("div");
+  front.classList.add("card-face", "card-front");
+
+  const back = document.createElement("div");
+  back.classList.add("card-face", "card-back");
+
+  const img = document.createElement("img");
+  img.src = `./images/${number}.png`;
+  img.alt = `Number ${number}`;
+
+  back.appendChild(img);
+  card.appendChild(front);
+  card.appendChild(back);
+  grid.appendChild(card);
+
+  card.onclick = function () {
+    if (!this.classList.contains("revealed") && selectedCards.length < 2) {
+      flipCard(this);
+    }
+  };
+}
+
+function flipCard(card) {
+  if (isProcessing || selectedCards.includes(card)) return;
+
+  card.classList.add("revealed");
+  flipSound.currentTime = 0;
+  flipSound.play();
+
+  selectedCards.push(card);
+
+  if (selectedCards.length === 1) {
+    lastClickTime = Date.now();
+  }
+
+  if (selectedCards.length === 2) {
+    isProcessing = true;
+    totalSteps++;
+    let first = selectedCards[0].dataset.value;
+    let second = selectedCards[1].dataset.value;
+    let correctPair = sequence[correctIndex];
+
+    let currentClickTime = Date.now();
+    let reactionDuration = (currentClickTime - lastClickTime) / 1000;
+    reactionTime += reactionDuration;
+
+    if ((first == correctPair[0] && second == correctPair[1]) || (first == correctPair[1] && second == correctPair[0])) {
+      correctMatches++;
+      matchSound.currentTime = 0;
+      matchSound.play();
+
+      correctIndex++;
+      selectedCards = [];
+      isProcessing = false;
+
+     if (correctIndex === sequence.length) {
+  setTimeout(() => {
+    if (currentRound < rounds.length - 1) {
+      currentRound++;
+      startRound();
+    } else {
+      endGame();
+    }
+  }, 600); // 等待 600ms 翻牌动画完成再进入下一轮
+}
+
+    } else {
+      wrongAttempts++;
+      setTimeout(() => {
+        selectedCards.forEach(card => card.classList.remove("revealed"));
+        selectedCards = [];
+        isProcessing = false;
+      }, 600);
+    }
+  }
+}
+
+function startTimer() {
+  timerDisplay.textContent = totalTimeLeft;
+  timer = setInterval(() => {
+    totalTimeLeft--;
+    timerDisplay.textContent = totalTimeLeft;
+    if (totalTimeLeft <= 0) {
+      clearInterval(timer);
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  clearInterval(timer);
+  const timeUsed = totalTimeLimit - totalTimeLeft;
+  const formattedTime = `${String(Math.floor(timeUsed / 60)).padStart(2, '0')}:${String(timeUsed % 60).padStart(2, '0')}`;
+  const accuracy = correctMatches / totalSteps || 0;
+  const score = Math.round(accuracy * 100);
+  const note = "顺序匹配挑战";
+  const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
+
+  const gameData = {
+    level: "Level 2 - 顺序匹配模式",
+    timeUsed,
+    formattedTime,
+    wrongAttempts,
+    accuracy: parseFloat(accuracy.toFixed(2)),
+    score,
+    note,
+    totalSteps,
+    correctMatches,
+    reactionTime: parseFloat(avgReaction.toFixed(2))
+  };
+
+  saveGameResults(gameData);
+  window.location.href = "memory_analysis.html";
+}
+
+function saveGameResults(gameData) {
+  const abilities = generateAbilitiesFrom(gameData);
+  localStorage.setItem("memoryGameData", JSON.stringify(gameData));
+
+  const prev = JSON.parse(localStorage.getItem("memoryGameResult")) || {
+    overallScore: 0,
+    abilities: {},
+    levels: []
+  };
+
+  const updatedLevels = [...prev.levels, {
+    level: gameData.level,
+    time: gameData.timeUsed,
+    formattedTime: gameData.formattedTime,
+    errors: gameData.wrongAttempts,
+    accuracy: gameData.accuracy,
+    score: gameData.score,
+    note: gameData.note
+  }];
+
+  const updatedAbilities = {
+    shortTerm: calculateAverage(prev.abilities.shortTerm, 70),
+    attention: Math.round(gameData.accuracy * 100),
+    reaction: Math.max(0, 100 - gameData.reactionTime * 20),
+    sequence: gameData.score,
+    resistance: Math.max(0, 100 - gameData.wrongAttempts * 4),
+    endurance: Math.max(0, Math.min(100, (1 - (gameData.timeUsed / totalTimeLimit)) * 100))
+  };
+
+  const overallScore = Math.round(Object.values(updatedAbilities).reduce((a, b) => a + b, 0) / 6);
+
+  localStorage.setItem("memoryGameResult", JSON.stringify({
+    overallScore,
+    abilities: updatedAbilities,
+    levels: updatedLevels
+  }));
+}
+
+function generateAbilitiesFrom(gameData) {
+  return {}; // 统一由 saveGameResults 构造
+}
+
+function calculateAverage(prev, current) {
+  if (!prev) return current;
+  return Math.round((prev + current) / 2);
+}
 
 
-            const grid = document.getElementById("grid");
-            const sequenceDisplay = document.getElementById("sequenceDisplay");
-            const roundNumberDisplay = document.getElementById("roundNumber");
-            const timerDisplay = document.getElementById("timer");
-    
-            let rounds = [
-                { pairs: [[1, 2], [3, 4]], time: 45 },
-                { pairs: [[1, 2], [3, 4], [5, 6], [7, 8]], time: 35 },
-                { pairs: [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10],[11, 12]], time: 25 }
-            ];
-    
-            let currentRound = 0;
-            let sequence = [];
-            let shuffledCards = [];
-            let selectedCards = [];
-            let correctIndex = 0;
-            let timeLeft = 0;
-            let totalSteps = 0;
-            let correctMatches = 0;
-            let wrongAttempts = 0;
-            let reactionTime = 0;
-            let lastClickTime = null;
-            let timer = null;
-    
-            function startRound() {
-                roundNumberDisplay.textContent = currentRound + 1;
-                timeLeft = rounds[currentRound].time;
-                timerDisplay.textContent = timeLeft;
-    
-                sequence = [...rounds[currentRound].pairs].sort(() => Math.random() - 0.5);
-                shuffledCards = sequence.flat().sort(() => Math.random() - 0.5);
-                selectedCards = [];
-                correctIndex = 0;
-    
-                grid.innerHTML = "";
-                shuffledCards.forEach(num => createCard(num));
-    
-                displaySequence();
-            }
-    
-            function displaySequence() {
-                sequenceDisplay.innerHTML = sequence.map(pair => `<span class="highlight">(${pair[0]}, ${pair[1]})</span>`).join(" → ");
-                showAllCards();
-                setTimeout(hideCards, 10000);
-            }
-    
-            function showAllCards() {
-                document.querySelectorAll(".card").forEach(card => {
-                    card.classList.add("revealed");
-                });
-            }
-    
-            function hideCards() {
-                document.querySelectorAll(".card").forEach(card => {
-                    card.classList.remove("revealed");
-                });
-                sequenceDisplay.innerHTML = "Match the cards by flipping them in the correct sequence.！";
-                startTimer();
-            }
-    
-            function createCard(number) {
+
+const startOverlay = document.getElementById("startOverlay");
+startOverlay.addEventListener("click", () => {
+  startOverlay.style.display = "none";
+  startRound();
+  startTimer();
+});
+
+
+function setupInitialGrid() {
+  roundNumberDisplay.textContent = currentRound + 1;
+  sequence = [...rounds[currentRound].pairs];
+  shuffledCards = sequence.flat().sort(() => Math.random() - 0.5);
+  grid.innerHTML = "";
+
+  shuffledCards.forEach(num => {
     const card = document.createElement("div");
     card.classList.add("card");
-    card.dataset.value = number;
+    card.dataset.value = num;
 
     const front = document.createElement("div");
     front.classList.add("card-face", "card-front");
@@ -371,142 +566,18 @@ body {
     back.classList.add("card-face", "card-back");
 
     const img = document.createElement("img");
-    img.src = `./images/${number}.png`;
-    img.alt = `Number ${number}`;
+    img.src = `./images/${num}.png`;
+    img.alt = `Number ${num}`;
 
     back.appendChild(img);
     card.appendChild(front);
     card.appendChild(back);
     grid.appendChild(card);
-
-    card.onclick = function () {
-        if (!this.classList.contains("revealed") && selectedCards.length < 2) {
-            flipCard(this);
-        }
-    };
+  });
 }
-
-    
-            let isProcessing = false;  // 添加锁
-
-function flipCard(card) {
-    if (isProcessing) return;
-    if (selectedCards.includes(card)) return;
-
-    card.classList.add("revealed");
-    flipSound.currentTime = 0;
-    flipSound.play();
-
-    selectedCards.push(card);
-
-    if (selectedCards.length === 1) {
-        lastClickTime = Date.now();
-    }
-
-    if (selectedCards.length === 2) {
-        isProcessing = true;
-        totalSteps++;
-        let first = selectedCards[0].dataset.value;
-        let second = selectedCards[1].dataset.value;
-        let correctPair = sequence[correctIndex];
-
-        let currentClickTime = Date.now();
-        let reactionDuration = (currentClickTime - lastClickTime) / 1000;
-        reactionTime += reactionDuration;
-
-        if ((first == correctPair[0] && second == correctPair[1]) || (first == correctPair[1] && second == correctPair[0])) {
-            correctMatches++;
-            matchSound.currentTime = 0;
-            matchSound.play();
-
-            correctIndex++;
-            selectedCards = [];
-            isProcessing = false;
-
-            if (correctIndex === sequence.length) {
-                setTimeout(nextRound, 500);
-            }
-        } else {
-         
-            wrongAttempts++;
-
-            setTimeout(() => {
-                selectedCards.forEach(card => card.classList.remove("revealed"));
-                selectedCards = [];
-                isProcessing = false;
-            }, 600);
-        }
-    }
-}
-
-    
-            function startTimer() {
-                clearInterval(timer);
-                timer = setInterval(() => {
-                    timeLeft--;
-                    timerDisplay.textContent = timeLeft;
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
-                        endGame();
-                    }
-                }, 1000);
-            }
-    
-            function nextRound() {
-                clearInterval(timer);
-    
-                if (currentRound < rounds.length - 1) {
-                    currentRound++;
-                    startRound();
-                } else {
-                    endGame();
-                }
-            }
-    
-            function endGame() {
-    const currentLevelData = {
-        level: "Level 2",
-        time: rounds[currentRound].time - timeLeft,
-        errors: wrongAttempts,
-        accuracy: correctMatches / totalSteps,
-        score: Math.round((correctMatches / totalSteps) * 100),
-        note: "顺序匹配挑战"
-    };
-
-    // 尝试读取现有结果
-    let existing = JSON.parse(localStorage.getItem("memoryGameResult")) || {
-        overallScore: 0,
-        levels: [],
-        abilities: {
-            shortTerm: 0,
-            attention: 0,
-            reaction: 0,
-            sequence: 0,
-            resistance: 0
-        }
-    };
-
-    // 更新 levels 数组
-    existing.levels.push(currentLevelData);
-
-    // 可选：更新能力评分和 overallScore（你可以根据关卡不同分配不同权重）
-    existing.abilities.sequence = currentLevelData.score;
-    existing.abilities.reaction = Math.min(100, Math.round(100 - reactionTime * 2));
-    existing.abilities.attention = Math.max(50, 100 - wrongAttempts * 10);
-    existing.abilities.shortTerm = (existing.abilities.shortTerm + 75) / 2;  // 示例
-    existing.abilities.resistance = 70;
-
-    // 计算 overall score
-    const abilityScores = Object.values(existing.abilities);
-    existing.overallScore = Math.round(abilityScores.reduce((a, b) => a + b, 0) / abilityScores.length);
-
-    // 保存更新后的结果
-    localStorage.setItem("memoryGameResult", JSON.stringify(existing));
-
-    window.location.href = "memory_health.html";
-}
+window.addEventListener("DOMContentLoaded", () => {
+  setupInitialGrid();  // 显示静态卡片
+});
 
 
-    
-            startRound();
         </script>

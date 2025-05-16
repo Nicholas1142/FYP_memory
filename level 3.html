@@ -136,149 +136,149 @@
   </div>
 
   <script>
-    const grid = document.getElementById("grid");
-    const startOverlay = document.getElementById("startOverlay");
-    const blackOverlay = document.getElementById("blackOverlay");
-    const timerDisplay = document.getElementById("timer");
-    const flipSound = document.getElementById("flipSound");
-    const matchSound = document.getElementById("matchSound");
+      const grid = document.getElementById("grid");
+      const startOverlay = document.getElementById("startOverlay");
+      const blackOverlay = document.getElementById("blackOverlay");
+      const timerDisplay = document.getElementById("timer");
+      const flipSound = document.getElementById("flipSound");
+      const matchSound = document.getElementById("matchSound");
 
-    let totalPairs = 6;
-    let cardValues = [];
-    let selectedCards = [];
-    let timeLeft = 45;
-    let timer = null;
-    let isProcessing = true;
-    let matchedPairs = 0;
-    let totalSteps = 0;
-    let correctMatches = 0;
-    let wrongAttempts = 0;
-    let reactionTime = 0;
-    let lastClickTime = null;
+      let totalPairs = 6;
+      let cardValues = [];
+      let selectedCards = [];
+      let timeLeft = 45;
+      let timer = null;
+      let isProcessing = true;
+      let matchedPairs = 0;
+      let totalSteps = 0;
+      let correctMatches = 0;
+      let wrongAttempts = 0;
+      let reactionTime = 0;
+      let lastClickTime = null;
 
-    // 生成并“预览”所有卡片（带 .revealed）
-    function setupCards() {
-      grid.innerHTML = "";
-      cardValues = [];
-      for (let i = 1; i <= totalPairs; i++) {
-        cardValues.push(i, i);
+      // 生成并“预览”所有卡片（带 .revealed）
+      function setupCards() {
+        grid.innerHTML = "";
+        cardValues = [];
+        for (let i = 1; i <= totalPairs; i++) {
+          cardValues.push(i, i);
+        }
+        cardValues.sort(() => Math.random() - 0.5);
+        cardValues.forEach(num => createCard(num, true));
       }
-      cardValues.sort(() => Math.random() - 0.5);
-      cardValues.forEach(num => createCard(num, true));
-    }
 
-    // 创建卡片
-    function createCard(number, initiallyRevealed = false) {
-      const card = document.createElement("div");
-      card.classList.add("card");
-      if (initiallyRevealed) card.classList.add("revealed");
-      card.dataset.value = number;
+      // 创建卡片
+      function createCard(number, initiallyRevealed = false) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        if (initiallyRevealed) card.classList.add("revealed");
+        card.dataset.value = number;
 
-      const front = document.createElement("div");
-      front.classList.add("card-face", "card-front");
-      const back = document.createElement("div");
-      back.classList.add("card-face", "card-back");
-      const img = document.createElement("img");
-      img.src = `./images/${number}.png`;
-      img.alt = `Number ${number}`;
-      back.appendChild(img);
+        const front = document.createElement("div");
+        front.classList.add("card-face", "card-front");
+        const back = document.createElement("div");
+        back.classList.add("card-face", "card-back");
+        const img = document.createElement("img");
+        img.src = `./images/${number}.png`;
+        img.alt = `Number ${number}`;
+        back.appendChild(img);
 
-      card.append(front, back);
-      grid.appendChild(card);
+        card.append(front, back);
+        grid.appendChild(card);
 
-      card.addEventListener("click", () => {
-        if (isProcessing || card.classList.contains("revealed") || selectedCards.includes(card)) return;
-        flipCard(card);
-      });
-    }
+        card.addEventListener("click", () => {
+          if (isProcessing || card.classList.contains("revealed") || selectedCards.includes(card)) return;
+          flipCard(card);
+        });
+      }
 
-    startOverlay.addEventListener("click", () => {
-  startOverlay.style.display = "none";
+      startOverlay.addEventListener("click", () => {
+    startOverlay.style.display = "none";
 
-  // —— 1. 3 秒倒计时（文字更新在 #previewCountdown） ——
-  const countdownEl = document.getElementById("previewCountdown");
-  let count = 3;
-  countdownEl.textContent = `预览倒计时：${count}s`;
-  const cdInterval = setInterval(() => {
-    count--;
-    if (count > 0) {
-      countdownEl.textContent = `预览倒计时：${count}s`;
-    } else {
-      clearInterval(cdInterval);
-      countdownEl.textContent = "";         // 隐藏文字
-      // —— 2. 预览阶段结束：翻回卡片并黑屏 2 秒 —— 
-      document.querySelectorAll(".card").forEach(c => c.classList.remove("revealed"));
-      blackOverlay.style.display = "block";
-      setTimeout(() => {
-        blackOverlay.style.display = "none";
-        isProcessing = false;
-        startTimer();
-      }, 2000);
-    }
-  }, 1000);
-});
+    // —— 1. 3 秒倒计时（文字更新在 #previewCountdown） ——
+    const countdownEl = document.getElementById("previewCountdown");
+    let count = 3;
+    countdownEl.textContent = `预览倒计时：${count}s`;
+    const cdInterval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        countdownEl.textContent = `预览倒计时：${count}s`;
+      } else {
+        clearInterval(cdInterval);
+        countdownEl.textContent = "";         // 隐藏文字
+        // —— 2. 预览阶段结束：翻回卡片并黑屏 2 秒 —— 
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("revealed"));
+        blackOverlay.style.display = "block";
+        setTimeout(() => {
+          blackOverlay.style.display = "none";
+          isProcessing = false;
+          startTimer();
+        }, 2000);
+      }
+    }, 1000);
+  });
 
 
-    // 翻牌逻辑
-    function flipCard(card) {
-      card.classList.add("revealed");
-      flipSound.currentTime = 0;
-      flipSound.play();
-      selectedCards.push(card);
+      // 翻牌逻辑
+      function flipCard(card) {
+        card.classList.add("revealed");
+        flipSound.currentTime = 0;
+        flipSound.play();
+        selectedCards.push(card);
 
-      if (selectedCards.length === 1) {
-        lastClickTime = Date.now();
-      } else if (selectedCards.length === 2) {
-        isProcessing = true;
-        totalSteps++;
-        const [c1, c2] = selectedCards;
-        const v1 = c1.dataset.value, v2 = c2.dataset.value;
-        reactionTime += (Date.now() - lastClickTime) / 1000;
+        if (selectedCards.length === 1) {
+          lastClickTime = Date.now();
+        } else if (selectedCards.length === 2) {
+          isProcessing = true;
+          totalSteps++;
+          const [c1, c2] = selectedCards;
+          const v1 = c1.dataset.value, v2 = c2.dataset.value;
+          reactionTime += (Date.now() - lastClickTime) / 1000;
 
-        if (v1 === v2) {
-          correctMatches++;
-          matchSound.currentTime = 0;
-          matchSound.play();
-          matchedPairs++;
-          selectedCards = [];
-          if (matchedPairs === totalPairs) setTimeout(endGame, 500);
-          else isProcessing = false;
-        } else {
-          wrongAttempts++;
-          setTimeout(() => {
-            selectedCards.forEach(c => c.classList.remove("revealed"));
+          if (v1 === v2) {
+            correctMatches++;
+            matchSound.currentTime = 0;
+            matchSound.play();
+            matchedPairs++;
             selectedCards = [];
-            isProcessing = false;
-          }, 800);
+            if (matchedPairs === totalPairs) setTimeout(endGame, 500);
+            else isProcessing = false;
+          } else {
+            wrongAttempts++;
+            setTimeout(() => {
+              selectedCards.forEach(c => c.classList.remove("revealed"));
+              selectedCards = [];
+              isProcessing = false;
+            }, 800);
+          }
         }
       }
-    }
 
-    // 倒计时
-    function startTimer() {
-      timerDisplay.textContent = timeLeft;
-      timer = setInterval(() => {
-        timeLeft--;
+      // 倒计时
+      function startTimer() {
         timerDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          endGame();
-        }
-      }, 1000);
-    }
+        timer = setInterval(() => {
+          timeLeft--;
+          timerDisplay.textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            endGame();
+          }
+        }, 1000);
+      }
 
-    // 结束并保存结果
-    function endGame() {
-      clearInterval(timer);
-      localStorage.setItem("totalSteps", totalSteps);
-      localStorage.setItem("correctMatches", correctMatches);
-      localStorage.setItem("wrongAttempts", wrongAttempts);
-      localStorage.setItem("reactionTime", reactionTime.toFixed(2));
-      window.location.href = "memory_analysis.html";
-    }
+      // 结束并保存结果
+      function endGame() {
+        clearInterval(timer);
+        localStorage.setItem("totalSteps", totalSteps);
+        localStorage.setItem("correctMatches", correctMatches);
+        localStorage.setItem("wrongAttempts", wrongAttempts);
+        localStorage.setItem("reactionTime", reactionTime.toFixed(2));
+        window.location.href = "memory_analysis.html";
+      }
 
-    // 页面加载时先生成卡片
-    document.addEventListener("DOMContentLoaded", setupCards);
+      // 页面加载时先生成卡片
+      document.addEventListener("DOMContentLoaded", setupCards);
   </script>
 </body>
 </html>

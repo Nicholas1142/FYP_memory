@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>记忆健康大挑战 - 经典合作模式</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #FF6B6B;
+      --secondary: #4ECDC4;
+      --dark: #292F36;
+      --light: #F7FFF7;
+      --accent: #FFE66D;
+      --player-colors: [#FF6B6B, #4ECDC4, #6BFFB8, #B88CFF];
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--light);
+      text-align: center;
+      background: linear-gradient(135deg, var(--dark) 0%, #1A1A2E 100%);
+      overflow-x: hidden;
+    }
+    
+    .overlay {
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      width: 100vw; 
+      height: 100vh;
+      background: rgba(0,0,0,0.9);
+      display: flex; 
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+      z-index: 10000; 
+      cursor: pointer;
+      background: radial-gradient(circle, rgba(41,47,54,0.9) 0%, rgba(26,26,46,0.95) 100%);
+    }
+    
+    .overlay h2 {
+      color: var(--accent); 
+      font-family: 'Press Start 2P', cursive;
+      font-size: 2.5rem;
+      text-shadow: 0 0 10px rgba(255, 230, 109, 0.5);
+      margin-bottom: 2rem;
+      animation: pulse 1.5s infinite alternate;
+    }
+    
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+    
+    .header {
+      margin: 2rem 0;
+      width: 100%;
+      position: relative;
+    }
+    
+    .header h1 {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 3rem; 
+      color: var(--accent);
+      text-shadow: 0 0 15px rgba(255, 230, 109, 0.7);
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      color: var(--secondary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .game-info-container {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+    }
+    
+    .game-info {
+      background: rgba(41, 47, 54, 0.7);
+      border-radius: 15px;
+      padding: 1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      min-width: 200px;
+    }
+    
+    .game-info h3 {
+      margin: 0 0 0.5rem;
+      color: var(--secondary);
+      font-size: 1rem;
+    }
+    
+    .game-info-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--light);
+    }
+    
+    .player-turn {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,107,107,0.3) 0%, rgba(78,205,196,0.3) 100%);
+      border: 2px solid var(--accent);
+    }
+    
+    .player-turn::before {
+      content: "当前回合";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dark);
+      padding: 0 10px;
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+    
+    .players-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .player {
+      background: rgba(41, 47, 54, 0.8);
+      border-radius: 10px;
+      padding: 0.8rem;
+      width: 120px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
+    }
+    
+    .player.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+      transform: translateY(-5px);
+    }
+    
+    .player-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .player-name {
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .player-stats {
+      font-size: 0.8rem;
+      color: var(--secondary);
+    }
+    
+    .grid-container {
+      flex: 1; 
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      margin-bottom: 2rem;
+      width: 100%;
+      perspective: 1000px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 140px);
+      gap: 20px;
+      padding: 20px;
+      background: rgba(41, 47, 54, 0.5);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .card {
+      width: 140px; 
+      height: 190px;
+      perspective: 1000px; 
+      position: relative;
+      border-radius: 15px; 
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+      transition: transform 0.6s, box-shadow 0.3s; 
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    
+    .card:hover {
+      box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+    }
+    
+    .card-face {
+      width: 100%; 
+      height: 100%;
+      position: absolute; 
+      backface-visibility: hidden;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    
+    .card-front { 
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      transform: rotateY(0deg);
+    }
+    
+    .card-back {
+      transform: rotateY(180deg);
+      background: white;
+      overflow: hidden;
+    }
+    
+    .card img {
+      width: 100%; 
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+    
+    .card.revealed {
+      transform: rotateY(180deg);
+    }
+    
+    .card.matched {
+      animation: matchAnimation 0.5s forwards;
+    }
+    
+    @keyframes matchAnimation {
+      0% { transform: rotateY(180deg) scale(1); opacity: 1; }
+      50% { transform: rotateY(180deg) scale(1.1); opacity: 0.8; }
+      100% { transform: rotateY(180deg) scale(0); opacity: 0; }
+    }
+    
+    .card.anchored::after {
+      content: "🔖";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      z-index: 2;
+      animation: float 2s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    .controls-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+    
+    .powerups {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    button {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-family: 'Roboto', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+    }
+    
+    button:hover::after {
+      transform: translateX(0);
+    }
+    
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    .powerup {
+      background: rgba(41, 47, 54, 0.8);
+      color: var(--light);
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--secondary);
+    }
+    
+    .powerup:hover {
+      background: rgba(78, 205, 196, 0.2);
+    }
+    
+    .powerup:active {
+      transform: scale(0.95);
+    }
+    
+    .double-active {
+      animation: pulse 1s infinite, glow 2s infinite alternate;
+      background: linear-gradient(135deg, rgba(255,230,109,0.8) 0%, rgba(255,107,107,0.8) 100%);
+      color: var(--dark);
+      font-weight: bold;
+    }
+    
+    @keyframes glow {
+      from { box-shadow: 0 0 10px rgba(255, 230, 109, 0.5); }
+      to { box-shadow: 0 0 20px rgba(255, 230, 109, 0.8); }
+    }
+    
+    .timer-container {
+      width: 80%;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      background: rgba(41, 47, 54, 0.7);
+      border-radius: 50px;
+      height: 20px;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+    }
+    
+    .timer-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      width: 100%;
+      transition: width 1s linear;
+      border-radius: 50px;
+    }
+    
+    .game-events {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(41, 47, 54, 0.9);
+      padding: 10px 25px;
+      border-radius: 50px;
+      max-width: 80%;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 100;
+      border: 1px solid var(--secondary);
+    }
+    
+    .event {
+      animation: slideIn 0.5s forwards;
+      color: var(--accent);
+      font-weight: bold;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .game-over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 46, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      z-index: 1000;
+      text-align: center;
+    }
+    
+    .game-over-content {
+      background: rgba(41, 47, 54, 0.9);
+      padding: 3rem;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+      border: 2px solid var(--accent);
+    }
+    
+    .game-over h2 {
+      color: var(--accent);
+      font-family: 'Press Start 2P', cursive;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 10px rgba(255, 230, 109, 0.5);
+    }
+    
+    .game-over p {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    
+    .memory-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+    
+    .stat-item {
+      background: rgba(78, 205, 196, 0.1);
+      padding: 0.8rem;
+      border-radius: 10px;
+      border-left: 4px solid var(--secondary);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      margin-bottom: 0.3rem;
+    }
+    
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      
+      .card {
+        width: 100%;
+        height: 0;
+        padding-bottom: 140%;
+        position: relative;
+      }
+      
+      .card-face {
+        position: absolute;
+      }
+      
+      .game-info-container {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .game-info {
+        min-width: calc(50% - 20px);
+      }
+      
+      .players-container {
+        gap: 0.5rem;
+      }
+      
+      .player {
+        width: 100px;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 点击开始遮罩 -->
+  <div id="startOverlay" class="overlay">
+    <h2>记忆健康大挑战</h2>
+    <p>点击开始游戏</p>
+  </div>
+
+  <div class="header">
+    <h1>记忆健康大挑战</h1>
+    <p>经典合作模式 (1-4人)</p>
+    
+    <div class="timer-container">
+      <div class="timer-progress" id="timer"></div>
+    </div>
+    
+    <div class="game-info-container">
+      <div class="game-info">
+        <h3>团队积分</h3>
+        <div class="game-info-value" id="score">0</div>
+      </div>
+      <div class="game-info">
+        <h3>剩余卡片</h3>
+        <div class="game-info-value" id="remaining">16</div>
+      </div>
+      <div class="game-info player-turn">
+        <h3>当前玩家</h3>
+        <div class="game-info-value" id="current-player">玩家1</div>
+      </div>
+      <div class="game-info">
+        <h3>连续匹配</h3>
+        <div class="game-info-value" id="streak">0</div>
+      </div>
+    </div>
+    
+    <div class="players-container" id="players-container">
+      <!-- 玩家信息将通过JS动态添加 -->
+    </div>
+  </div>
+
+  <div class="grid-container">
+    <div id="grid" class="grid"></div>
+  </div>
+  
+  <div class="powerups">
+    <div class="powerup" id="anchor-power">
+      <span>🔖</span>
+      <span>记忆锚点 (3回合)</span>
+    </div>
+    <div class="powerup" id="double-power">
+      <span>✨</span>
+      <span>双倍时刻 (0/3)</span>
+    </div>
+  </div>
+  
+  <div class="controls-container">
+    <button id="start-btn">开始游戏</button>
+    <button id="restart-btn" disabled>重新开始</button>
+  </div>
+  
+  <div class="game-events" id="game-events">
+    <!-- 游戏事件将在这里显示 -->
+  </div>
+  
+  <div class="game-over" id="game-over">
+    <div class="game-over-content">
+      <h2>游戏结束!</h2>
+      <p>最终团队积分: <span id="final-score">0</span></p>
+      
+      <div class="memory-stats">
+        <div class="stat-item">
+          <div class="stat-label">记忆准确率</div>
+          <div class="stat-value" id="stat-accuracy">0%</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">平均反应时间</div>
+          <div class="stat-value" id="stat-reaction">0秒</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">错误尝试次数</div>
+          <div class="stat-value" id="stat-wrong">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">总步数</div>
+          <div class="stat-value" id="stat-steps">0</div>
+        </div>
+      </div>
+      
+      <button id="play-again">再玩一次</button>
+    </div>
+  </div>
+  
+  <audio id="flipSound" src="Sound/flip.mp3"></audio>
+  <audio id="matchSound" src="Sound/match.mp3"></audio>
+
+  <script>
+   // 游戏状态
+const gameState = {
+  players: ['玩家1', '玩家2', '玩家3', '玩家4'],
+  playerAvatars: ['👨💻', '👩🔬', '🧑🎨', '👨🚀'],
+  currentPlayerIndex: 0,
+  cards: [],
+  flippedCards: [],
+  matchedPairs: 0,
+  score: 0,
+  streak: 0,
+  gameStarted: false,
+  timerInterval: null,
+  timeLeft: 45,
+  turns: 0,
+  anchorAvailableIn: 3,
+  doubleProgress: 0,
+  doubleActive: false,
+  cardImages: [
+    'images/1.png',
+    'images/2.png',
+    'images/3.png',
+    'images/4.png',
+    'images/5.png',
+    'images/6.png',
+    'images/7.png',
+    'images/8.png'
+  ],
+  cardBack: 'images/wood.png',
+  totalSteps: 0,
+  correctMatches: 0,
+  wrongAttempts: 0,
+  reactionTime: 0,
+  lastClickTime: null,
+  playerStats: []
+};
+
+// DOM 元素
+const elements = {
+  grid: document.getElementById("grid"),
+  startOverlay: document.getElementById("startOverlay"),
+  score: document.getElementById("score"),
+  remaining: document.getElementById("remaining"),
+  currentPlayer: document.getElementById("current-player"),
+  streak: document.getElementById("streak"),
+  timer: document.getElementById("timer"),
+  startBtn: document.getElementById("start-btn"),
+  restartBtn: document.getElementById("restart-btn"),
+  anchorPower: document.getElementById("anchor-power"),
+  doublePower: document.getElementById("double-power"),
+  gameOver: document.getElementById("game-over"),
+  finalScore: document.getElementById("final-score"),
+  playAgain: document.getElementById("play-again"),
+  flipSound: document.getElementById("flipSound"),
+  matchSound: document.getElementById("matchSound"),
+  playersContainer: document.getElementById("players-container"),
+  gameEvents: document.getElementById("game-events"),
+  statAccuracy: document.getElementById("stat-accuracy"),
+  statReaction: document.getElementById("stat-reaction"),
+  statWrong: document.getElementById("stat-wrong"),
+  statSteps: document.getElementById("stat-steps")
+};
+
+// 初始化游戏
+function initGame() {
+  // 创建卡片组 (8对)
+  const pairs = gameState.cardImages.slice(0, 8);
+  gameState.cards = [...pairs, ...pairs];
+  
+  // 洗牌
+  shuffleArray(gameState.cards);
+  
+  // 清空游戏板
+  elements.grid.innerHTML = '';
+  
+  // 创建卡片元素
+  gameState.cards.forEach((imagePath, index) => {
+    const card = document.createElement("div");
+    card.className = 'card';
+    card.dataset.index = index;
+    card.dataset.image = imagePath;
+    
+    // 卡片背面 - 使用wood.png
+    const front = document.createElement("div");
+    front.className = 'card-face card-front';
+    const backImg = document.createElement("img");
+    backImg.src = gameState.cardBack;
+    backImg.alt = '卡片背面';
+    front.appendChild(backImg);
+    
+    // 卡片正面
+    const back = document.createElement("div");
+    back.className = 'card-face card-back';
+    const img = document.createElement("img");
+    img.src = imagePath;
+    img.alt = `Card ${index}`;
+    back.appendChild(img);
+    
+    card.appendChild(front);
+    card.appendChild(back);
+    elements.grid.appendChild(card);
+    
+    // 点击逻辑
+    card.addEventListener('click', handleCardClick);
+  });
+  
+  // 重置游戏状态
+  gameState.flippedCards = [];
+  gameState.matchedPairs = 0;
+  gameState.score = 0;
+  gameState.streak = 0;
+  gameState.turns = 0;
+  gameState.anchorAvailableIn = 3;
+  gameState.doubleProgress = 0;
+  gameState.doubleActive = false;
+  gameState.timeLeft = 45;
+  gameState.totalSteps = 0;
+  gameState.correctMatches = 0;
+  gameState.wrongAttempts = 0;
+  gameState.reactionTime = 0;
+  gameState.lastClickTime = null;
+  
+  // 初始化玩家统计
+  gameState.playerStats = gameState.players.map(() => ({
+    matches: 0,
+    attempts: 0,
+    accuracy: 0,
+    contribution: 0
+  }));
+  
+  // 更新UI
+  updateUI();
+  renderPlayers();
+  
+  // 如果是第一次开始，设置玩家数量
+  if (!gameState.gameStarted) {
+    setupPlayers();
+  }
+  
+  gameState.gameStarted = true;
+  elements.startBtn.disabled = true;
+  elements.restartBtn.disabled = false;
+}
+
+// 渲染玩家信息
+function renderPlayers() {
+  elements.playersContainer.innerHTML = '';
+  
+  gameState.players.forEach((player, index) => {
+    const playerEl = document.createElement('div');
+    playerEl.className = `player ${index === gameState.currentPlayerIndex ? 'active' : ''}`;
+    playerEl.dataset.player = index;
+    
+    playerEl.innerHTML = `
+      <div class="player-avatar">${gameState.playerAvatars[index]}</div>
+      <div class="player-name">${player}</div>
+      <div class="player-stats">
+        <span>匹配: ${gameState.playerStats[index].matches}</span>
+        <span>准确率: ${gameState.playerStats[index].accuracy}%</span>
+      </div>
+    `;
+    
+    elements.playersContainer.appendChild(playerEl);
+  });
+}
+
+// 设置玩家数量
+function setupPlayers() {
+  const numPlayers = parseInt(prompt("请输入玩家数量 (1-4):", "2"));
+  if (numPlayers >= 1 && numPlayers <= 4) {
+    gameState.players = [];
+    for (let i = 1; i <= numPlayers; i++) {
+      const name = prompt(`请输入玩家${i}的名字:`, `玩家${i}`);
+      gameState.players.push(name || `玩家${i}`);
+    }
+    gameState.currentPlayerIndex = 0;
+    updateCurrentPlayer();
+    renderPlayers();
+  } else {
+    alert("请输入1-4之间的数字");
+    setupPlayers();
+  }
+}
+
+// 处理卡片点击
+function handleCardClick(e) {
+  if (!gameState.gameStarted || gameState.isProcessing) return;
+  
+  const card = e.currentTarget;
+  const index = parseInt(card.dataset.index);
+  
+  // 如果卡片已经翻开或已匹配，则忽略
+  if (card.classList.contains("revealed") || 
+      card.classList.contains("matched") ||
+      gameState.flippedCards.length >= 2) {
+    return;
+  }
+  
+  // 翻开卡片
+  flipCard(card, index);
+  
+  // 检查是否匹配
+  if (gameState.flippedCards.length === 2) {
+    checkForMatch();
+  }
+  
+  // 重置计时器
+  resetTimer();
+}
+
+// 翻开卡片
+function flipCard(card, index) {
+  card.classList.add("revealed");
+  if (elements.flipSound) {
+    elements.flipSound.currentTime = 0;
+    elements.flipSound.play();
+  }
+  gameState.flippedCards.push({ index, card });
+  
+  if (gameState.flippedCards.length === 1) {
+    gameState.lastClickTime = Date.now();
+  } else {
+    gameState.totalSteps++;
+  }
+}
+
+// 检查是否匹配
+function checkForMatch() {
+  const [card1, card2] = gameState.flippedCards;
+  const currentPlayerIdx = gameState.currentPlayerIndex;
+  
+  // 检查图片路径是否匹配
+  if (card1.card.dataset.image === card2.card.dataset.image) {
+    // 匹配成功
+    setTimeout(() => {
+      card1.card.classList.add("matched");
+      card2.card.classList.add("matched");
+      gameState.flippedCards = [];
+      gameState.matchedPairs++;
+      gameState.correctMatches++;
+      
+      // 更新当前玩家统计
+      gameState.playerStats[currentPlayerIdx].matches++;
+      gameState.playerStats[currentPlayerIdx].attempts++;
+      gameState.playerStats[currentPlayerIdx].accuracy = 
+        Math.round(gameState.playerStats[currentPlayerIdx].matches / 
+                  gameState.playerStats[currentPlayerIdx].attempts * 100);
+      
+      // 计算反应时间
+      gameState.reactionTime += (Date.now() - gameState.lastClickTime) / 1000;
+      
+      // 更新积分
+      let points = 2;
+      gameState.streak++;
+      
+      // 检查双倍时刻
+      if (gameState.doubleActive) {
+        points *= 2;
+      }
+      
+      // 检查连续匹配奖励
+      if (gameState.streak >= 3) {
+        points += Math.floor(gameState.streak / 3);
+      }
+      
+      gameState.score += points;
+      
+      // 播放匹配音效
+      if (elements.matchSound) {
+        elements.matchSound.currentTime = 0;
+        elements.matchSound.play();
+      }
+      
+      // 显示事件
+      showEvent(`${gameState.players[currentPlayerIdx]} 成功匹配一对卡片！获得 ${points} 分`);
+      
+      // 更新双倍时刻进度
+      if (!gameState.doubleActive) {
+        gameState.doubleProgress++;
+        if (gameState.doubleProgress >= 3) {
+          activateDouble();
+        }
+      }
+      
+      // 检查游戏是否结束
+      if (gameState.matchedPairs === 8) {
+        endGame();
+      }
+      
+      // 检查是否需要添加新卡片
+      if (gameState.matchedPairs % 5 === 0 && gameState.matchedPairs > 0) {
+        addNewCards();
+      }
+      
+      updateUI();
+      renderPlayers();
+    }, 500);
+  } else {
+    // 不匹配
+    setTimeout(() => {
+      card1.card.classList.remove("revealed");
+      card2.card.classList.remove("revealed");
+      gameState.flippedCards = [];
+      gameState.streak = 0;
+      gameState.wrongAttempts++;
+      
+      // 更新当前玩家统计
+      gameState.playerStats[currentPlayerIdx].attempts++;
+      gameState.playerStats[currentPlayerIdx].accuracy = 
+        Math.round(gameState.playerStats[currentPlayerIdx].matches / 
+                  gameState.playerStats[currentPlayerIdx].attempts * 100);
+      
+      // 显示事件
+      showEvent(`${gameState.players[currentPlayerIdx]} 匹配失败，轮到下一位玩家`);
+      
+      // 切换到下一个玩家
+      nextPlayer();
+      updateUI();
+      renderPlayers();
+    }, 800);
+  }
+  
+  // 更新回合计数
+  gameState.turns++;
+  
+  // 更新记忆锚点可用性
+  if (gameState.anchorAvailableIn > 0) {
+    gameState.anchorAvailableIn--;
+    updatePowerups();
+  }
+}
+
+// 显示游戏事件
+function showEvent(text) {
+  const eventEl = document.createElement('div');
+  eventEl.className = 'event';
+  eventEl.textContent = text;
+  elements.gameEvents.appendChild(eventEl);
+  
+  setTimeout(() => {
+    eventEl.remove();
+  }, 3000);
+}
+
+// 切换到下一个玩家
+function nextPlayer() {
+  gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
+  updateCurrentPlayer();
+}
+
+// 更新当前玩家显示
+function updateCurrentPlayer() {
+  elements.currentPlayer.textContent = gameState.players[gameState.currentPlayerIndex];
+}
+
+// 添加新卡片
+function addNewCards() {
+  // 获取当前未使用的图片
+  const usedImages = gameState.cards.slice(0, 8);
+  const unusedImages = gameState.cardImages.filter(img => !usedImages.includes(img));
+  
+  if (unusedImages.length < 2) return; // 没有足够的图片可用
+  
+  // 选择两张新图片
+  const newImages = unusedImages.slice(0, 2);
+  
+  // 添加到卡片组
+  gameState.cards.push(...newImages, ...newImages);
+  
+  // 重新洗牌
+  shuffleArray(gameState.cards);
+  
+  // 重新创建游戏板
+  elements.grid.innerHTML = '';
+  gameState.cards.forEach((imagePath, index) => {
+    const card = document.createElement("div");
+    card.className = 'card';
+    
+    // 检查是否是已匹配的卡片
+    if (index < gameState.matchedPairs * 2) {
+      card.classList.add("matched");
+    }
+    
+    card.dataset.index = index;
+    card.dataset.image = imagePath;
+    
+    // 卡片背面
+    const front = document.createElement("div");
+    front.className = 'card-face card-front';
+    const backImg = document.createElement("img");
+    backImg.src = gameState.cardBack;
+    backImg.alt = '卡片背面';
+    front.appendChild(backImg);
+    
+    // 卡片正面
+    const back = document.createElement("div");
+    back.className = 'card-face card-back';
+    const img = document.createElement("img");
+    img.src = imagePath;
+    img.alt = `Card ${index}`;
+    back.appendChild(img);
+    
+    card.appendChild(front);
+    card.appendChild(back);
+    card.addEventListener('click', handleCardClick);
+    elements.grid.appendChild(card);
+  });
+  
+  showEvent("新增卡片已添加到游戏中！");
+}
+
+// 激活双倍时刻
+function activateDouble() {
+  gameState.doubleActive = true;
+  elements.doublePower.classList.add('double-active');
+  elements.doublePower.innerHTML = '<span>✨</span><span>双倍时刻激活</span>';
+  
+  showEvent("双倍时刻激活！所有匹配得分翻倍！");
+  
+  // 5秒后关闭双倍时刻
+  setTimeout(() => {
+    gameState.doubleActive = false;
+    gameState.doubleProgress = 0;
+    elements.doublePower.classList.remove('double-active');
+    updatePowerups();
+    
+    showEvent("双倍时刻结束");
+  }, 5000);
+}
+
+// 使用记忆锚点
+function useAnchor() {
+  if (gameState.anchorAvailableIn > 0 || !gameState.gameStarted) return;
+  
+  // 找到第一个未翻开的卡片
+  const cards = Array.from(elements.grid.children);
+  const unflippedCards = cards.filter(card => 
+    !card.classList.contains("revealed") && 
+    !card.classList.contains("matched") &&
+    !card.classList.contains("anchored")
+  );
+  
+  if (unflippedCards.length > 0) {
+    const randomIndex = Math.floor(Math.random() * unflippedCards.length);
+    const card = unflippedCards[randomIndex];
+    card.classList.add("anchored");
+    
+    // 2回合后移除锚点
+    setTimeout(() => {
+      if (card.classList.contains("anchored") && !card.classList.contains("matched")) {
+        card.classList.remove("anchored");
+      }
+    }, 2 * gameState.players.length * 2000);
+    
+    gameState.anchorAvailableIn = 3;
+    updatePowerups();
+    
+    showEvent(`${gameState.players[gameState.currentPlayerIndex]} 使用了记忆锚点！`);
+  }
+}
+
+// 更新道具UI
+function updatePowerups() {
+  elements.anchorPower.innerHTML = `<span>🔖</span><span>记忆锚点 (${gameState.anchorAvailableIn}回合)</span>`;
+  elements.doublePower.innerHTML = `<span>✨</span><span>双倍时刻 (${gameState.doubleProgress}/3)</span>`;
+}
+
+// 计时器函数
+function startTimer() {
+  clearInterval(gameState.timerInterval);
+  elements.timer.style.width = '100%';
+  gameState.timerInterval = setInterval(() => {
+    gameState.timeLeft--;
+    elements.timer.style.width = `${(gameState.timeLeft / 45) * 100}%`;
+    
+    // 时间紧迫时改变颜色
+    if (gameState.timeLeft <= 10) {
+      elements.timer.style.background = 'linear-gradient(90deg, var(--primary) 0%, #ff0000 100%)';
+    }
+    
+    if (gameState.timeLeft <= 0) {
+      clearInterval(gameState.timerInterval);
+      endGame();
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  gameState.timeLeft = 45;
+  elements.timer.style.width = '100%';
+  elements.timer.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%)';
+}
+
+// 结束游戏
+function endGame() {
+  clearInterval(gameState.timerInterval);
+  gameState.gameStarted = false;
+  
+  // 计算记忆健康指标
+  const accuracy = (gameState.correctMatches / gameState.totalSteps * 100).toFixed(1);
+  const avgReactionTime = gameState.correctMatches > 0 
+    ? (gameState.reactionTime / gameState.correctMatches).toFixed(2) 
+    : 0;
+  
+  elements.finalScore.textContent = gameState.score;
+  elements.statAccuracy.textContent = `${accuracy}%`;
+  elements.statReaction.textContent = `${avgReactionTime}秒`;
+  elements.statWrong.textContent = gameState.wrongAttempts;
+  elements.statSteps.textContent = gameState.totalSteps;
+  
+  // 保存游戏数据
+  const gameData = {
+    score: gameState.score,
+    accuracy: parseFloat(accuracy),
+    reactionTime: parseFloat(avgReactionTime),
+    wrongAttempts: gameState.wrongAttempts,
+    totalSteps: gameState.totalSteps,
+    players: gameState.players,
+    mode: "经典合作模式"
+  };
+  localStorage.setItem("memoryGameData", JSON.stringify(gameData));
+  
+  elements.gameOver.style.display = 'flex';
+}
+
+// 更新UI
+function updateUI() {
+  elements.score.textContent = gameState.score;
+  elements.remaining.textContent = gameState.cards.length / 2 - gameState.matchedPairs;
+  elements.streak.textContent = gameState.streak;
+  updatePowerups();
+}
+
+// 辅助函数：洗牌算法
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// 事件监听器
+elements.startBtn.addEventListener('click', () => {
+  initGame();
+  startTimer();
+});
+
+elements.restartBtn.addEventListener('click', () => {
+  initGame();
+  startTimer();
+});
+
+elements.playAgain.addEventListener('click', () => {
+  elements.gameOver.style.display = 'none';
+  initGame();
+  startTimer();
+});
+
+elements.anchorPower.addEventListener('click', useAnchor);
+elements.doublePower.addEventListener('click', () => {
+  if (gameState.doubleProgress >= 3 && !gameState.doubleActive) {
+    activateDouble();
+  }
+});
+
+elements.startOverlay.addEventListener('click', () => {
+  elements.startOverlay.style.display = 'none';
+  initGame();
+  startTimer();
+});
+
+// 初始UI更新
+updateUI();
+  </script>
+</body>
+</html>

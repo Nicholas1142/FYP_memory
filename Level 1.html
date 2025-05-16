@@ -95,7 +95,7 @@
   <!-- 点击开始遮罩 -->
   <div id="startOverlay" class="overlay">
     <h2>Click Start</h2>
-  </div>
+  </div>  
 
   <audio id="bgMusic" src="Sound/background music.mp3" loop autoplay></audio>
   <audio id="flipSound" src="Sound/flip.mp3"></audio>
@@ -226,9 +226,9 @@
 
     function endGame() {
   clearInterval(timer);
-  const timeUsed = 45 - timeLeft;
-  
-  // 格式化时间为 MM:SS
+  const finalTimeLeft = timeLeft;
+  const timeUsed = 45 - finalTimeLeft;
+
   const minutes = Math.floor(timeUsed / 60).toString().padStart(2, '0');
   const seconds = (timeUsed % 60).toString().padStart(2, '0');
   const formattedTime = `${minutes}:${seconds}`;
@@ -241,28 +241,81 @@
     ? "good" 
     : "Need to strengthen";
 
-  // 构建统一的数据结构
+  const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
+
   const gameData = {
     level: "Level 1 - 普通匹配模式",
-    timeUsed: timeUsed,
-    formattedTime: formattedTime,
-    wrongAttempts: wrongAttempts,
+    timeUsed,
+    formattedTime,
+    wrongAttempts,
     accuracy: parseFloat(accuracy.toFixed(2)),
-    score: score,
-    note: note,
-    totalSteps: totalSteps,
-    correctMatches: correctMatches,
-    reactionTime: reactionTime > 0 ? (reactionTime / correctMatches).toFixed(2) : 0
+    score,
+    note,
+    totalSteps,
+    correctMatches,
+    reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // 保存到 localStorage
-  localStorage.setItem("memoryGameData", JSON.stringify(gameData));
+  // ✅ 统一保存两种格式
+  saveGameResults(gameData);
 
-  // 跳转到分析页
+  // 跳转
   window.location.href = "memory_analysis.html";
 }
 
     document.addEventListener("DOMContentLoaded", setupCards);
+
+  function saveGameResults(gameData) {
+  const abilities = generateAbilitiesFrom(gameData);
+
+  localStorage.setItem("memoryGameData", JSON.stringify(gameData));
+
+  localStorage.setItem("memoryGameResult", JSON.stringify({
+    overallScore: gameData.score,
+    abilities: abilities,
+    levels: [
+      {
+        level: "Level 1",
+        time: gameData.timeUsed,
+        formattedTime: gameData.formattedTime, // ✅ 加上这个
+        errors: gameData.wrongAttempts,
+        accuracy: gameData.accuracy,
+        score: gameData.score,
+        note: gameData.note
+      }
+    ]
+  }));
+}
+
+
+function generateAbilitiesFrom(gameData) {
+  const {
+    accuracy = 0,
+    reactionTime = 0,
+    wrongAttempts = 0,
+    totalSteps = 1,
+    timeUsed = 45,
+    correctMatches = 0
+  } = gameData;
+
+  function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
+    if (correctMatches === 0) return 0;
+    const earlySteps = Math.min(6, totalSteps); // 前6步（前3对）
+    const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
+    const score = Math.max(40, 100 - earlyErrorRate * 100);
+    return Math.round(score);
+  }
+
+  return {
+    shortTerm: calculateShortTermScore(totalSteps, wrongAttempts, correctMatches),
+    attention: Math.round(accuracy * 100),
+    reaction: Math.max(0, 100 - reactionTime * 20),
+    sequence: totalSteps <= 14 ? 80 : 50,
+    resistance: Math.max(0, 100 - wrongAttempts * 4),
+    endurance: Math.max(0, Math.min(100, (1 - (timeUsed / 45)) * 100))
+  };
+}
+
   </script>
 </body>
 </html>
