@@ -112,216 +112,205 @@
   </button>
 
   <script>
-    // 将时间字符串转换为秒数
-    function timeToSeconds(timeStr) {
-      if (!timeStr || timeStr === '--:--') return Infinity;
-      const [minutes, seconds] = timeStr.split(':').map(Number);
-      return minutes * 60 + seconds;
+  // 格式化时间字符串（MM:SS）转秒数
+  function timeToSeconds(timeStr) {
+    if (!timeStr || timeStr === '--:--') return Infinity;
+    const [minutes, seconds] = timeStr.split(':').map(Number);
+    return minutes * 60 + seconds;
+  }
+
+  // 秒数格式化为 MM:SS
+  function formatTime(seconds) {
+    if (seconds === Infinity) return '--:--';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // 从localStorage读取所有已完成关卡记录，格式示例：
+  // { levelId: "easy", bestTime: "01:23", completed: true }
+  function loadLevelRecords() {
+    const recordsJson = localStorage.getItem('levels');
+    if (!recordsJson) return null;
+    try {
+      return JSON.parse(recordsJson);
+    } catch {
+      return null;
     }
+  }
 
-    // 将秒数格式化为 MM:SS
-    function formatTime(seconds) {
-      if (seconds === Infinity) return '--:--';
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    // 从localStorage获取游戏记录
-    function getGameRecords() {
-      const records = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('memoryGameData_')) {
-          try {
-            const record = JSON.parse(localStorage.getItem(key));
-            records.push(record);
-          } catch (e) {
-            console.error('Error parsing record:', e);
-          }
-        }
-      }
-      return records;
-    }
-
-    // 查找最快记录
-    function findFastestRecord() {
-      const records = getGameRecords();
-      let fastestRecord = null;
-      let fastestTime = Infinity;
-
-      records.forEach(record => {
-        const timeInSeconds = timeToSeconds(record.formattedTime);
-        if (timeInSeconds < fastestTime) {
-          fastestTime = timeInSeconds;
-          fastestRecord = record;
-        }
-      });
-
-      return fastestRecord;
-    }
-
-    // 显示最快记录
-    function displayFastestRecord() {
-      const fastestRecord = findFastestRecord();
-      const fastestRecordEl = document.getElementById('fastestRecord');
-      
-      if (fastestRecord) {
-        document.getElementById('fastestTime').textContent = fastestRecord.formattedTime;
-        document.getElementById('fastestLevel').textContent = fastestRecord.level;
-        fastestRecordEl.classList.remove('hidden');
-      } else {
-        fastestRecordEl.classList.add('hidden');
-      }
-    }
-
-const levels = [
-      { id: 'easy', name: 'Level 1', grid: '5x4', unlocked: true, bestTime: null, completed: false, file: 'level 1.html', color: 'from-green-400 to-green-500' },
-      { id: 'medium', name: 'Level 2', grid: '4x5', unlocked: false, bestTime: null, completed: false, file: 'level 2.html', color: 'from-yellow-400 to-yellow-500' },
-      { id: 'hard', name: 'Level 3', grid: '6x6', unlocked: false, bestTime: null, completed: false, file: 'level 3.html', color: 'from-red-400 to-red-500' },
-      { id: 'very-hard', name: 'Level 4', grid: '6x8', unlocked: false, bestTime: null, completed: false, file: '#', color: 'from-purple-500 to-purple-600' },
-      { id: 'insane', name: 'Level 5', grid: '8x8', unlocked: false, bestTime: null, completed: false, file: '#', color: 'from-gray-700 to-gray-800' },
-      { id: 'legendary', name: 'Level 6', grid: '10x10', unlocked: false, bestTime: null, completed: false, file: '#', color: 'from-yellow-500 to-yellow-600' }
-    ];
-
-    
-
-    // 初始化页面时显示最快记录
-    displayFastestRecord();
-
-    // 获取最佳记录
-    const completedLevels = levels.filter(lvl => lvl.bestTime && lvl.bestTime !== '--:--');
-    let fastestLevel = null;
-    let fastestTime = Infinity;
-
-    completedLevels.forEach(lvl => {
-      const time = timeToSeconds(lvl.bestTime);
-      if (time < fastestTime) {
-        fastestTime = time;
-        fastestLevel = lvl;
+  // 更新 levels 数组，将本地存储的成绩应用到对应关卡
+  function applySavedRecordsToLevels(levels, savedRecords) {
+    if (!savedRecords) return;
+    savedRecords.forEach(saved => {
+      const idx = levels.findIndex(l => l.id === saved.id);
+      if (idx >= 0) {
+        levels[idx].bestTime = saved.bestTime || null;
+        levels[idx].completed = !!saved.completed;
+        levels[idx].unlocked = saved.unlocked ?? levels[idx].unlocked; // 保持或更新解锁状态
       }
     });
+  }
 
-    // 创建显示最快记录的 DOM 元素
-    if (fastestLevel) {
-      const recordDiv = document.createElement('div');
-      recordDiv.className = "mb-8 p-3 rounded-lg bg-gradient-to-r from-yellow-100 to-yellow-50 text-center text-yellow-800 font-medium shadow-sm";
-      recordDiv.innerHTML = `
-        <div class="flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-          </svg>
-          <span>Best Time: ${fastestLevel.bestTime} on ${fastestLevel.name}</span>
-        </div>
-      `;
-      document.body.insertBefore(recordDiv, document.getElementById('level-container'));
+  // 寻找最快记录（所有关卡）
+  function findFastestRecord(levels) {
+    let fastestRecord = null;
+    let fastestTime = Infinity;
+    levels.forEach(lvl => {
+      if (lvl.bestTime && lvl.bestTime !== '--:--') {
+        const time = timeToSeconds(lvl.bestTime);
+        if (time < fastestTime) {
+          fastestTime = time;
+          fastestRecord = lvl;
+        }
+      }
+    });
+    return fastestRecord;
+  }
+
+  // 显示最快记录在页面
+  function displayFastestRecord(record) {
+    const el = document.getElementById('fastestRecord');
+    if (record) {
+      document.getElementById('fastestTime').textContent = record.bestTime;
+      document.getElementById('fastestLevel').textContent = record.name;
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
     }
+  }
 
-    const saved = localStorage.getItem('levels');
-    if (saved) {
-      const savedLevels = JSON.parse(saved);
-      levels.forEach((lvl, i) => Object.assign(lvl, savedLevels[i]));
+  // 初始化关卡数据
+  const levels = [
+    { id: 'easy', name: 'Level 1', grid: '5x4', unlocked: true, bestTime: null, completed: false, file: 'level 1.html', color: 'from-green-400 to-green-500' },
+    { id: 'medium', name: 'Level 2', grid: '4x5', unlocked: false, bestTime: null, completed: false, file: 'level 2.html', color: 'from-yellow-400 to-yellow-500' },
+    { id: 'hard', name: 'Level 3', grid: '6x6', unlocked: false, bestTime: null, completed: false, file: 'level 3.html', color: 'from-red-400 to-red-500' },
+    { id: 'very-hard', name: 'Level 4', grid: '6x8', unlocked: false, bestTime: null, completed: false, file: 'level 4.html', color: 'from-purple-500 to-purple-600' },
+    { id: 'insane', name: 'Level 5', grid: '8x8', unlocked: false, bestTime: null, completed: false, file: 'level 5.html', color: 'from-gray-700 to-gray-800' },
+    { id: 'legendary', name: 'Level 6', grid: '10x10', unlocked: false, bestTime: null, completed: false, file: 'level 6.html', color: 'from-yellow-500 to-yellow-600' }
+  ];
+
+  // 载入本地存储的关卡数据，覆盖levels的bestTime和completed状态
+ // 新增：从 localStorage 读取 bestTimes
+function loadBestTimes() {
+  const bestTimesJson = localStorage.getItem('bestTimes');
+  if (!bestTimesJson) return {};
+  try {
+    return JSON.parse(bestTimesJson);
+  } catch {
+    return {};
+  }
+}
+
+const bestTimes = loadBestTimes();
+
+// 用 bestTimes 更新 levels 的 bestTime 和完成状态
+levels.forEach((lvl, index) => {
+  if (bestTimes[lvl.id]) {
+    lvl.bestTime = bestTimes[lvl.id];
+    lvl.completed = true;  // 有完成时间，标记完成
+    lvl.unlocked = true;   // 自己肯定解锁
+
+    // 解锁下一关（如果存在）
+    if (index + 1 < levels.length) {
+      levels[index + 1].unlocked = true;
     }
+  }
+});
 
-    const container = document.getElementById('level-container');
-    container.innerHTML = '';
 
-    levels.forEach((level, index) => {
-      const card = document.createElement('div');
-      card.className = `level-card rounded-xl shadow-lg overflow-hidden ${
-        level.unlocked 
-          ? `shine-effect ${level.completed ? 'ring-2 ring-green-400' : ''} ${index === 0 ? 'pulse' : ''}` 
-          : 'locked-card'
-      }`;
 
-      card.innerHTML = `
-        <div class="h-full flex flex-col">
-          <div class="h-3 ${level.unlocked ? `bg-gradient-to-r ${level.color}` : 'bg-gray-400'}"></div>
-          <div class="flex-1 bg-white p-6 flex flex-col">
-            <div class="flex justify-between items-start mb-4">
-              <h2 class="text-2xl font-bold ${level.unlocked ? 'text-gray-800' : 'text-gray-500'}">${level.name}</h2>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full ${
-                level.completed ? 'bg-green-100 text-green-800' :
-                level.unlocked ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-600'
-              }">
-                ${level.completed ? 'Completed' :
-                  level.unlocked ? 'Unlocked' : 'Locked'}
-              </span>
-            </div>
-            
-            <div class="mb-4 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 ${level.unlocked ? 'text-blue-500' : 'text-gray-400'}" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
-              </svg>
-              <span class="${level.unlocked ? 'text-gray-700' : 'text-gray-400'}">${level.grid} Grid</span>
-            </div>
-            
-            <div class="mb-4 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 ${level.unlocked ? 'text-blue-500' : 'text-gray-400'}" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-              </svg>
-              <span class="${level.unlocked ? 'text-gray-700' : 'text-gray-400'}">Best Time: ${level.bestTime || '--:--'}</span>
-            </div>
-            
-            <div class="mt-auto pt-4 border-t border-gray-100">
-              <button class="w-full py-2 rounded-lg font-medium ${
-                level.unlocked 
-                  ? level.completed 
-                    ? 'bg-green-500 hover:bg-green-600 text-white' 
-                    : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              } transition-all">
-                ${level.unlocked ? (level.completed ? 'Play Again' : 'Start Challenge') : 'Locked'}
-              </button>
-            </div>
+  // 显示最快记录
+  displayFastestRecord(findFastestRecord(levels));
+
+  // 渲染关卡卡片
+  const container = document.getElementById('level-container');
+  container.innerHTML = '';
+  levels.forEach((level, index) => {
+    const card = document.createElement('div');
+    card.className = `level-card rounded-xl shadow-lg overflow-hidden ${
+      level.unlocked 
+        ? `shine-effect ${level.completed ? 'ring-2 ring-green-400' : ''} ${index === 0 ? 'pulse' : ''}` 
+        : 'locked-card'
+    }`;
+
+    card.innerHTML = `
+      <div class="h-full flex flex-col">
+        <div class="h-3 ${level.unlocked ? `bg-gradient-to-r ${level.color}` : 'bg-gray-400'}"></div>
+        <div class="flex-1 bg-white p-6 flex flex-col">
+          <div class="flex justify-between items-start mb-4">
+            <h2 class="text-2xl font-bold ${level.unlocked ? 'text-gray-800' : 'text-gray-500'}">${level.name}</h2>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full ${
+              level.completed ? 'bg-green-100 text-green-800' :
+              level.unlocked ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-600'
+            }">
+              ${level.completed ? 'Completed' :
+                level.unlocked ? 'Unlocked' : 'Locked'}
+            </span>
+          </div>
+          
+          <div class="mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 ${level.unlocked ? 'text-blue-500' : 'text-gray-400'}" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+            </svg>
+            <span class="${level.unlocked ? 'text-gray-700' : 'text-gray-400'}">${level.grid} Grid</span>
+          </div>
+          
+          <div class="mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 ${level.unlocked ? 'text-blue-500' : 'text-gray-400'}" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+            </svg>
+            <span class="${level.unlocked ? 'text-gray-700' : 'text-gray-400'}">Best Time: ${level.bestTime || '--:--'}</span>
+          </div>
+          
+          <div class="mt-auto pt-4 border-t border-gray-100">
+            <button class="w-full py-2 rounded-lg font-medium ${
+              level.unlocked 
+                ? level.completed 
+                  ? 'bg-green-500 hover:bg-green-600 text-white' 
+                  : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            } transition-all">
+              ${level.unlocked ? (level.completed ? 'Play Again' : 'Start Challenge') : 'Locked'}
+            </button>
           </div>
         </div>
-      `;
+      </div>
+    `;
 
-      if (level.unlocked && level.file !== '#') {
-        card.addEventListener('click', (e) => {
-          if (!e.target.closest('button')) {
-            completeLevel(level.id);
-            window.location.href = level.file + `?level=${level.id}`;
-          }
-        });
-        
-        const button = card.querySelector('button');
-        button.addEventListener('click', () => {
-          completeLevel(level.id);
+    if (level.unlocked && level.file !== '#') {
+      card.addEventListener('click', (e) => {
+        if (!e.target.closest('button')) {
+          // 直接跳转，无需更新完成状态（由关卡页面保存）
           window.location.href = level.file + `?level=${level.id}`;
-        });
-      } else if (!level.unlocked) {
-        card.addEventListener('click', () => {
-          card.style.transform = 'translateX(5px)';
-          setTimeout(() => {
-            card.style.transform = 'translateX(-5px)';
-            setTimeout(() => {
-              card.style.transform = '';
-              alert('Complete previous levels to unlock this challenge!');
-            }, 100);
-          }, 100);
-        });
-      }
-
-      container.appendChild(card);
-    });
-
-    function completeLevel(currentId) {
-      const index = levels.findIndex(l => l.id === currentId);
-      if (index >= 0) {
-        levels[index].completed = true;
-        levels[index].bestTime = formatTime(Math.floor(Math.random() * 120) + 30); // 随机生成一个完成时间
-        if (levels[index + 1]) {
-          levels[index + 1].unlocked = true;
         }
-        localStorage.setItem('levels', JSON.stringify(levels));
-      }
+      });
+      
+      const button = card.querySelector('button');
+      button.addEventListener('click', () => {
+        window.location.href = level.file + `?level=${level.id}`;
+      });
+    } else if (!level.unlocked) {
+      card.addEventListener('click', () => {
+        card.style.transform = 'translateX(5px)';
+        setTimeout(() => {
+          card.style.transform = 'translateX(-5px)';
+          setTimeout(() => {
+            card.style.transform = '';
+            alert('Complete previous levels to unlock this challenge!');
+          }, 100);
+        }, 100);
+      });
     }
 
-    function goBack() {
-      window.location.href = 'Main.html';
-    }
-  </script>
+    container.appendChild(card);
+  });
+
+  // 返回菜单
+  function goBack() {
+    window.location.href = 'Main.html';
+  }
+</script>
+
 </body>
 </html>

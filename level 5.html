@@ -107,7 +107,7 @@
   </video>
 
   <div class="header">
-    <h1>Level 1 - Normal mode</h1>
+    <h1>Level 5 - Normal mode</h1>
     <div class="info-container">
       <p>Time Left: <span id="timer">45</span> second</p>
       <p>Wrong Attempts: <span id="wrongAttempts">0</span></p>
@@ -209,10 +209,10 @@ const targetCategory = "fruit"; // ✅ 当前主题
         const [c1, c2] = selectedCards;
         const v1 = c1.dataset.value, v2 = c2.dataset.value;
         reactionTime += (Date.now() - lastClickTime)/1000;
-        if (v1 === v2) {
-          correctMatches++;
-          matchSound.currentTime = 0;
-          matchSound.play();
+            if (v1 === v2) {
+            correctMatches++;
+            matchSound.currentTime = 0;
+            matchSound.play();
           matchedPairs++;
           selectedCards = [];
           isProcessing = false;
@@ -280,7 +280,7 @@ const targetCategory = "fruit"; // ✅ 当前主题
   window.location.href = "memory_analysis.html";
 }
 
-    document.addEventListener("DOMContentLoaded", setupCards);
+    document.addEventListener("DOMContentLoaded", setupCards_Level13);
 
   function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);

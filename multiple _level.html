@@ -531,6 +531,22 @@
   <div class="header">
     <h1>记忆健康大挑战</h1>
     <p>经典合作模式 (1-4人)</p>
+
+    <!-- 自定义玩家设置弹窗 -->
+<div id="playerSetupModal" class="overlay" style="display:none; flex-direction: column; padding: 20px; max-width: 400px;">
+  <h2>选择玩家数量</h2>
+  <div id="playerCountButtons" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+    <button class="player-count-btn">1</button>
+    <button class="player-count-btn">2</button>
+    <button class="player-count-btn">3</button>
+    <button class="player-count-btn">4</button>
+  </div>
+  <form id="playerNamesForm" style="display:none; flex-direction: column; gap: 10px;">
+    <!-- 名字输入框动态生成 -->
+  </form>
+  <button id="confirmPlayersBtn" style="margin-top: 20px; display:none;">开始游戏</button>
+</div>
+
     
     <div class="timer-container">
       <div class="timer-progress" id="timer"></div>
@@ -798,6 +814,7 @@ function setupPlayers() {
     setupPlayers();
   }
 }
+
 
 // 处理卡片点击
 function handleCardClick(e) {
