@@ -212,6 +212,8 @@ startOverlay.addEventListener("click", () => {
   }, 1000);
 });
 
+
+
 function flipCard(card) {
   card.classList.add("revealed");
   flipSound.currentTime = 0;
@@ -258,17 +260,32 @@ function startTimer() {
   }, 1000);
 }
 
+
+
+
+
 function endGame() {
   clearInterval(timer);
-  const timeUsed = 45 - timeLeft;
-  const formattedTime = `${String(Math.floor(timeUsed / 60)).padStart(2, '0')}:${String(timeUsed % 60).padStart(2, '0')}`;
+  const finalTimeLeft = timeLeft;
+  const timeUsed = 45 - finalTimeLeft;
+
+  const minutes = Math.floor(timeUsed / 60).toString().padStart(2, '0');
+  const seconds = (timeUsed % 60).toString().padStart(2, '0');
+  const formattedTime = `${minutes}:${seconds}`;
+
   const accuracy = correctMatches / totalSteps || 0;
   const score = Math.max(50, 100 - wrongAttempts * 5);
-  const note = wrongAttempts <= 1 ? "very excellent" : wrongAttempts <= 3 ? "good" : "Need to strengthen";
+  const note = wrongAttempts <= 1 
+    ? "very excellent" 
+    : wrongAttempts <= 3 
+    ? "good" 
+    : "Need to strengthen";
+
   const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
 
   const gameData = {
-    level: "Level 3 - 记忆干扰模式",
+    level: "Level 3 - 普通匹配模式",
+    levelId: "hard",   // **关卡ID，必须与level selection页面对应**
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -280,46 +297,83 @@ function endGame() {
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
+  // 保存数据
   saveGameResults(gameData);
+
+  // 跳转分析页
   window.location.href = "memory_analysis.html";
 }
 
+
+
+// 更新 localStorage 中的最佳时间
+function updateBestTime(levelId, newTime) {
+  const bestTimesKey = "bestTimes"; // 存储所有关卡的最好时间，格式：{ levelId: "mm:ss", ... }
+  let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
+
+  const prevBest = bestTimes[levelId];
+  if (!prevBest || timeToSeconds(newTime) < timeToSeconds(prevBest)) {
+    bestTimes[levelId] = newTime;
+  }
+  localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
+}
+
+// 工具函数，时间字符串转秒数
+function timeToSeconds(timeStr) {
+  if (!timeStr || timeStr === '--:--') return Infinity;
+  const [minutes, seconds] = timeStr.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
+
+
+// 工具函数，时间字符串转秒数
+function timeToSeconds(timeStr) {
+  if (!timeStr || timeStr === '--:--') return Infinity;
+  const [minutes, seconds] = timeStr.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
+
+  // 保存单次游戏详细数据（可选）
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  const prev = JSON.parse(localStorage.getItem("memoryGameResult")) || {
-    overallScore: 0,
-    abilities: {},
-    levels: []
-  };
-
-  const updatedLevels = [...prev.levels, {
-    level: gameData.level,
-    time: gameData.timeUsed,
-    formattedTime: gameData.formattedTime,
-    errors: gameData.wrongAttempts,
-    accuracy: gameData.accuracy,
-    score: gameData.score,
-    note: gameData.note
-  }];
-
-  const updatedAbilities = {
-    shortTerm: calculateAverage(prev.abilities.shortTerm, abilities.shortTerm),
-    attention: Math.round(gameData.accuracy * 100),
-    reaction: Math.max(0, 100 - gameData.reactionTime * 20),
-    sequence: 70, // 可设为干扰记忆的评分
-    resistance: Math.max(0, 100 - gameData.wrongAttempts * 4),
-    endurance: Math.max(0, Math.min(100, (1 - (gameData.timeUsed / 45)) * 100))
-  };
-
-  const overallScore = Math.round(Object.values(updatedAbilities).reduce((a, b) => a + b, 0) / 6);
-
+  // 保存综合结果
   localStorage.setItem("memoryGameResult", JSON.stringify({
-    overallScore,
-    abilities: updatedAbilities,
-    levels: updatedLevels
+    overallScore: gameData.score,
+    abilities: abilities,
+    levels: [
+      {
+        level: gameData.level,
+        levelId: gameData.levelId,
+        time: gameData.timeUsed,
+        formattedTime: gameData.formattedTime,
+        errors: gameData.wrongAttempts,
+        accuracy: gameData.accuracy,
+        score: gameData.score,
+        note: gameData.note
+      }
+    ]
   }));
+
+  // **额外存储各关卡最快时间数据（供关卡选择页读取）**
+  updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
 function calculateAverage(prev, current) {

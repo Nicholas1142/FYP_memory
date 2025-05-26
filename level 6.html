@@ -230,7 +230,7 @@
       }, 1000);
     }
 
-    function endGame() {
+ function endGame() {
   clearInterval(timer);
   const finalTimeLeft = timeLeft;
   const timeUsed = 45 - finalTimeLeft;
@@ -250,7 +250,8 @@
   const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
 
   const gameData = {
-    level: "Level 1 - 普通匹配模式",
+    level: "Level 6 - 普通匹配模式",
+    levelId: "legendary",   // **关卡ID，必须与level selection页面对应**
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -262,10 +263,10 @@
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // ✅ 统一保存两种格式
+  // 保存数据
   saveGameResults(gameData);
 
-  // 跳转
+  // 跳转分析页
   window.location.href = "memory_analysis.html";
 }
 
@@ -275,16 +276,19 @@
   function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
+  // 保存单次游戏详细数据（可选）
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
+  // 保存综合结果
   localStorage.setItem("memoryGameResult", JSON.stringify({
     overallScore: gameData.score,
     abilities: abilities,
     levels: [
       {
-        level: "Level 1",
+        level: gameData.level,
+        levelId: gameData.levelId,
         time: gameData.timeUsed,
-        formattedTime: gameData.formattedTime, // ✅ 加上这个
+        formattedTime: gameData.formattedTime,
         errors: gameData.wrongAttempts,
         accuracy: gameData.accuracy,
         score: gameData.score,
@@ -292,8 +296,29 @@
       }
     ]
   }));
+
+  // **额外存储各关卡最快时间数据（供关卡选择页读取）**
+  updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
+// 更新 localStorage 中的最佳时间
+function updateBestTime(levelId, newTime) {
+  const bestTimesKey = "bestTimes"; // 存储所有关卡的最好时间，格式：{ levelId: "mm:ss", ... }
+  let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
+
+  const prevBest = bestTimes[levelId];
+  if (!prevBest || timeToSeconds(newTime) < timeToSeconds(prevBest)) {
+    bestTimes[levelId] = newTime;
+  }
+  localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
+}
+
+// 工具函数，时间字符串转秒数
+function timeToSeconds(timeStr) {
+  if (!timeStr || timeStr === '--:--') return Infinity;
+  const [minutes, seconds] = timeStr.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
 
 function generateAbilitiesFrom(gameData) {
   const {

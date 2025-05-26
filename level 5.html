@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Level 1 - 普通匹配模式</title>
+  <title>Level 5 - Flash Memory Challenge</title>
   <style>
     body {
       font-family: 'Creepster', cursive;
@@ -28,7 +28,7 @@
       text-shadow: 2px 2px 4px black;
     }
     .header {
-      margin: 40px 0 20px;
+      margin: 40px 0 30px;
     }
     .header h1 {
       font-size: 72px; color: orange;
@@ -36,12 +36,12 @@
     }
     .info-container {
       display: flex; justify-content: center;
-      gap: 120px; font-size: 32px;
+      gap: 130px; font-size: 32px;
       text-shadow: 2px 2px 4px black;
       margin-bottom: 10px;
     }
     .sequence-container {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       font-size: 26px; color: #ffcc66;
       text-shadow: 1px 1px 2px black;
     }
@@ -107,9 +107,9 @@
   </video>
 
   <div class="header">
-    <h1>Level 5 - Normal mode</h1>
+    <h1>Level 5 - Flash Memory Challenge</h1>
     <div class="info-container">
-      <p>Time Left: <span id="timer">45</span> second</p>
+      <p>Time Left: <span id="timer">30</span> second</p>
       <p>Wrong Attempts: <span id="wrongAttempts">0</span></p>
     </div>
   </div>
@@ -130,118 +130,138 @@
     const flipSound = document.getElementById("flipSound");
     const matchSound = document.getElementById("matchSound");
 
-    let totalPairs = 6;
-    let cardValues = [];
-    let selectedCards = [];
-    let timeLeft = 45;
-    let timer = null;
-    let isProcessing = true;    // 点击前不允许翻牌
-    let matchedPairs = 0;
-    let totalSteps = 0;
-    let correctMatches = 0;
-    let wrongAttempts = 0;
-    let reactionTime = 0;
-    let lastClickTime = null;
+let totalPairs = 8;
+let cardValues = [];
+let selectedCards = [];
+let maxTime = 30;        // 最大时间
+let timeLeft = maxTime;  // 初始时间30秒
+let timer = null;
+let isProcessing = true;    
+let matchedPairs = 0;
+let totalSteps = 0;
+let correctMatches = 0;
+let wrongAttempts = 0;
+let reactionTime = 0;
+let lastClickTime = null;
 
-    const categories = [
-  { id: 1, type: "fruit" },
-  { id: 2, type: "fruit" },
-  { id: 3, type: "animal" },
-  { id: 4, type: "animal" },
-  { id: 5, type: "vehicle" },
-  { id: 6, type: "vehicle" },
-];
+let consecutiveSuccess = 0;  // 新增：连续成功计数
 
-const targetCategory = "fruit"; // ✅ 当前主题
+    // 一：页面加载时先生成卡片布局（看到灰色背面）
+    function setupCards() {
+      grid.innerHTML = "";
+      cardValues = [];
+      for (let i = 1; i <= totalPairs; i++) cardValues.push(i, i);
+      cardValues.sort(() => Math.random() - 0.5);
+      cardValues.forEach(num => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.value = num;
+        // front/back
+        const front = document.createElement("div");
+        front.classList.add("card-face", "card-front");
+        const back = document.createElement("div");
+        back.classList.add("card-face", "card-back");
+        const img = document.createElement("img");
+        img.src = `./images/${num}.png`;
+        img.alt = `Number ${num}`;
+        back.appendChild(img);
+        card.append(front, back);
+        grid.append(card);
+        // 点击逻辑
+        card.addEventListener("click", () => {
+          if (isProcessing) return;
+          flipCard(card);
+        });
+      });
+    }
 
+   startOverlay.addEventListener("click", () => {
+  startOverlay.style.display = "none";
+  // 先展示所有卡牌正面
+  revealAllCards();
 
-    function setupCards_Level13() {
-  grid.innerHTML = "";
-  const targetItems = categories.filter(c => c.type === targetCategory);
-  cardValues = targetItems.flatMap(c => [c.id, c.id]);
-  cardValues.sort(() => Math.random() - 0.5);
+  // 3秒后翻回背面，开始游戏和计时
+  setTimeout(() => {
+    hideAllCards();
+    isProcessing = false; // 允许翻牌
+    startTimer();
+  }, 3000);
+});
 
-  cardValues.forEach(id => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.dataset.value = id;
-    card.dataset.type = targetCategory; // 便于未来分析
+// 展示所有卡牌正面
+function revealAllCards() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(card => {
+    card.classList.add("revealed");
+  });
+}
 
-    const front = document.createElement("div");
-    front.classList.add("card-face", "card-front");
-
-    const back = document.createElement("div");
-    back.classList.add("card-face", "card-back");
-
-    const img = document.createElement("img");
-    img.src = `./images/${id}.png`;
-    img.alt = `Card ${id}`;
-
-    back.appendChild(img);
-    card.append(front, back);
-    grid.append(card);
-
-    card.addEventListener("click", () => {
-      if (isProcessing) return;
-      flipCard(card);
-    });
+// 翻回所有卡牌背面
+function hideAllCards() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(card => {
+    card.classList.remove("revealed");
   });
 }
 
 
-    // 二：点击遮罩后才真正开始游戏
-    startOverlay.addEventListener("click", () => {
-      startOverlay.style.display = "none";
-      isProcessing = false;      // 允许翻牌
-      startTimer();              // 启动倒计时
-    });
-
-    function flipCard(card) {
-      if (card.classList.contains("revealed") || selectedCards.includes(card)) return;
-      card.classList.add("revealed");
-      flipSound.currentTime = 0;
-      flipSound.play();
-      selectedCards.push(card);
-      if (selectedCards.length === 1) lastClickTime = Date.now();
-      else {
-        isProcessing = true;
-        totalSteps++;
-        const [c1, c2] = selectedCards;
-        const v1 = c1.dataset.value, v2 = c2.dataset.value;
-        reactionTime += (Date.now() - lastClickTime)/1000;
-            if (v1 === v2) {
-            correctMatches++;
-            matchSound.currentTime = 0;
-            matchSound.play();
-          matchedPairs++;
-          selectedCards = [];
-          isProcessing = false;
-          if (matchedPairs === totalPairs) setTimeout(endGame, 500);
-        } else {
-          wrongAttempts++;
-          wrongAttemptsDisplay.textContent = wrongAttempts;
-          setTimeout(() => {
-            selectedCards.forEach(c => c.classList.remove("revealed"));
-            selectedCards = [];
-            isProcessing = false;
-          }, 800);
-        }
-      }
-    }
-
-    function startTimer() {
+function flipCard(card) {
+  if (card.classList.contains("revealed") || selectedCards.includes(card)) return;
+  card.classList.add("revealed");
+  flipSound.currentTime = 0;
+  flipSound.play();
+  selectedCards.push(card);
+  if (selectedCards.length === 1) lastClickTime = Date.now();
+  else {
+    isProcessing = true;
+    totalSteps++;
+    const [c1, c2] = selectedCards;
+    const v1 = c1.dataset.value, v2 = c2.dataset.value;
+    reactionTime += (Date.now() - lastClickTime) / 1000;
+    if (v1 === v2) {
+      correctMatches++;
+      matchSound.currentTime = 0;
+      matchSound.play();
+      matchedPairs++;
+      // 匹配成功，加2秒，最大不超过 maxTime
+      timeLeft = Math.min(maxTime, timeLeft + 2);
       timerDisplay.textContent = timeLeft;
-      timer = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          endGame();
-        }
-      }, 1000);
-    }
 
-    function endGame() {
+      selectedCards = [];
+      isProcessing = false;
+      if (matchedPairs === totalPairs) setTimeout(endGame, 500);
+    } else {
+      wrongAttempts++;
+      wrongAttemptsDisplay.textContent = wrongAttempts;
+      // 匹配失败，减0.5秒，最小不低于0秒
+      timeLeft = Math.max(0, timeLeft - 0.5);
+      timerDisplay.textContent = timeLeft;
+
+      setTimeout(() => {
+        selectedCards.forEach(c => c.classList.remove("revealed"));
+        selectedCards = [];
+        isProcessing = false;
+      }, 800);
+    }
+  }
+}
+
+
+
+ function startTimer() {
+  timerDisplay.textContent = timeLeft;
+  timer = setInterval(() => {
+    timeLeft--;
+    if (timeLeft < 0) timeLeft = 0;
+    timerDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
   clearInterval(timer);
   const finalTimeLeft = timeLeft;
   const timeUsed = 45 - finalTimeLeft;
@@ -261,7 +281,8 @@ const targetCategory = "fruit"; // ✅ 当前主题
   const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
 
   const gameData = {
-    level: "Level 1 - 普通匹配模式",
+    level: "Level 5 - Flash Memory Challenge",
+    levelId: "easy",   // **关卡ID，必须与level selection页面对应**
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -273,28 +294,32 @@ const targetCategory = "fruit"; // ✅ 当前主题
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // ✅ 统一保存两种格式
+  // 保存数据
   saveGameResults(gameData);
 
-  // 跳转
+  // 跳转分析页
   window.location.href = "memory_analysis.html";
 }
 
-    document.addEventListener("DOMContentLoaded", setupCards_Level13);
 
-  function saveGameResults(gameData) {
+  document.addEventListener("DOMContentLoaded", setupCards);
+
+ function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
+  // 保存单次游戏详细数据（可选）
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
+  // 保存综合结果
   localStorage.setItem("memoryGameResult", JSON.stringify({
     overallScore: gameData.score,
     abilities: abilities,
     levels: [
       {
-        level: "Level 1",
+        level: gameData.level,
+        levelId: gameData.levelId,
         time: gameData.timeUsed,
-        formattedTime: gameData.formattedTime, // ✅ 加上这个
+        formattedTime: gameData.formattedTime,
         errors: gameData.wrongAttempts,
         accuracy: gameData.accuracy,
         score: gameData.score,
@@ -302,7 +327,30 @@ const targetCategory = "fruit"; // ✅ 当前主题
       }
     ]
   }));
+
+  // **额外存储各关卡最快时间数据（供关卡选择页读取）**
+  updateBestTime(gameData.levelId, gameData.formattedTime);
 }
+
+// 更新 localStorage 中的最佳时间
+function updateBestTime(levelId, newTime) {
+  const bestTimesKey = "bestTimes"; // 存储所有关卡的最好时间，格式：{ levelId: "mm:ss", ... }
+  let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
+
+  const prevBest = bestTimes[levelId];
+  if (!prevBest || timeToSeconds(newTime) < timeToSeconds(prevBest)) {
+    bestTimes[levelId] = newTime;
+  }
+  localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
+}
+
+// 工具函数，时间字符串转秒数
+function timeToSeconds(timeStr) {
+  if (!timeStr || timeStr === '--:--') return Infinity;
+  const [minutes, seconds] = timeStr.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
+
 
 
 function generateAbilitiesFrom(gameData) {
@@ -326,7 +374,7 @@ function generateAbilitiesFrom(gameData) {
   return {
     shortTerm: calculateShortTermScore(totalSteps, wrongAttempts, correctMatches),
     attention: Math.round(accuracy * 100),
-    reaction: Math.max(0, 100 - reactionTime * 20),
+    reaction: Math.max(0, 100 - reactionTime * 45),
     sequence: totalSteps <= 14 ? 80 : 50,
     resistance: Math.max(0, 100 - wrongAttempts * 4),
     endurance: Math.max(0, Math.min(100, (1 - (timeUsed / 45)) * 100))

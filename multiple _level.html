@@ -114,7 +114,7 @@
     }
     
     .player-turn::before {
-      content: "当前回合";
+      content: "Current Turn";
       position: absolute;
       top: -10px;
       left: 50%;
@@ -522,57 +522,56 @@
 </head>
 <body>
 
-  <!-- 点击开始遮罩 -->
+  <!-- Start Overlay -->
   <div id="startOverlay" class="overlay">
-    <h2>记忆健康大挑战</h2>
-    <p>点击开始游戏</p>
+    <h2>Memory Health Challenge</h2>
+    <p>Click to Start Game</p>
   </div>
 
   <div class="header">
-    <h1>记忆健康大挑战</h1>
-    <p>经典合作模式 (1-4人)</p>
+    <h1>Memory Health Challenge</h1>
+    <p>Classic Cooperative Mode (1-4 Players)</p>
 
-    <!-- 自定义玩家设置弹窗 -->
-<div id="playerSetupModal" class="overlay" style="display:none; flex-direction: column; padding: 20px; max-width: 400px;">
-  <h2>选择玩家数量</h2>
-  <div id="playerCountButtons" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
-    <button class="player-count-btn">1</button>
-    <button class="player-count-btn">2</button>
-    <button class="player-count-btn">3</button>
-    <button class="player-count-btn">4</button>
-  </div>
-  <form id="playerNamesForm" style="display:none; flex-direction: column; gap: 10px;">
-    <!-- 名字输入框动态生成 -->
-  </form>
-  <button id="confirmPlayersBtn" style="margin-top: 20px; display:none;">开始游戏</button>
-</div>
+    <!-- Custom Player Setup Modal -->
+    <div id="playerSetupModal" class="overlay" style="display:none; flex-direction: column; padding: 20px; max-width: 400px;">
+      <h2>Select Number of Players</h2>
+      <div id="playerCountButtons" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <button class="player-count-btn">1</button>
+        <button class="player-count-btn">2</button>
+        <button class="player-count-btn">3</button>
+        <button class="player-count-btn">4</button>
+      </div>
+      <form id="playerNamesForm" style="display:none; flex-direction: column; gap: 10px;">
+        <!-- Player name inputs dynamically generated -->
+      </form>
+      <button id="confirmPlayersBtn" style="margin-top: 20px; display:none;">Start Game</button>
+    </div>
 
-    
     <div class="timer-container">
       <div class="timer-progress" id="timer"></div>
     </div>
     
     <div class="game-info-container">
       <div class="game-info">
-        <h3>团队积分</h3>
+        <h3>Team Score</h3>
         <div class="game-info-value" id="score">0</div>
       </div>
       <div class="game-info">
-        <h3>剩余卡片</h3>
+        <h3>Remaining Cards</h3>
         <div class="game-info-value" id="remaining">16</div>
       </div>
       <div class="game-info player-turn">
-        <h3>当前玩家</h3>
-        <div class="game-info-value" id="current-player">玩家1</div>
+        <h3>Current Player</h3>
+        <div class="game-info-value" id="current-player">Player 1</div>
       </div>
       <div class="game-info">
-        <h3>连续匹配</h3>
+        <h3>Consecutive Matches</h3>
         <div class="game-info-value" id="streak">0</div>
       </div>
     </div>
     
     <div class="players-container" id="players-container">
-      <!-- 玩家信息将通过JS动态添加 -->
+      <!-- Player info dynamically added by JS -->
     </div>
   </div>
 
@@ -583,48 +582,48 @@
   <div class="powerups">
     <div class="powerup" id="anchor-power">
       <span>🔖</span>
-      <span>记忆锚点 (3回合)</span>
+      <span>Memory Anchor (3 turns)</span>
     </div>
     <div class="powerup" id="double-power">
       <span>✨</span>
-      <span>双倍时刻 (0/3)</span>
+      <span>Double Time (0/3)</span>
     </div>
   </div>
   
   <div class="controls-container">
-    <button id="start-btn">开始游戏</button>
-    <button id="restart-btn" disabled>重新开始</button>
+    <button id="start-btn">Start Game</button>
+    <button id="restart-btn" disabled>Restart</button>
   </div>
   
   <div class="game-events" id="game-events">
-    <!-- 游戏事件将在这里显示 -->
+    <!-- Game events will appear here -->
   </div>
   
   <div class="game-over" id="game-over">
     <div class="game-over-content">
-      <h2>游戏结束!</h2>
-      <p>最终团队积分: <span id="final-score">0</span></p>
+      <h2>Game Over!</h2>
+      <p>Final Team Score: <span id="final-score">0</span></p>
       
       <div class="memory-stats">
         <div class="stat-item">
-          <div class="stat-label">记忆准确率</div>
+          <div class="stat-label">Memory Accuracy</div>
           <div class="stat-value" id="stat-accuracy">0%</div>
         </div>
         <div class="stat-item">
-          <div class="stat-label">平均反应时间</div>
-          <div class="stat-value" id="stat-reaction">0秒</div>
+          <div class="stat-label">Average Reaction Time</div>
+          <div class="stat-value" id="stat-reaction">0 sec</div>
         </div>
         <div class="stat-item">
-          <div class="stat-label">错误尝试次数</div>
+          <div class="stat-label">Wrong Attempts</div>
           <div class="stat-value" id="stat-wrong">0</div>
         </div>
         <div class="stat-item">
-          <div class="stat-label">总步数</div>
+          <div class="stat-label">Total Steps</div>
           <div class="stat-value" id="stat-steps">0</div>
         </div>
       </div>
       
-      <button id="play-again">再玩一次</button>
+      <button id="play-again">Play Again</button>
     </div>
   </div>
   
@@ -634,7 +633,7 @@
   <script>
    // 游戏状态
 const gameState = {
-  players: ['玩家1', '玩家2', '玩家3', '玩家4'],
+  players: ['Player 1', 'Player 2', 'Player 3', 'Player 4'],
   playerAvatars: ['👨💻', '👩🔬', '🧑🎨', '👨🚀'],
   currentPlayerIndex: 0,
   cards: [],
@@ -788,8 +787,9 @@ function renderPlayers() {
       <div class="player-avatar">${gameState.playerAvatars[index]}</div>
       <div class="player-name">${player}</div>
       <div class="player-stats">
-        <span>匹配: ${gameState.playerStats[index].matches}</span>
-        <span>准确率: ${gameState.playerStats[index].accuracy}%</span>
+       <span>Matches: ${gameState.playerStats[index].matches}</span>
+<span>Accuracy: ${gameState.playerStats[index].accuracy}%</span>
+
       </div>
     `;
     
@@ -797,23 +797,24 @@ function renderPlayers() {
   });
 }
 
-// 设置玩家数量
+// Set number of players
 function setupPlayers() {
-  const numPlayers = parseInt(prompt("请输入玩家数量 (1-4):", "2"));
+  const numPlayers = parseInt(prompt("Please enter the number of players (1-4):", "2"));
   if (numPlayers >= 1 && numPlayers <= 4) {
     gameState.players = [];
     for (let i = 1; i <= numPlayers; i++) {
-      const name = prompt(`请输入玩家${i}的名字:`, `玩家${i}`);
-      gameState.players.push(name || `玩家${i}`);
+      const name = prompt(`Please enter the name for Player ${i}:`, `Player ${i}`);
+      gameState.players.push(name || `Player ${i}`);
     }
     gameState.currentPlayerIndex = 0;
     updateCurrentPlayer();
     renderPlayers();
   } else {
-    alert("请输入1-4之间的数字");
+    alert("Please enter a number between 1 and 4");
     setupPlayers();
   }
 }
+
 
 
 // 处理卡片点击
@@ -906,7 +907,8 @@ function checkForMatch() {
       }
       
       // 显示事件
-      showEvent(`${gameState.players[currentPlayerIdx]} 成功匹配一对卡片！获得 ${points} 分`);
+      showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair! Earned ${points} points.`);
+
       
       // 更新双倍时刻进度
       if (!gameState.doubleActive) {
@@ -945,7 +947,7 @@ function checkForMatch() {
                   gameState.playerStats[currentPlayerIdx].attempts * 100);
       
       // 显示事件
-      showEvent(`${gameState.players[currentPlayerIdx]} 匹配失败，轮到下一位玩家`);
+      showEvent(`${gameState.players[currentPlayerIdx]} match failed, next player's turn.`);
       
       // 切换到下一个玩家
       nextPlayer();
@@ -1047,20 +1049,21 @@ function addNewCards() {
 function activateDouble() {
   gameState.doubleActive = true;
   elements.doublePower.classList.add('double-active');
-  elements.doublePower.innerHTML = '<span>✨</span><span>双倍时刻激活</span>';
+  elements.doublePower.innerHTML = '<span>✨</span><span>Double Time Activated</span>';
   
-  showEvent("双倍时刻激活！所有匹配得分翻倍！");
+  showEvent("Double Time Activated! All match points are doubled!");
   
-  // 5秒后关闭双倍时刻
+  // Disable Double Time after 5 seconds
   setTimeout(() => {
     gameState.doubleActive = false;
     gameState.doubleProgress = 0;
     elements.doublePower.classList.remove('double-active');
     updatePowerups();
     
-    showEvent("双倍时刻结束");
+    showEvent("Double Time Ended");
   }, 5000);
 }
+
 
 // 使用记忆锚点
 function useAnchor() {
@@ -1089,15 +1092,16 @@ function useAnchor() {
     gameState.anchorAvailableIn = 3;
     updatePowerups();
     
-    showEvent(`${gameState.players[gameState.currentPlayerIndex]} 使用了记忆锚点！`);
+    showEvent(`${gameState.players[gameState.currentPlayerIndex]} used Memory Anchor!`);
+
   }
 }
-
-// 更新道具UI
+// Update power-ups UI
 function updatePowerups() {
-  elements.anchorPower.innerHTML = `<span>🔖</span><span>记忆锚点 (${gameState.anchorAvailableIn}回合)</span>`;
-  elements.doublePower.innerHTML = `<span>✨</span><span>双倍时刻 (${gameState.doubleProgress}/3)</span>`;
+  elements.anchorPower.innerHTML = `<span>🔖</span><span>Memory Anchor (${gameState.anchorAvailableIn} turns)</span>`;
+  elements.doublePower.innerHTML = `<span>✨</span><span>Double Time (${gameState.doubleProgress}/3)</span>`;
 }
+
 
 // 计时器函数
 function startTimer() {
@@ -1138,7 +1142,7 @@ function endGame() {
   
   elements.finalScore.textContent = gameState.score;
   elements.statAccuracy.textContent = `${accuracy}%`;
-  elements.statReaction.textContent = `${avgReactionTime}秒`;
+  elements.statReaction.textContent = `${avgReactionTime}second`;
   elements.statWrong.textContent = gameState.wrongAttempts;
   elements.statSteps.textContent = gameState.totalSteps;
   
@@ -1150,7 +1154,7 @@ function endGame() {
     wrongAttempts: gameState.wrongAttempts,
     totalSteps: gameState.totalSteps,
     players: gameState.players,
-    mode: "经典合作模式"
+    mode: "Classic Cooperative Mode"
   };
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
   
