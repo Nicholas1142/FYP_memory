@@ -513,33 +513,56 @@ function formatSecondsToMMSS(seconds) {
 }
 
 
- function saveGameResults(gameData) {
+function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
+
+  // 读取已有数据
+  let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
+
+  if (!existingResult) {
+    existingResult = {
+      overallScore: gameData.score,
+      abilities: abilities,
+      levels: []
+    };
+  }
+
+  // 检查是否已有当前关卡数据，更新或添加
+  const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
+  const newLevelData = {
+    level: gameData.level,
+    levelId: gameData.levelId,
+    time: gameData.timeUsed,
+    formattedTime: gameData.formattedTime,
+    errors: gameData.wrongAttempts,
+    accuracy: gameData.accuracy,
+    score: gameData.score,
+    note: gameData.note
+  };
+
+  if (idx > -1) {
+    existingResult.levels[idx] = newLevelData; // 更新该关卡数据
+  } else {
+    existingResult.levels.push(newLevelData);  // 添加新关卡数据
+  }
+
+  // 更新整体分数，举例取所有关卡平均分
+  const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
+  existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
+
+  // abilities 你可以根据需要更新，暂时用最后一次的
+  existingResult.abilities = abilities;
+
+  // 保存回 localStorage
+  localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
 
   // 保存单次游戏详细数据（可选）
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  // 保存综合结果
-  localStorage.setItem("memoryGameResult", JSON.stringify({
-    overallScore: gameData.score,
-    abilities: abilities,
-    levels: [
-      {
-        level: gameData.level,
-        levelId: gameData.levelId,
-        time: gameData.timeUsed,
-        formattedTime: gameData.formattedTime,
-        errors: gameData.wrongAttempts,
-        accuracy: gameData.accuracy,
-        score: gameData.score,
-        note: gameData.note
-      }
-    ]
-  }));
-
-  // **额外存储各关卡最快时间数据（供关卡选择页读取）**
+  // 更新最佳时间
   updateBestTime(gameData.levelId, gameData.formattedTime);
 }
+
 
 
 function generateAbilitiesFrom(gameData) {
