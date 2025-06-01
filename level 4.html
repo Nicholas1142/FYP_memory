@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Level 4 - 旋转错觉模式</title>
   <style>
-    body {
+   body {
       font-family: 'Creepster', cursive;
       display: flex;
       flex-direction: column;
@@ -14,7 +14,8 @@
       margin: 0;
       color: orange;
       text-align: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
     }
     .overlay {
       position: fixed; top: 0; left: 0;
@@ -29,56 +30,83 @@
     }
     .header {
       margin: 40px 0 20px;
+      max-width: 900px;
+      width: 90vw;
     }
     .header h1 {
-      font-size: 72px; color: orange;
+      font-size: 60px; /* 适当缩小字体 */
+      color: orange;
       text-shadow: 4px 4px 8px black;
+      margin-bottom: 12px;
     }
     .info-container {
       display: flex; justify-content: center;
-      gap: 120px; font-size: 32px;
+      gap: 60px; /* 缩小间距 */
+      font-size: 30px; /* 调小字号 */
       text-shadow: 2px 2px 4px black;
       margin-bottom: 10px;
+      flex-wrap: wrap;
+      max-width: 900px;
+      width: 90vw;
     }
     .sequence-container {
       margin-bottom: 20px;
       font-size: 26px; color: #ffcc66;
       text-shadow: 1px 1px 2px black;
+      max-width: 900px;
+      width: 90vw;
     }
     .sequence-box {
       font-size: 28px; color: #ff6347;
       font-weight: bold;
     }
     .grid-container {
-      flex: 1; display: flex;
-      justify-content: center; align-items: center;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       margin-bottom: 60px;
+      max-width: 900px;
+      width: 90vw;
+      overflow-x: auto;
     }
     .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 130px);
-      gap: 25px;
-    }
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  gap: 10px;
+  justify-content: center;
+}
     .card {
-      width: 130px; height: 180px;
-      perspective: 1000px; position: relative;
-      border-radius: 12px; box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-      transition: transform 0.6s; transform-style: preserve-3d;
-      background-color: #555; cursor: pointer;
+      width: 100px;
+      height: 140px;
+      perspective: 1000px;
+      position: relative;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      background-color: #555;
+      cursor: pointer;
     }
     .card-face {
-      width: 100%; height: 100%;
-      position: absolute; backface-visibility: hidden;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      backface-visibility: hidden;
       border-radius: 12px;
     }
-    .card-front { background-color: #555; }
+    .card-front {
+      background-color: #555;
+    }
     .card-back {
       transform: rotateY(180deg);
       overflow: hidden;
     }
     .card img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
       border-radius: 12px;
     }
     .card.revealed {
@@ -88,14 +116,57 @@
     .card.revealed img {
       display: block;
     }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 36px;
+      }
+      .info-container {
+        font-size: 16px;
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+      }
+      .sequence-container {
+        font-size: 20px;
+      }
+      .card {
+        width: 80px;
+        height: 110px;
+      }
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 15px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- 点击开始遮罩 -->
-  <div id="startOverlay" class="overlay">
-    <h2>Click Start</h2>
-  </div>  
+<div id="startOverlay" class="overlay" style="flex-direction: column; cursor: default; padding: 20px;">
+  <h2 style="color:#ffcc33; font-size: 36px; margin-bottom: 20px;">游戏规则</h2>
+  <div style="color:#ffcc33; font-size: 24px; max-width: 600px; text-align: left; line-height: 1.5;">
+    <p>1. 你有45秒时间匹配所有牌。</p>
+    <p>2. 点击两张牌翻开，如果匹配成功则消除。</p>
+    <p>3. 尽量减少错误尝试，错误次数会影响得分。</p>
+    <p>4. 时间用完游戏结束。</p>
+    <p>5. 祝你好运，挑战开始！</p>
+  </div>
+  <button id="startBtn" style="
+    margin-top: 30px;
+    padding: 15px 50px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #ff6347;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+  ">点击开始</button>
+</div>
+
 
   <audio id="bgMusic" src="Sound/background music.mp3" loop autoplay></audio>
   <audio id="flipSound" src="Sound/flip.mp3"></audio>
@@ -181,12 +252,13 @@
 }
 
 
-    // 二：点击遮罩后才真正开始游戏
-    startOverlay.addEventListener("click", () => {
-      startOverlay.style.display = "none";
-      isProcessing = false;      // 允许翻牌
-      startTimer();              // 启动倒计时
-    });
+ const startBtn = document.getElementById("startBtn");
+startBtn.addEventListener("click", () => {
+  startOverlay.style.display = "none";
+  isProcessing = false; // 允许翻牌
+  setupCards_Level10(); // 生成卡片
+  startTimer();         // 启动计时器
+});
 
     function flipCard(card) {
       if (card.classList.contains("revealed") || selectedCards.includes(card)) return;

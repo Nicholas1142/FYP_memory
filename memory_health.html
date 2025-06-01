@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>记忆健康分析</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet"
+    />
     <style>
         :root {
             --primary-color: #4361ee;
@@ -20,22 +23,19 @@
             --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
         }
-        
         body {
-            font-family: 'Noto Sans SC', sans-serif;
+            font-family: "Noto Sans SC", sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             margin: 0;
             padding: 20px;
             color: var(--dark-color);
             line-height: 1.6;
         }
-        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
         h1 {
             text-align: center;
             margin-bottom: 40px;
@@ -45,9 +45,8 @@
             position: relative;
             padding-bottom: 15px;
         }
-        
         h1::after {
-            content: '';
+            content: "";
             position: absolute;
             bottom: 0;
             left: 50%;
@@ -57,7 +56,6 @@
             background: var(--accent-color);
             border-radius: 2px;
         }
-        
         h2 {
             color: var(--secondary-color);
             margin-top: 0;
@@ -67,7 +65,6 @@
             align-items: center;
             gap: 10px;
         }
-        
         .section {
             background: #fff;
             border-radius: var(--border-radius);
@@ -76,14 +73,16 @@
             box-shadow: var(--box-shadow);
             transition: var(--transition);
         }
-        
         .section:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
         }
-        
         .score-box {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            background: linear-gradient(
+                135deg,
+                var(--primary-color) 0%,
+                var(--accent-color) 100%
+            );
             color: white;
             padding: 20px;
             border-radius: var(--border-radius);
@@ -93,7 +92,6 @@
             font-weight: 700;
             box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
-        
         #summary-text {
             background-color: rgba(248, 249, 250, 0.8);
             padding: 15px;
@@ -102,7 +100,6 @@
             margin-bottom: 20px;
             font-size: 1.1rem;
         }
-        
         .ability-list {
             list-style: none;
             padding: 0;
@@ -110,7 +107,6 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
         }
-        
         .ability-list li {
             background: var(--light-color);
             padding: 15px;
@@ -120,13 +116,11 @@
             align-items: center;
             gap: 10px;
         }
-        
         .ability-list li::before {
-            content: '•';
+            content: "•";
             color: var(--accent-color);
             font-size: 1.5rem;
         }
-        
         .record-table {
             width: 100%;
             border-collapse: separate;
@@ -135,7 +129,6 @@
             overflow: hidden;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
         }
-        
         .record-table th {
             background-color: var(--primary-color);
             color: white;
@@ -143,29 +136,25 @@
             text-align: center;
             font-weight: 500;
         }
-        
         .record-table td {
             padding: 12px 15px;
             text-align: center;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-        
         .record-table tr:nth-child(even) {
             background-color: rgba(248, 249, 250, 0.5);
         }
-        
         .record-table tr:hover {
             background-color: rgba(67, 97, 238, 0.05);
         }
-        
         .chart-container {
             display: flex;
             flex-wrap: wrap;
             gap: 30px;
             justify-content: center;
         }
-        
-        .radar-container, .line-chart-container {
+        .radar-container,
+        .line-chart-container {
             flex: 1;
             min-width: 300px;
             max-width: 600px;
@@ -174,41 +163,57 @@
             border-radius: var(--border-radius);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
-        
         @media (max-width: 768px) {
             .chart-container {
                 flex-direction: column;
             }
-            
-            .radar-container, .line-chart-container {
+            .radar-container,
+            .line-chart-container {
                 max-width: 100%;
             }
-            
             .ability-list {
                 grid-template-columns: 1fr;
             }
-            
             h1 {
                 font-size: 2rem;
             }
         }
-        
         /* 图标样式 */
         .icon {
             font-size: 1.5rem;
         }
-        
         /* 分数颜色 */
         .good-score {
             color: var(--success-color);
         }
-        
         .average-score {
             color: var(--warning-color);
         }
-        
         .poor-score {
             color: var(--danger-color);
+        }
+        /* 新增按钮样式 */
+        .btn-container {
+            text-align: center;
+            margin-bottom: 25px;
+            gap: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.4);
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: var(--accent-color);
         }
     </style>
 </head>
@@ -261,62 +266,203 @@
                 <div class="radar-container">
                     <canvas id="memoryRadar"></canvas>
                 </div>
-                <div class="line-chart-container">
-                    <canvas id="scoreTrendChart"></canvas>
-                </div>
             </div>
         </div>
     </div>
 
+    <div class="btn-container">
+        <button class="btn" id="btn-home">返回主页</button>
+        <button class="btn" id="btn-download">下载数据</button>
+    </div>
+
     <script>
         let radarChart;
-        let scoreTrendChart;
         const today = new Date();
 
-        // 根据分数返回颜色类
         function getScoreClass(score) {
-            if (score >= 80) return 'good-score';
-            if (score >= 50) return 'average-score';
-            return 'poor-score';
+            if (score >= 80) return "good-score";
+            if (score >= 50) return "average-score";
+            return "poor-score";
+        }
+
+        function goHome() {
+            window.location.href = "Main.html"; // 修改为你的主页路径
+        }
+
+        // JSON 转 CSV 的辅助函数
+        function jsonToCsv(data) {
+            let csv = "";
+
+            // 写能力分（四舍五入为整数）
+            csv += "能力类型,分数\n";
+            csv += `Short-term Memory,${Math.round(data.abilities.shortTerm)}\n`;
+            csv += `Attention,${Math.round(data.abilities.attention)}\n`;
+            csv += `Reaction Speed,${Math.round(data.abilities.reaction)}\n`;
+            csv += `Sequential Memory,${Math.round(data.abilities.sequence)}\n`;
+            csv += `Distraction Resistance,${Math.round(data.abilities.resistance)}\n\n`;
+
+            // 写关卡数据表头
+            csv += "Level,Time(s),Mistakes,Accuracy(%),Score,Notes\n";
+
+            // 排序 levels，按数字升序
+            data.levels.sort((a, b) => {
+                const numA = parseInt(a.level.match(/\d+/)[0]);
+                const numB = parseInt(b.level.match(/\d+/)[0]);
+                return numA - numB;
+            });
+
+            data.levels.forEach(lvl => {
+                const accuracyPercent = Math.round(lvl.accuracy * 100);
+                const note = `"${(lvl.note || "").replace(/"/g, '""')}"`;
+                csv += `${lvl.level},${lvl.time},${lvl.errors},${accuracyPercent},${lvl.score},${note}\n`;
+            });
+
+            return csv;
+        }
+
+        function downloadData() {
+            const jsonData = localStorage.getItem("memoryGameResult");
+            if (!jsonData) {
+                alert("当前无数据可下载！");
+                return;
+            }
+
+            let dataObj;
+            try {
+                dataObj = JSON.parse(jsonData);
+            } catch {
+                alert("数据格式错误，无法导出！");
+                return;
+            }
+
+            const csvData = "\uFEFF" + jsonToCsv(dataObj);  // 加入 BOM 防止乱码
+            const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `memory_data_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         window.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("btn-home").addEventListener("click", goHome);
+            document.getElementById("btn-download").addEventListener("click", downloadData);
+
             const data = JSON.parse(localStorage.getItem("memoryGameResult"));
-            
+
+            const radarCtx = document.getElementById("memoryRadar").getContext("2d");
+            radarChart = new Chart(radarCtx, {
+                type: "radar",
+                data: {
+                    labels: [
+                        "Short-term Memory",
+                        "Attention",
+                        "Reaction Speed",
+                        "Sequential Memory",
+                        "Distraction Resistance",
+                    ],
+                    datasets: [
+                        {
+                            label: "Memory Score",
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: "rgba(67, 97, 238, 0.2)",
+                            borderColor: "rgba(67, 97, 238, 1)",
+                            borderWidth: 2,
+                            pointBackgroundColor: "rgba(67, 97, 238, 1)",
+                            pointBorderColor: "#fff",
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: "rgba(67, 97, 238, 1)",
+                            pointHoverBorderColor: "#fff",
+                            pointHitRadius: 10,
+                            pointBorderWidth: 2,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: "rgba(0, 0, 0, 0.1)",
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                stepSize: 20,
+                                backdropColor: "transparent",
+                            },
+                            grid: {
+                                color: "rgba(0, 0, 0, 0.05)",
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: "500",
+                                },
+                            },
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            position: "top",
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: "500",
+                                },
+                                padding: 20,
+                            },
+                        },
+                    },
+                },
+            });
+
             if (data) {
-                // 更新整体评分
-                const overallScoreElement = document.getElementById('overall-score');
-                overallScoreElement.textContent = `${data.overallScore} / 100`;
-                overallScoreElement.className = getScoreClass(data.overallScore);
+                const overallScoreElement = document.getElementById("overall-score");
+                overallScoreElement.textContent = `${Math.round(data.overallScore)} / 100`;
+                overallScoreElement.className = getScoreClass(Math.round(data.overallScore));
 
-                // 更新分析总结
-                const summaryText = data.abilities.sequence < 70
-                    ? "Your short-term memory and reaction speed are good, but sequential memory is weaker. Consider focusing on improvement."
-                    : "All memory abilities are balanced. Keep it up!";
-                document.getElementById("summary-text").textContent = "Summary Analysis:" + summaryText;
+                const summaryText =
+                    data.abilities.sequence < 70
+                        ? "Your short-term memory and reaction speed are good, but sequential memory is weaker. Consider focusing on improvement."
+                        : "All memory abilities are balanced. Keep it up!";
+                document.getElementById("summary-text").textContent =
+                    "Summary Analysis:" + summaryText;
 
-                // 更新各项能力分
                 const abilities = data.abilities;
                 const listItems = document.querySelectorAll(".ability-list li");
-                
-                listItems[0].textContent = `Short-term Memory: ${abilities.shortTerm}`;
-                listItems[0].classList.add(getScoreClass(abilities.shortTerm));
-                
-                listItems[1].textContent = `Attention Span: ${abilities.attention}`;
-                listItems[1].classList.add(getScoreClass(abilities.attention));
-                
-                listItems[2].textContent = `Reaction Speed: ${abilities.reaction}`;
-                listItems[2].classList.add(getScoreClass(abilities.reaction));
-                
-                listItems[3].textContent = `Sequential Memory: ${abilities.sequence}`;
-                listItems[3].classList.add(getScoreClass(abilities.sequence));
-                
-                listItems[4].textContent = `Distraction Resistance: ${abilities.resistance}`;
-                listItems[4].classList.add(getScoreClass(abilities.resistance));
 
-                // 更新表格
+                listItems[0].textContent = `Short-term Memory: ${Math.round(abilities.shortTerm)}`;
+                listItems[0].classList.add(getScoreClass(Math.round(abilities.shortTerm)));
+
+                listItems[1].textContent = `Attention Span: ${Math.round(abilities.attention)}`;
+                listItems[1].classList.add(getScoreClass(Math.round(abilities.attention)));
+
+                listItems[2].textContent = `Reaction Speed: ${Math.round(abilities.reaction)}`;
+                listItems[2].classList.add(getScoreClass(Math.round(abilities.reaction)));
+
+                listItems[3].textContent = `Sequential Memory: ${Math.round(abilities.sequence)}`;
+                listItems[3].classList.add(getScoreClass(Math.round(abilities.sequence)));
+
+                listItems[4].textContent = `Distraction Resistance: ${Math.round(abilities.resistance)}`;
+                listItems[4].classList.add(getScoreClass(Math.round(abilities.resistance)));
+
                 const tbody = document.querySelector(".record-table tbody");
                 tbody.innerHTML = "";
+
+                // 排序 levels，按数字升序
+                data.levels.sort((a, b) => {
+                    const numA = parseInt(a.level.match(/\d+/)[0]);
+                    const numB = parseInt(b.level.match(/\d+/)[0]);
+                    return numA - numB;
+                });
+
                 data.levels.forEach((lvl) => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
@@ -330,165 +476,15 @@
                     tbody.appendChild(row);
                 });
 
-                // 更新雷达图数据
-                if (radarChart) {
-                    radarChart.data.datasets[0].data = [
-                        abilities.shortTerm,
-                        abilities.attention,
-                        abilities.reaction,
-                        abilities.sequence,
-                        abilities.resistance
-                    ];
-                    radarChart.update();
-                }
+                radarChart.data.datasets[0].data = [
+                    Math.round(abilities.shortTerm),
+                    Math.round(abilities.attention),
+                    Math.round(abilities.reaction),
+                    Math.round(abilities.sequence),
+                    Math.round(abilities.resistance),
+                ];
+                radarChart.update();
             }
-
-            // 初始化雷达图
-            const radarCtx = document.getElementById('memoryRadar').getContext('2d');
-            radarChart = new Chart(radarCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Short-term Memory', 'Attention', 'Reaction Speed', 'Reaction Speed', 'Distraction Resistance'],
-                    datasets: [{
-                        label: 'Memory Score',
-                        data: [0, 0, 0, 0, 0], // 初始为空
-                        backgroundColor: 'rgba(67, 97, 238, 0.2)',
-                        borderColor: 'rgba(67, 97, 238, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(67, 97, 238, 1)',
-                        pointBorderColor: '#fff',
-                        pointHoverRadius: 6,
-                        pointHoverBackgroundColor: 'rgba(67, 97, 238, 1)',
-                        pointHoverBorderColor: '#fff',
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true,
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            ticks: {
-                                stepSize: 20,
-                                backdropColor: 'transparent'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            },
-                            pointLabels: {
-                                font: {
-                                    size: 12,
-                                    weight: '500'
-                                }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14,
-                                    weight: '500'
-                                },
-                                padding: 20
-                            }
-                        }
-                    }
-                }
-            });
-
-            // 处理历史记录数据
-            const historyData = JSON.parse(localStorage.getItem("memoryGameHistory")) || [];
-            const last30Days = historyData.filter(item => {
-                const itemDate = new Date(item.date);
-                return (today - itemDate) <= (30 * 24 * 60 * 60 * 1000); // 过去30天的数据
-            });
-
-            const dates = last30Days.map(item => item.date);
-            const scores = last30Days.map(item => item.overallScore);
-
-            // 绘制折线图
-            const lineCtx = document.getElementById('scoreTrendChart').getContext('2d');
-            scoreTrendChart = new Chart(lineCtx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Memory Score',
-                        data: scores,
-                        fill: true,
-                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                        borderColor: 'rgba(67, 97, 238, 1)',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        pointBackgroundColor: 'rgba(67, 97, 238, 1)',
-                        pointBorderColor: '#fff',
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14,
-                                    weight: '500'
-                                },
-                                padding: 20
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            bodyFont: {
-                                size: 12
-                            },
-                            padding: 12,
-                            cornerRadius: 8
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        y: {
-                            min: 0,
-                            max: 100,
-                            ticks: {
-                                stepSize: 20,
-                                font: {
-                                    size: 12
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        }
-                    }
-                }
-            });
         });
     </script>
 </body>

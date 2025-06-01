@@ -429,8 +429,8 @@
   <div id="profileModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="toggleProfileModal()">&times;</span>
-      <img src="https://i.imgur.com/6VBx3io.png" alt="Avatar" class="avatar" />
-      <h2 class="profile-name">MemoryMaster88</h2>
+      <img id="profileAvatar" src="https://i.imgur.com/6VBx3io.png" alt="Avatar" class="avatar" />
+<h2 id="profileName" class="profile-name">MemoryMaster88</h2>
       
       <div class="profile-stats">
         <div class="stat-item">
@@ -489,6 +489,20 @@
   </div>
 
   <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+  // 读取localStorage
+  const playerName = localStorage.getItem('playerName') || 'Guest';
+  const playerAvatar = localStorage.getItem('playerAvatar') || 'https://i.imgur.com/6VBx3io.png';
+
+  // 赋值给头像和名字
+  const avatarImg = document.getElementById('profileAvatar');
+  const nameElem = document.getElementById('profileName');
+
+  avatarImg.src = playerAvatar;
+  nameElem.textContent = playerName;
+});
+
     function toggleProfileModal() {
       const modal = document.getElementById("profileModal");
       modal.style.display = modal.style.display === "block" ? "none" : "block";

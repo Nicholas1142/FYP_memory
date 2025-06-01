@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>记忆健康分析 - 历史记录查询</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    margin: 20px;
+    background: #f5f7fa;
+    color: #212529;
+  }
+  .container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+  label {
+    margin-right: 10px;
+  }
+  input[type="date"] {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #4361ee;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  button:hover {
+    background: #3f37c9;
+  }
+  h1 {
+    text-align: center;
+    color: #4361ee;
+  }
+  #monthlySummary {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    background: #e4e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid #4895ef;
+  }
+  canvas {
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>记忆健康分析 - 历史记录查询</h1>
+
+  <div>
+    <label for="startDate">开始日期:</label>
+    <input type="date" id="startDate" />
+
+    <label for="endDate">结束日期:</label>
+    <input type="date" id="endDate" />
+
+    <button id="filterBtn">查看</button>
+  </div>
+
+  <div id="monthlySummary">请选择日期范围查看统计报告</div>
+
+  <canvas id="scoreTrendChart" width="800" height="400"></canvas>
+</div>
+
+<script>
+  // 示例历史数据，实际可用 localStorage 里的数据替换
+  const sampleHistory = [
+    { date: '2025-05-01', overallScore: 78, abilities: { shortTerm: 75, attention: 80, reaction: 70, sequence: 65, resistance: 77 }},
+    { date: '2025-05-05', overallScore: 82, abilities: { shortTerm: 80, attention: 85, reaction: 75, sequence: 70, resistance: 80 }},
+    { date: '2025-05-10', overallScore: 69, abilities: { shortTerm: 65, attention: 70, reaction: 60, sequence: 55, resistance: 68 }},
+    { date: '2025-05-15', overallScore: 90, abilities: { shortTerm: 88, attention: 92, reaction: 85, sequence: 80, resistance: 90 }},
+    { date: '2025-05-20', overallScore: 85, abilities: { shortTerm: 83, attention: 87, reaction: 80, sequence: 75, resistance: 85 }},
+    { date: '2025-05-25', overallScore: 73, abilities: { shortTerm: 70, attention: 75, reaction: 65, sequence: 60, resistance: 72 }},
+    { date: '2025-05-30', overallScore: 88, abilities: { shortTerm: 85, attention: 90, reaction: 80, sequence: 78, resistance: 88 }},
+  ];
+
+  // 初始化图表
+  const ctx = document.getElementById('scoreTrendChart').getContext('2d');
+  let scoreTrendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: '记忆总分',
+        data: [],
+        fill: true,
+        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+        borderColor: 'rgba(67, 97, 238, 1)',
+        borderWidth: 3,
+        tension: 0.3,
+        pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+        pointBorderColor: '#fff',
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: { display: true, text: '日期' },
+          grid: { display: false }
+        },
+        y: {
+          min: 0,
+          max: 100,
+          title: { display: true, text: '得分' },
+          ticks: { stepSize: 10 },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        }
+      },
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `得分: ${context.parsed.y}`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // 过滤并更新图表和报告
+  function updateView(filteredData) {
+    if (filteredData.length === 0) {
+      document.getElementById('monthlySummary').textContent = '该日期范围无数据。';
+      scoreTrendChart.data.labels = [];
+      scoreTrendChart.data.datasets[0].data = [];
+      scoreTrendChart.update();
+      return;
+    }
+
+    // 更新折线图
+    const labels = filteredData.map(item => item.date);
+    const scores = filteredData.map(item => item.overallScore);
+    scoreTrendChart.data.labels = labels;
+    scoreTrendChart.data.datasets[0].data = scores;
+    scoreTrendChart.update();
+
+    // 计算平均分和能力平均值
+    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+    const avgAbilities = {};
+    const abilityKeys = Object.keys(filteredData[0].abilities);
+    abilityKeys.forEach(key => avgAbilities[key] = 0);
+
+    filteredData.forEach(item => {
+      abilityKeys.forEach(key => {
+        avgAbilities[key] += item.abilities[key];
+      });
+    });
+    abilityKeys.forEach(key => {
+      avgAbilities[key] /= filteredData.length;
+    });
+
+    // 生成报告文本
+    let summaryText = `在所选日期范围内，平均记忆总分为 <strong>${avgScore.toFixed(1)}</strong>。各项能力平均分如下：<br>`;
+    abilityKeys.forEach(key => {
+      summaryText += `- ${key}：${avgAbilities[key].toFixed(1)}<br>`;
+    });
+
+    document.getElementById('monthlySummary').innerHTML = summaryText;
+  }
+
+  // 按日期筛选数据
+  document.getElementById('filterBtn').addEventListener('click', () => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    if (!startDate || !endDate) {
+      alert('请选择开始日期和结束日期');
+      return;
+    }
+    if (startDate > endDate) {
+      alert('开始日期不能晚于结束日期');
+      return;
+    }
+
+    const filtered = sampleHistory.filter(item => item.date >= startDate && item.date <= endDate);
+
+    updateView(filtered);
+  });
+
+  // 页面加载时默认显示最近一个月的数据
+  window.addEventListener('load', () => {
+    const today = new Date();
+    const priorDate = new Date();
+    priorDate.setDate(today.getDate() - 30);
+
+    const yyyyMMdd = (d) => d.toISOString().slice(0,10);
+
+    document.getElementById('startDate').value = yyyyMMdd(priorDate);
+    document.getElementById('endDate').value = yyyyMMdd(today);
+
+    const filtered = sampleHistory.filter(item => item.date >= yyyyMMdd(priorDate) && item.date <= yyyyMMdd(today));
+    updateView(filtered);
+  });
+</script>
+
+</body>
+</html>

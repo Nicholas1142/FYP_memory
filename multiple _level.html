@@ -78,14 +78,14 @@
       color: var(--secondary);
       margin-bottom: 1.5rem;
     }
-    
-    .game-info-container {
-      display: flex;
-      justify-content: space-between;
-      width: 90%;
-      max-width: 1200px;
-      margin: 0 auto 2rem;
-    }
+
+
+.game-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
     
     .game-info {
       background: rgba(41, 47, 54, 0.7);
@@ -125,14 +125,13 @@
       color: var(--accent);
     }
     
-    .players-container {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    
+   .players-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
     .player {
       background: rgba(41, 47, 54, 0.8);
       border-radius: 10px;
@@ -176,16 +175,12 @@
       color: var(--secondary);
     }
     
-    .grid-container {
-      flex: 1; 
-      display: flex;
-      justify-content: center; 
-      align-items: center;
-      margin-bottom: 2rem;
-      width: 100%;
-      perspective: 1000px;
-    }
-    
+.grid-container {
+  flex: 2 1 600px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 140px);
@@ -483,6 +478,14 @@
       font-weight: bold;
     }
     
+
+    .left-panel {
+  flex: 1 1 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
     @media (max-width: 768px) {
       .grid {
         grid-template-columns: repeat(4, 1fr);
@@ -518,6 +521,16 @@
         padding: 0.5rem;
       }
     }
+
+    .main-content {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  flex-wrap: wrap; /* 响应式时换行 */
+}
   </style>
 </head>
 <body>
@@ -550,7 +563,11 @@
     <div class="timer-container">
       <div class="timer-progress" id="timer"></div>
     </div>
-    
+
+    <div class="main-content">
+
+ <div class="main-content">
+  <div class="left-panel">
     <div class="game-info-container">
       <div class="game-info">
         <h3>Team Score</h3>
@@ -569,15 +586,23 @@
         <div class="game-info-value" id="streak">0</div>
       </div>
     </div>
-    
+
     <div class="players-container" id="players-container">
-      <!-- Player info dynamically added by JS -->
+      <!-- 玩家信息由JS动态填充 -->
     </div>
   </div>
 
   <div class="grid-container">
     <div id="grid" class="grid"></div>
   </div>
+</div>
+
+
+    
+  
+  </div>
+
+ 
   
   <div class="powerups">
     <div class="powerup" id="anchor-power">
@@ -595,9 +620,9 @@
     <button id="restart-btn" disabled>Restart</button>
   </div>
   
-  <div class="game-events" id="game-events">
+  <!-- <div class="game-events" id="game-events"> -->
     <!-- Game events will appear here -->
-  </div>
+  <!-- </div> -->
   
   <div class="game-over" id="game-over">
     <div class="game-over-content">

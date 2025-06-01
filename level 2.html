@@ -274,9 +274,21 @@ body {
 </head>
 <body>
 
-   <!-- Start Overlay -->
-<div id="startOverlay" class="overlay">
-  <h2>Click Start</h2>
+
+
+ <!-- 在body开头，加一个遮罩层，内含规则和开始按钮 -->
+<div id="startOverlay" class="overlay" style="display:flex; flex-direction: column; background: rgba(0,0,0,0.9); cursor: default; z-index: 10000;">
+  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left; margin-bottom: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">游戏规则</h2>
+    <p>1. 你有90秒时间完成3个回合。</p>
+    <p>2. 每回合按照顺序匹配牌对。</p>
+    <p>3. 卡片会先全部展示10秒，然后隐藏。</p>
+    <p>4. 时间结束游戏失败。</p>
+    <p>5. 祝你好运，开始挑战！</p>
+  </div>
+  <button id="startBtn" style="padding: 15px 50px; font-size: 24px; font-weight: bold; color: white; background-color: #ff6347; border: none; border-radius: 8px; cursor: pointer; align-self: center;">
+    Click Start
+  </button>
 </div>
 
 
@@ -344,6 +356,7 @@ let reactionTime = 0;
 let lastClickTime = null;
 let timer = null;
 let isProcessing = false;
+let timerRunning = false;
 
 function startRound() {
   roundNumberDisplay.textContent = currentRound + 1;
@@ -359,8 +372,13 @@ function startRound() {
 function displaySequence() {
   sequenceDisplay.innerHTML = sequence.map(pair => `<span class="highlight">(${pair[0]}, ${pair[1]})</span>`).join(" → ");
   showAllCards();
-  setTimeout(hideCards, 10000);
+
+  setTimeout(() => {
+    hideCards();
+    startTimer();  // 10秒展示后，隐藏卡片，再启动计时器
+  }, 5000);
 }
+
 
 function showAllCards() {
   document.querySelectorAll(".card").forEach(card => card.classList.add("revealed"));
@@ -454,12 +472,30 @@ function flipCard(card) {
 }
 
 function startTimer() {
-  timerDisplay.textContent = totalTimeLeft;
+  if (timerRunning) return; // 避免重复启动计时器
+  timerRunning = true;
+
   timer = setInterval(() => {
     totalTimeLeft--;
     timerDisplay.textContent = totalTimeLeft;
     if (totalTimeLeft <= 0) {
       clearInterval(timer);
+      timerRunning = false;
+      endGame();
+    }
+  }, 1000);
+}
+
+function startTimer() {
+  if (timerRunning) return; // 避免重复启动计时器
+  timerRunning = true;
+
+  timer = setInterval(() => {
+    totalTimeLeft--;
+    timerDisplay.textContent = totalTimeLeft;
+    if (totalTimeLeft <= 0) {
+      clearInterval(timer);
+      timerRunning = false;
       endGame();
     }
   }, 1000);
@@ -577,10 +613,13 @@ function calculateAverage(prev, current) {
 
 
 const startOverlay = document.getElementById("startOverlay");
-startOverlay.addEventListener("click", () => {
+const startBtn = document.getElementById("startBtn");
+
+startBtn.addEventListener("click", () => {
   startOverlay.style.display = "none";
   startRound();
-  startTimer();
+  // 开始计时器时，要判断计时器是否已经在运行，避免多次启动
+  if (!timerRunning) startTimer();
 });
 
 // 更新 localStorage 中的最佳时间
