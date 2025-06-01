@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 2 - 顺序匹配模式</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Arial", sans-serif;
+            background: url('bg-image.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 1000px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .grid-container {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .sequence-container {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sequence-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sequence-box img {
+            width: 80px;
+            height: 120px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            justify-items: center;
+        }
+
+        .card {
+            width: 100px;
+            height: 150px;
+            background-color: #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .revealed img {
+            display: block;
+        }
+
+        #timer {
+            font-weight: bold;
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="header">
+            <h2>Level 2 - 顺序匹配模式</h2>
+            <p>当前回合: <span id="roundNumber">1</span> / 3</p>
+            <p>系统提示匹配顺序：</p>
+        </div>
+        
+        <div class="grid-container">
+            <div class="sequence-container">
+                <div id="sequenceDisplay" class="sequence-box">
+                    <!-- 示例图片 -->
+                    <!-- <img src="img1.jpg"> -->
+                </div>
+                <p>剩余时间: <span id="timer">45</span> 秒</p>
+            </div>
+            <div id="grid" class="grid">
+                <!-- 卡片内容 -->
+                <!-- <div class="card"><img src="card1.jpg"></div> -->
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+    
+
+    <script>
+        const grid = document.getElementById("grid");
+        const sequenceDisplay = document.getElementById("sequenceDisplay");
+        const roundNumberDisplay = document.getElementById("roundNumber");
+        const timerDisplay = document.getElementById("timer");
+
+        let rounds = [
+            { pairs: [[1, 2], [3, 4], [5, 6],], time: 45 },
+            { pairs: [[1, 2], [3, 4], [5, 6], [7, 8]], time: 35 },
+            { pairs: [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]], time: 25 }
+        ];
+
+        let currentRound = 0;
+        let sequence = [];
+        let shuffledCards = [];
+        let selectedCards = [];
+        let correctIndex = 0;
+        let timeLeft = 0;
+        let totalSteps = 0;
+        let correctMatches = 0;
+        let wrongAttempts = 0;
+        let reactionTime = 0;
+        let lastClickTime = null;
+        let timer = null;
+
+        function startRound() {
+            roundNumberDisplay.textContent = currentRound + 1;
+            timeLeft = rounds[currentRound].time;
+            timerDisplay.textContent = timeLeft;
+
+            sequence = [...rounds[currentRound].pairs].sort(() => Math.random() - 0.5);
+            shuffledCards = sequence.flat().sort(() => Math.random() - 0.5);
+            selectedCards = [];
+            correctIndex = 0;
+
+            grid.innerHTML = "";
+            shuffledCards.forEach(num => createCard(num));
+
+            displaySequence();
+        }
+
+        function displaySequence() {
+            sequenceDisplay.innerHTML = sequence.map(pair => `<span class="highlight">(${pair[0]}, ${pair[1]})</span>`).join(" → ");
+            showAllCards();
+            setTimeout(hideCards, 10000);
+        }
+
+        function showAllCards() {
+            document.querySelectorAll(".card").forEach(card => {
+                card.classList.add("revealed");
+            });
+        }
+
+        function hideCards() {
+            document.querySelectorAll(".card").forEach(card => {
+                card.classList.remove("revealed");
+            });
+            sequenceDisplay.innerHTML = "请按照顺序翻开匹配对！";
+            startTimer();
+        }
+
+        function createCard(number) {
+            const card = document.createElement("div");
+            card.classList.add("card");
+            card.dataset.value = number;
+
+            const img = document.createElement("img");
+            img.src = `./images/${number}.png`;
+            img.alt = `Number ${number}`;
+
+            card.appendChild(img);
+            grid.appendChild(card);
+
+            card.onclick = function () {
+                if (!this.classList.contains("revealed") && selectedCards.length < 2) {
+                    flipCard(this);
+                }
+            };
+        }
+
+        function flipCard(card) {
+            if (selectedCards.includes(card)) return;
+
+            card.classList.add("revealed");
+            selectedCards.push(card);
+
+            if (selectedCards.length === 1) {
+                lastClickTime = Date.now();
+            }
+
+            if (selectedCards.length === 2) {
+                totalSteps++;
+                let first = selectedCards[0].dataset.value;
+                let second = selectedCards[1].dataset.value;
+                let correctPair = sequence[correctIndex];
+
+                let currentClickTime = Date.now();
+                let reactionDuration = (currentClickTime - lastClickTime) / 1000;
+                reactionTime += reactionDuration;
+
+                if ((first == correctPair[0] && second == correctPair[1]) || (first == correctPair[1] && second == correctPair[0])) {
+                    selectedCards = [];
+                    correctIndex++;
+                    correctMatches++;
+
+                    if (correctIndex === sequence.length) {
+                        setTimeout(nextRound, 500);
+                    }
+                } else {
+                    wrongAttempts++;
+                    setTimeout(() => {
+                        selectedCards.forEach(card => card.classList.remove("revealed"));
+                        selectedCards = [];
+                    }, 500);
+                }
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function nextRound() {
+            clearInterval(timer);
+
+            if (currentRound < rounds.length - 1) {
+                currentRound++;
+                startRound();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            localStorage.setItem("totalSteps", totalSteps);
+            localStorage.setItem("correctMatches", correctMatches);
+            localStorage.setItem("wrongAttempts", wrongAttempts);
+            localStorage.setItem("reactionTime", reactionTime.toFixed(2));
+            window.location.href = "memory_analysis.html";
+        }
+
+        startRound();
+    </script>
+</body>
+</html>
