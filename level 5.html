@@ -117,29 +117,41 @@
       display: block;
     }
 
-    /* 响应式 */
     @media (max-width: 600px) {
-      .header h1 {
-        font-size: 36px;
-      }
-      .info-container {
-        font-size: 16px;
-        gap: 20px;
-        flex-direction: column;
-        align-items: center;
-      }
-      .sequence-container {
-        font-size: 20px;
-      }
-      .card {
-        width: 80px;
-        height: 110px;
-      }
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 15px;
-      }
-    }
+  .header h1 {
+    font-size: 35px;
+  }
+   .info-container {
+    font-size: 19px;
+    gap: 17px;          /* 调大间距 */
+    flex-direction: row; /* 横排 */
+    justify-content: center; /* 居中 */
+    align-items: center; /* 垂直居中 */
+   }
+  .sequence-container {
+    font-size: 18px;
+  }
+  .card {
+    width: 70px;
+    height: 100px;
+  }
+  .grid {
+    grid-template-columns: repeat(4, 70px);
+    gap: 10px;
+  }
+  #startBtn {
+    padding: 12px 40px;
+    font-size: 20px;
+  }
+  /* 可选：隐藏背景视频和音乐 */
+  /* .video-background {
+    display: none;
+  } */
+   
+  #bgMusic {
+    display: none;
+  }
+}
   </style>
 </head>
 <body>
