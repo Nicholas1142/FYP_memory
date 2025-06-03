@@ -88,14 +88,87 @@
     .card.revealed img {
       display: block;
     }
+
+    #backBtn {
+      margin: 0 auto 40px auto;
+      display: block;
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+      transition: background-color 0.3s ease;
+    }
+    #backBtn:hover {
+      background-color: #e5533d;
+    }
+
+
+  @media (max-width: 600px) {
+  .header h1 {
+    font-size: 35px;
+  }
+   .info-container {
+    font-size: 19px;
+    gap: 17px;          /* 调大间距 */
+    flex-direction: row; /* 横排 */
+    justify-content: center; /* 居中 */
+    align-items: center; /* 垂直居中 */
+   }
+  .sequence-container {
+    font-size: 18px;
+  }
+  .card {
+    width: 80px;
+    height: 130px;
+  }
+  .grid {
+    grid-template-columns: repeat(3, 100px);
+    gap: 10px;
+  }
+  #startBtn {
+    padding: 12px 40px;
+    font-size: 20px;
+  }
+  /* 可选：隐藏背景视频和音乐 */
+  /* .video-background {
+    display: none;
+  } */
+   
+  #bgMusic {
+    display: none;
+  }
+}
   </style>
 </head>
 <body>
 
-  <!-- 点击开始遮罩 -->
-  <div id="startOverlay" class="overlay">
-    <h2>Click Start</h2>
-  </div>  
+ <div id="startOverlay" class="overlay" style="flex-direction: column; cursor: default; padding: 20px;">
+  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left; margin-bottom: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px; color: #ff6347;">游戏规则</h2>
+    <p>1. 你有30秒时间匹配所有牌。</p>
+    <p>2. 点击两张牌翻开，如果匹配成功则消除。</p>
+    <p>3. 尽量减少错误尝试，错误次数会影响得分。</p>
+    <p>4. 时间用完游戏结束。</p>
+    <p>5. 祝你好运，挑战开始！</p>
+  </div>
+  
+  <button id="startBtn" style="
+    padding: 15px 50px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #ff6347;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+    transition: background-color 0.3s ease;
+  ">点击开始</button>
+</div>
 
   <audio id="bgMusic" src="Sound/background music.mp3" loop autoplay></audio>
   <audio id="flipSound" src="Sound/flip.mp3"></audio>
@@ -122,6 +195,8 @@
     <div id="grid" class="grid"></div>
   </div>
 
+<button id="backBtn">BACK </button>
+
   <script>
     const grid = document.getElementById("grid");
     const startOverlay = document.getElementById("startOverlay");
@@ -142,6 +217,19 @@
     let wrongAttempts = 0;
     let reactionTime = 0;
     let lastClickTime = null;
+
+    
+const backBtn = document.getElementById("backBtn");
+
+backBtn.addEventListener("click", () => {
+  const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+  if (confirmLeave) {
+    window.location.href = "Level section.html"; // 替换为你的主页地址
+  }
+});
+
+localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
+
 
     // 一：页面加载时先生成卡片布局（看到灰色背面）
   function setupCards_Level12() {

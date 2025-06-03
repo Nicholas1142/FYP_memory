@@ -67,7 +67,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 60px;
+      margin-bottom: 20px;
       max-width: 900px;
       width: 90vw;
       overflow-x: auto;
@@ -119,43 +119,58 @@
       display: block;
     }
 
-    @media (max-width: 600px) {
-  .header h1 {
-    font-size: 35px;
-  }
-   .info-container {
-    font-size: 19px;
-    gap: 17px;          /* 调大间距 */
-    flex-direction: row; /* 横排 */
-    justify-content: center; /* 居中 */
-    align-items: center; /* 垂直居中 */
-   }
-  .sequence-container {
-    font-size: 18px;
-  }
-  .card {
-    width: 70px;
-    height: 100px;
-  }
-  .grid {
-    grid-template-columns: repeat(4, 70px);
-    gap: 10px;
-  }
-  #startBtn {
-    padding: 12px 40px;
-    font-size: 20px;
-  }
-  /* 可选：隐藏背景视频和音乐 */
-  /* .video-background {
-    display: none;
-  } */
-   
-  #bgMusic {
-    display: none;
-  }
-}
-    
+    #backBtn {
+      margin: 0 auto 40px auto;
+      display: block;
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+      transition: background-color 0.3s ease;
+    }
+    #backBtn:hover {
+      background-color: #e5533d;
+    }
 
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 35px;
+      }
+      .info-container {
+        font-size: 19px;
+        gap: 17px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
+      .sequence-container {
+        font-size: 18px;
+      }
+      .card {
+        width: 80px;
+        height: 120px;
+      }
+      .grid {
+        grid-template-columns: repeat(4, 100px);
+        gap: 16px;
+      }
+      #startBtn {
+        padding: 12px 40px;
+        font-size: 20px;
+      }
+      #bgMusic {
+        display: none;
+      }
+      #backBtn {
+        padding: 8px 20px;
+        font-size: 16px;
+        margin-bottom: 30px;
+      }
+    }
 
     /* 开始按钮样式 */
     #startBtn {
@@ -217,6 +232,8 @@
     <div id="grid" class="grid"></div>
   </div>
 
+  <button id="backBtn">BACK </button>
+
   <script>
     const grid = document.getElementById("grid");
     const startOverlay = document.getElementById("startOverlay");
@@ -225,6 +242,7 @@
     const wrongAttemptsDisplay = document.getElementById("wrongAttempts");
     const flipSound = document.getElementById("flipSound");
     const matchSound = document.getElementById("matchSound");
+    const backBtn = document.getElementById("backBtn");
 
     let totalPairs = 8;
     let cardValues = [];
@@ -239,11 +257,21 @@
     let reactionTime = 0;
     let lastClickTime = null;
 
+    localStorage.setItem('currentLevel', 'level 1'); // 举例，当前是第3关
+
+
     // 点击开始按钮，隐藏遮罩，允许翻牌，启动计时器
     startBtn.addEventListener("click", () => {
       startOverlay.style.display = "none";
       isProcessing = false;      // 允许翻牌
       startTimer();              // 启动倒计时
+    });
+
+    backBtn.addEventListener("click", () => {
+      const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+      if (confirmLeave) {
+        window.location.href = "Level section.html"; // 修改成你主页地址
+      }
     });
 
     // 页面加载时先生成卡片布局（看到灰色背面）

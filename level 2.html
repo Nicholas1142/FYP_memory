@@ -300,6 +300,24 @@ body {
   }
 }
 
+
+#backBtn {
+      margin: 0 auto 40px auto;
+      display: block;
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+      transition: background-color 0.3s ease;
+    }
+    #backBtn:hover {
+      background-color: #e5533d;
+    }
+
 </style>
 
 
@@ -357,6 +375,8 @@ body {
             <div id="grid" class="grid"></div>
         </div>
 
+         <button id="backBtn">BACK </button>
+
         <script>
 
            const flipSound = document.getElementById("flipSound");
@@ -392,6 +412,9 @@ let timer = null;
 let isProcessing = false;
 let timerRunning = false;
 
+localStorage.setItem('currentLevel', 'level 2'); // 举例，当前是第3关
+
+
 function startRound() {
   roundNumberDisplay.textContent = currentRound + 1;
   sequence = [...rounds[currentRound].pairs].sort(() => Math.random() - 0.5);
@@ -402,6 +425,17 @@ function startRound() {
   shuffledCards.forEach(num => createCard(num));
   displaySequence();
 }
+
+const backBtn = document.getElementById("backBtn");
+
+backBtn.addEventListener("click", () => {
+  const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+  if (confirmLeave) {
+    window.location.href = "Level section.html"; // 替换为你的主页地址
+  }
+});
+
+
 
 function displaySequence() {
   sequenceDisplay.innerHTML = sequence.map(pair => `<span class="highlight">(${pair[0]}, ${pair[1]})</span>`).join(" → ");
