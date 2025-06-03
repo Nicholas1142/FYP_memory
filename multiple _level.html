@@ -479,48 +479,118 @@
     }
     
 
-    .left-panel {
+ .left-panel {
   flex: 1 1 350px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  align-items: center; /* 内部内容居中 */
 }
 
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-      }
-      
-      .card {
-        width: 100%;
-        height: 0;
-        padding-bottom: 140%;
-        position: relative;
-      }
-      
-      .card-face {
-        position: absolute;
-      }
-      
-      .game-info-container {
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      
-      .game-info {
-        min-width: calc(50% - 20px);
-      }
-      
-      .players-container {
-        gap: 0.5rem;
-      }
-      
-      .player {
-        width: 100px;
-        padding: 0.5rem;
-      }
-    }
+@media (max-width: 768px) {
+  /* 容器调整，允许换行，减少间距 */
+ .main-content {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  gap: 30px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  flex-wrap: wrap; /* 允许换行 */
+}
+
+  /* 网格变成4列的百分比宽度，间距缩小 */
+  .grid {
+    grid-template-columns: repeat(4, 22vw);
+    gap: 12px;
+    padding: 12px;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  /* 卡片高度自动，宽度自适应，正反面绝对定位 */
+  .card {
+    width: 22vw;
+    height: calc(22vw * 1.35);
+    position: relative;
+  }
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 玩家面板变成横向滚动，单卡宽度减少 */
+ .players-container {
+  display: flex;
+  justify-content: center; /* 玩家列表水平居中 */
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+  .player {
+    min-width: 90px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  .player-name {
+    font-size: 0.9rem;
+  }
+  .player-stats {
+    font-size: 0.75rem;
+  }
+
+ .game-info-container {
+  display: flex;
+  flex-direction: row;  /* 横向排列 */
+  justify-content: center; /* 居中对齐 */
+  gap: 15px;
+  flex-wrap: wrap;  /* 允许换行，防止屏幕太窄溢出 */
+}
+
+ .game-info {
+  flex: 1 1 150px; /* 弹性宽度，最小150px */
+  min-width: 120px;
+  background: rgba(41, 47, 54, 0.7);
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+  .game-info h3 {
+    font-size: 0.9rem;
+  }
+  .game-info-value {
+    font-size: 1.4rem;
+  }
+
+  /* 定时器宽度适配 */
+  .timer-container {
+    width: 95%;
+  }
+
+  /* 控制按钮宽度和字体大小 */
+  .controls-container button,
+  .powerups .powerup {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    min-width: 140px;
+  }
+
+  /* 头部标题字体调整 */
+  .header h1 {
+    font-size: 2rem;
+  }
+  .header p {
+    font-size: 1rem;
+  }
+
+  /* 游戏结束面板适应手机屏幕 */
+  .game-over-content {
+    width: 90vw;
+    padding: 1.5rem;
+  }
+}
+
 
     .main-content {
   display: flex;
