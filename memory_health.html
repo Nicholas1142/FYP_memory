@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>记忆健康分析</title>
+    <title>Memory Health Analysis</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
@@ -178,11 +178,11 @@
                 font-size: 2rem;
             }
         }
-        /* 图标样式 */
+        /* Icon styles */
         .icon {
             font-size: 1.5rem;
         }
-        /* 分数颜色 */
+        /* Score colors */
         .good-score {
             color: var(--success-color);
         }
@@ -192,7 +192,7 @@
         .poor-score {
             color: var(--danger-color);
         }
-        /* 新增按钮样式 */
+        /* Button styles */
         .btn-container {
             text-align: center;
             margin-bottom: 25px;
@@ -221,7 +221,7 @@
     <div class="container">
         <h1>Memory Health Analysis Report</h1>
 
-        <!-- Section 1: 记忆能力分析 -->
+        <!-- Section 1: Memory Ability Analysis -->
         <div class="section">
             <h2><span class="icon">🧠</span> Memory Ability Analysis</h2>
             <div class="score-box">
@@ -237,7 +237,7 @@
             </ul>
         </div>
 
-        <!-- Section 2: 通关记录数据 -->
+        <!-- Section 2: Level Performance Data -->
         <div class="section">
             <h2><span class="icon">📊</span> Level Performance Data</h2>
             <div style="overflow-x: auto;">
@@ -253,13 +253,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 动态插入行 -->
+                        <!-- Dynamic rows inserted here -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Section 3: 图表区域 -->
+        <!-- Section 3: Charts Area -->
         <div class="section">
             <h2><span class="icon">📈</span> Memory Ability Visualization</h2>
             <div class="chart-container">
@@ -271,8 +271,10 @@
     </div>
 
     <div class="btn-container">
-        <button class="btn" id="btn-home">返回主页</button>
-        <button class="btn" id="btn-download">下载数据</button>
+        <button class="btn" id="btn-home">Back to Homepage</button>
+        <button class="btn" id="btn-download">Download Data</button>
+        <button class="btn" id="btn-clear">Clear Record</button>
+
     </div>
 
     <script>
@@ -286,25 +288,25 @@
         }
 
         function goHome() {
-            window.location.href = "Main.html"; // 修改为你的主页路径
+            window.location.href = "Main.html"; // Change to your homepage URL
         }
 
-        // JSON 转 CSV 的辅助函数
+        // JSON to CSV helper function
         function jsonToCsv(data) {
             let csv = "";
 
-            // 写能力分（四舍五入为整数）
-            csv += "能力类型,分数\n";
+            // Write ability scores (rounded to integers)
+            csv += "Ability Type,Score\n";
             csv += `Short-term Memory,${Math.round(data.abilities.shortTerm)}\n`;
             csv += `Attention,${Math.round(data.abilities.attention)}\n`;
             csv += `Reaction Speed,${Math.round(data.abilities.reaction)}\n`;
             csv += `Sequential Memory,${Math.round(data.abilities.sequence)}\n`;
             csv += `Distraction Resistance,${Math.round(data.abilities.resistance)}\n\n`;
 
-            // 写关卡数据表头
+            // Write level data headers
             csv += "Level,Time(s),Mistakes,Accuracy(%),Score,Notes\n";
 
-            // 排序 levels，按数字升序
+            // Sort levels by number ascending
             data.levels.sort((a, b) => {
                 const numA = parseInt(a.level.match(/\d+/)[0]);
                 const numB = parseInt(b.level.match(/\d+/)[0]);
@@ -323,7 +325,7 @@
         function downloadData() {
             const jsonData = localStorage.getItem("memoryGameResult");
             if (!jsonData) {
-                alert("当前无数据可下载！");
+                alert("No data available for download!");
                 return;
             }
 
@@ -331,11 +333,11 @@
             try {
                 dataObj = JSON.parse(jsonData);
             } catch {
-                alert("数据格式错误，无法导出！");
+                alert("Data format error, cannot export!");
                 return;
             }
 
-            const csvData = "\uFEFF" + jsonToCsv(dataObj);  // 加入 BOM 防止乱码
+            const csvData = "\uFEFF" + jsonToCsv(dataObj);  // Add BOM to prevent encoding issues
             const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
             const url = URL.createObjectURL(blob);
 
@@ -456,7 +458,7 @@
                 const tbody = document.querySelector(".record-table tbody");
                 tbody.innerHTML = "";
 
-                // 排序 levels，按数字升序
+                // Sort levels by number ascending
                 data.levels.sort((a, b) => {
                     const numA = parseInt(a.level.match(/\d+/)[0]);
                     const numB = parseInt(b.level.match(/\d+/)[0]);
@@ -486,6 +488,33 @@
                 radarChart.update();
             }
         });
+
+
+
+        // 清除记录函数
+function clearRecord() {
+    // 从 localStorage 中删除记忆游戏记录
+    localStorage.removeItem("memoryGameResult");
+
+    // 清除记录后更新页面内容（例如：清除得分和表格数据）
+    document.getElementById("overall-score").textContent = "-";
+    document.getElementById("summary-text").textContent = "Summary Analysis: No data available";
+
+    // 清空能力列表
+    const listItems = document.querySelectorAll(".ability-list li");
+    listItems.forEach(item => {
+        item.textContent = "Data not available";
+    });
+
+    // 清空表格数据
+    const tbody = document.querySelector(".record-table tbody");
+    tbody.innerHTML = ""; // 清空表格行
+}
+
+// 触发清除记录的按钮事件
+document.getElementById("btn-clear").addEventListener("click", clearRecord);
+
+// localStorage.clear();  // 清空所有的 localStorage 数据
     </script>
 </body>
 </html>
