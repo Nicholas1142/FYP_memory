@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Level 6</title>
+  <title>Level 6-Match the Class</title>
   <style>
     body {
       font-family: 'Creepster', cursive;
@@ -106,17 +106,16 @@
       background-color: #e5533d;
     }
 
-
   @media (max-width: 600px) {
   .header h1 {
     font-size: 35px;
   }
    .info-container {
     font-size: 19px;
-    gap: 17px;          /* 调大间距 */
-    flex-direction: row; /* 横排 */
-    justify-content: center; /* 居中 */
-    align-items: center; /* 垂直居中 */
+    gap: 17px;          /* Increase gap */
+    flex-direction: row; /* Align horizontally */
+    justify-content: center; /* Center alignment */
+    align-items: center; /* Vertical center alignment */
    }
   .sequence-container {
     font-size: 18px;
@@ -133,7 +132,7 @@
     padding: 12px 40px;
     font-size: 20px;
   }
-  /* 可选：隐藏背景视频和音乐 */
+  /* Optional: Hide background video and music */
   /* .video-background {
     display: none;
   } */
@@ -147,13 +146,13 @@
 <body>
 
  <div id="startOverlay" class="overlay" style="flex-direction: column; cursor: default; padding: 20px;">
-  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left; margin-bottom: 20px;">
-    <h2 style="text-align: center; margin-bottom: 20px; color: #ff6347;">游戏规则</h2>
-    <p>1. 你有30秒时间匹配所有牌。</p>
-    <p>2. 点击两张牌翻开，如果匹配成功则消除。</p>
-    <p>3. 尽量减少错误尝试，错误次数会影响得分。</p>
-    <p>4. 时间用完游戏结束。</p>
-    <p>5. 祝你好运，挑战开始！</p>
+  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; padding:20px; text-align: left; margin-bottom: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px; color: #ff6347;">Game Rules</h2>
+   <p>1. You have 45 seconds to match all the cards.</p>
+    <p>2. Click two cards to flip them. If they belong to the same category, they will be removed.</p>
+    <p>3. Try to minimize errors, as the number of mistakes will reduce your score.</p>
+    <p>4. The game ends when the time runs out.</p>
+    <p>5. Good luck and enjoy the challenge!</p>
   </div>
   
   <button id="startBtn" style="
@@ -167,7 +166,7 @@
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
     transition: background-color 0.3s ease;
-  ">点击开始</button>
+  ">Click Start</button>
 </div>
 
   <audio id="bgMusic" src="Sound/background music.mp3" loop autoplay></audio>
@@ -180,7 +179,7 @@
   </video>
 
   <div class="header">
-    <h1>Level 6 </h1>
+    <h1>Level 6-Match the Class </h1>
     <div class="info-container">
       <p>Time Left: <span id="timer">45</span> second</p>
       <p>Wrong Attempts: <span id="wrongAttempts">0</span></p>
@@ -210,28 +209,27 @@
     let selectedCards = [];
     let timeLeft = 45;
     let timer = null;
-    let isProcessing = true;    // 点击前不允许翻牌
+    let isProcessing = true;    // Disallow flipping before processing
     let matchedPairs = 0;
     let totalSteps = 0;
     let correctMatches = 0;
     let wrongAttempts = 0;
     let reactionTime = 0;
     let lastClickTime = null;
-
     
 const backBtn = document.getElementById("backBtn");
 
 backBtn.addEventListener("click", () => {
-  const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+  const confirmLeave = confirm("Are you sure you want to return to the homepage? Your current game progress will not be saved.");
   if (confirmLeave) {
-    window.location.href = "Level section.html"; // 替换为你的主页地址
+    window.location.href = "Level section.html"; // Replace with your homepage URL
   }
 });
 
-localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
+localStorage.setItem('currentLevel', 'level 6'); // Example: Current level is Level 6
 
 
-    // 一：页面加载时先生成卡片布局（看到灰色背面）
+    // Step 1: Set up the card layout on page load (see grey backs initially)
   function setupCards_Level12() {
   grid.innerHTML = "";
   cardValues = [];
@@ -239,7 +237,7 @@ localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
   cardValues.sort(() => Math.random() - 0.5);
 
   cardValues.forEach(value => {
-    const baseId = value.slice(0, -1); // 获取数字部分
+    const baseId = value.slice(0, -1); // Get the numeric part
     const card = document.createElement("div");
     card.classList.add("card");
     card.dataset.value = baseId;
@@ -251,7 +249,7 @@ localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
     back.classList.add("card-face", "card-back");
 
     const img = document.createElement("img");
-    img.src = `./images/${value}.png`; // 如1a.png, 1b.png
+    img.src = `./images/${value}.png`; // e.g., 1a.png, 1b.png
     img.alt = `Card ${value}`;
 
     back.appendChild(img);
@@ -266,11 +264,11 @@ localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
 }
 
 
-    // 二：点击遮罩后才真正开始游戏
+    // Step 2: Start the game after clicking on the overlay
     startOverlay.addEventListener("click", () => {
       startOverlay.style.display = "none";
-      isProcessing = false;      // 允许翻牌
-      startTimer();              // 启动倒计时
+      isProcessing = false;      // Allow card flipping
+      startTimer();              // Start the countdown timer
     });
 
     function flipCard(card) {
@@ -338,8 +336,8 @@ localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
   const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
 
   const gameData = {
-    level: "Level 6 - 普通匹配模式",
-    levelId: "legendary",   // **关卡ID，必须与level selection页面对应**
+    level: "Level 6 - Match the Class",
+    levelId: "legendary",   // **Level ID must match the level selection page**
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -351,20 +349,20 @@ localStorage.setItem('currentLevel', 'level 6'); // 举例，当前是第3关
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // 保存数据
+  // Save data
   saveGameResults(gameData);
 
-  // 跳转分析页
+  // Redirect to analysis page
   window.location.href = "memory_analysis.html";
 }
 
-   document.addEventListener("DOMContentLoaded", setupCards_Level12);
 
+  document.addEventListener("DOMContentLoaded", setupCards_Level12);
 
-function saveGameResults(gameData) {
+ function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
-  // 读取已有数据
+  // Read existing data
   let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
 
   if (!existingResult) {
@@ -375,7 +373,7 @@ function saveGameResults(gameData) {
     };
   }
 
-  // 检查是否已有当前关卡数据，更新或添加
+  // Check if current level data exists, update or add it
   const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
   const newLevelData = {
     level: gameData.level,
@@ -389,32 +387,30 @@ function saveGameResults(gameData) {
   };
 
   if (idx > -1) {
-    existingResult.levels[idx] = newLevelData; // 更新该关卡数据
+    existingResult.levels[idx] = newLevelData; // Update the level data
   } else {
-    existingResult.levels.push(newLevelData);  // 添加新关卡数据
+    existingResult.levels.push(newLevelData);  // Add new level data
   }
 
-  // 更新整体分数，举例取所有关卡平均分
+  // Update overall score, e.g., take the average of all levels
   const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
   existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
 
-  // abilities 你可以根据需要更新，暂时用最后一次的
+  // You can update abilities as needed, currently using the last one
   existingResult.abilities = abilities;
 
-  // 保存回 localStorage
+  // Save back to localStorage
   localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
 
-  // 保存单次游戏详细数据（可选）
+  // Optionally save single game detailed data
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  // 更新最佳时间
+  // Update best time
   updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
-
-// 更新 localStorage 中的最佳时间
 function updateBestTime(levelId, newTime) {
-  const bestTimesKey = "bestTimes"; // 存储所有关卡的最好时间，格式：{ levelId: "mm:ss", ... }
+  const bestTimesKey = "bestTimes"; // Store the best time for all levels, format: { levelId: "mm:ss", ... }
   let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
 
   const prevBest = bestTimes[levelId];
@@ -424,12 +420,14 @@ function updateBestTime(levelId, newTime) {
   localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
 }
 
-// 工具函数，时间字符串转秒数
+// Utility function to convert time string to seconds
 function timeToSeconds(timeStr) {
   if (!timeStr || timeStr === '--:--') return Infinity;
   const [minutes, seconds] = timeStr.split(':').map(Number);
   return minutes * 60 + seconds;
 }
+
+
 
 function generateAbilitiesFrom(gameData) {
   const {
@@ -443,7 +441,7 @@ function generateAbilitiesFrom(gameData) {
 
   function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
     if (correctMatches === 0) return 0;
-    const earlySteps = Math.min(6, totalSteps); // 前6步（前3对）
+    const earlySteps = Math.min(6, totalSteps); // First 6 steps (first 3 pairs)
     const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
     const score = Math.max(40, 100 - earlyErrorRate * 100);
     return Math.round(score);

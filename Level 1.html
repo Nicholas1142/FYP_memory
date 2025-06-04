@@ -194,15 +194,15 @@
 </head>
 <body>
 
-  <!-- 规则和开始共用一个遮罩 -->
+  <!-- Rules and Start overlay -->
   <div id="startOverlay" class="overlay" style="display: flex;">
-    <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left;">
-      <h2 style="text-align: center; margin-bottom: 20px;">游戏规则</h2>
-      <p>1. 你有45秒时间匹配所有牌。</p>
-      <p>2. 点击两张牌翻开，如果匹配成功则消除。</p>
-      <p>3. 尽量减少错误尝试，错误次数会影响得分。</p>
-      <p>4. 时间用完游戏结束。</p>
-      <p>5. 祝你好运，挑战开始！</p>
+    <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5;padding:20px; text-align: left;">
+      <h2 style="text-align: center; margin-bottom: 20px;">Game Rules</h2>
+      <p>1. You have 45 seconds to match all the cards.</p>
+      <p>2. Click two cards to flip them. If they match, they will be removed.</p>
+      <p>3. Try to minimize errors, as they will affect your score.</p>
+      <p>4. The game ends when the time runs out.</p>
+      <p>5. Good luck and enjoy the challenge!</p>
     </div>
     <button id="startBtn">Click Start</button>
   </div>  
@@ -217,9 +217,9 @@
   </video>
 
   <div class="header">
-    <h1>Level 1 - Normal mode</h1>
+    <h1>Level 1 - Normal Mode</h1>
     <div class="info-container">
-      <p>Time Left: <span id="timer">45</span> second</p>
+      <p>Time Left: <span id="timer">45</span> seconds</p>
       <p>Wrong Attempts: <span id="wrongAttempts">0</span></p>
     </div>
   </div>
@@ -268,7 +268,7 @@
     });
 
     backBtn.addEventListener("click", () => {
-      const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+      const confirmLeave = confirm("Are you sure you want to return to the level selection page? Your current game progress will not be saved.");
       if (confirmLeave) {
         window.location.href = "Level section.html"; // 修改成你主页地址
       }

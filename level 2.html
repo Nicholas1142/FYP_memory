@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 2 - 顺序匹配模式</title>
+    <title>Level 2 - Sequential Matching Mode</title>
     <style>
 
 
@@ -328,15 +328,15 @@ body {
 
 
 
- <!-- 在body开头，加一个遮罩层，内含规则和开始按钮 -->
+<!-- Overlay for game rules and start button -->
 <div id="startOverlay" class="overlay" style="display:flex; flex-direction: column; background: rgba(0,0,0,0.9); cursor: default; z-index: 10000;">
-  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left; margin-bottom: 20px;">
-    <h2 style="text-align: center; margin-bottom: 20px;">游戏规则</h2>
-    <p>1. 你有90秒时间完成3个回合。</p>
-    <p>2. 每回合按照顺序匹配牌对。</p>
-    <p>3. 卡片会先全部展示10秒，然后隐藏。</p>
-    <p>4. 时间结束游戏失败。</p>
-    <p>5. 祝你好运，开始挑战！</p>
+  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left; padding:20px; margin-bottom: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Game Rules</h2>
+    <p>1. You have 90 seconds to complete 3 rounds.</p>
+    <p>2. Match the card pairs in order for each round.</p>
+    <p>3. All cards will be shown for 10 seconds before hiding.</p>
+    <p>4. The game ends when time runs out.</p>
+    <p>5. Good luck and start the challenge!</p>
   </div>
   <button id="startBtn" style="padding: 15px 50px; font-size: 24px; font-weight: bold; color: white; background-color: #ff6347; border: none; border-radius: 8px; cursor: pointer; align-self: center;">
     Click Start
@@ -356,7 +356,7 @@ body {
 
     
     <div class="header">
-        <h1>Level 2 </h2>
+        <h1>Level 2-Sequential Matching Mode</h2>
         <div class="info-container">
             <p>Current Round: <span id="roundNumber">1</span> / 3</p>
             <p>Time Left: <span id="timer">90</span> </p>
@@ -429,7 +429,7 @@ function startRound() {
 const backBtn = document.getElementById("backBtn");
 
 backBtn.addEventListener("click", () => {
-  const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+  const confirmLeave = confirm("Are you sure you want to return to the level selection page? Your current game progress will not be saved.");
   if (confirmLeave) {
     window.location.href = "Level section.html"; // 替换为你的主页地址
   }
@@ -587,7 +587,7 @@ function endGame() {
   const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
 
   const gameData = {
-    level: "Level 2 - 顺序匹配模式",
+    level: "Level 2 - Sequential Matching Mode",
     levelId: "medium",
     timeUsed,
     formattedTime,

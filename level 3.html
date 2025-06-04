@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Level 3 - 记忆干扰模式</title>
+  <title>Level 3 - Memory Interference Mode</title>
   <style>
     @keyframes glitch {
       0%   { clip: rect(0, 9999px, 5%, 0); transform: translate(0,0); }
@@ -167,7 +167,7 @@
       }
       .card {
         width: 80px;
-        height: 110px;
+        height: 100px;
       }
       .grid {
          grid-template-columns: repeat(3, 80px);
@@ -205,13 +205,14 @@
 <body>
   <!-- 游戏规则+开始按钮遮罩 -->
   <div id="startOverlay" class="overlay">
-    <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5; text-align: left;">
-      <h2 style="text-align: center; margin-bottom: 20px;">游戏规则</h2>
-      <p>1. 你有45秒时间匹配所有牌。</p>
-      <p>2. 点击两张牌翻开，如果匹配成功则消除。</p>
-      <p>3. 尽量减少错误尝试，错误次数会影响得分。</p>
-      <p>4. 时间用完游戏结束。</p>
-      <p>5. 祝你好运，挑战开始！</p>
+    <div style="max-width: 600px; color: #ffcc33; font-size: 24px; padding:20px; line-height: 1.5; text-align: left;">
+      <h2 style="text-align: center; margin-bottom: 20px;">Game Rules</h2>
+      <p>1. You will see all cards for 3 seconds at the start.</p>
+<p>2. After that, the screen will go black and the game will begin.</p>
+<p>3. Click two cards to flip them. If they match, they will be removed.</p>
+<p>4. Try to minimize errors, as the number of mistakes will affect your score.</p>
+<p>5. The game ends when time runs out or all matches are made.</p>
+
       <button id="startBtn" style="
         margin-top: 30px;
         padding: 15px 50px;
@@ -226,7 +227,7 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
-      ">点击开始</button>
+      ">Click Start</button>
     </div>
   </div>
 
@@ -242,11 +243,11 @@
   </video>
 
   <div class="header">
-    <h1>Level 3 - 记忆干扰模式</h1>
+    <h1>Level 3 - Memory Interference Mode</h1>
 
     <div class="info-container">
-      <p>Time Left: <span id="timer">45</span> 秒</p>
-      <p id="previewCountdown" style="color:#ffcc33; font-weight:bold; margin:0 20px;">预览倒计时：--</p>
+      <p>Time Left: <span id="timer">45</span> seconds</p>
+      <p id="previewCountdown" style="color:#ffcc33; font-weight:bold; margin:0 20px;">Preview Countdown：--</p>
       <p>Wrong Attempts: <span id="wrongAttempts">0</span></p>
     </div>
 
@@ -319,11 +320,11 @@
       startOverlay.style.display = "none";
       const countdownEl = document.getElementById("previewCountdown");
       let count = 3;
-      countdownEl.textContent = `预览倒计时：${count}s`;
+      countdownEl.textContent = `Preview Countdown：${count}s`;
       const cdInterval = setInterval(() => {
         count--;
         if (count > 0) {
-          countdownEl.textContent = `预览倒计时：${count}s`;
+          countdownEl.textContent = `Preview Countdown：${count}s`;
         } else {
           clearInterval(cdInterval);
           countdownEl.textContent = "";
@@ -389,7 +390,7 @@
     const backBtn = document.getElementById("backBtn");
 
 backBtn.addEventListener("click", () => {
-  const confirmLeave = confirm("确定要返回主页吗？当前游戏进度将不会保存。");
+  const confirmLeave = confirm("Are you sure you want to return to the level selection page? Your current game progress will not be saved.");
   if (confirmLeave) {
     window.location.href = "Level section.html"; // 替换为你的主页地址
   }
@@ -414,7 +415,7 @@ backBtn.addEventListener("click", () => {
       const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
 
       const gameData = {
-        level: "Level 3 - 记忆干扰模式",
+        level: "Level 3 - Memory Interference Mode",
         levelId: "hard",
         timeUsed,
         formattedTime,

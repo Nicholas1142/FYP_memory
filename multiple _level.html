@@ -78,14 +78,14 @@
       color: var(--secondary);
       margin-bottom: 1.5rem;
     }
-
-
-.game-info-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
+    
+    .game-info-container {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+    }
     
     .game-info {
       background: rgba(41, 47, 54, 0.7);
@@ -125,13 +125,14 @@
       color: var(--accent);
     }
     
-   .players-container {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
+    .players-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
     .player {
       background: rgba(41, 47, 54, 0.8);
       border-radius: 10px;
@@ -175,12 +176,16 @@
       color: var(--secondary);
     }
     
-.grid-container {
-  flex: 2 1 600px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
+    .grid-container {
+      flex: 1; 
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      margin-bottom: 2rem;
+      width: 100%;
+      perspective: 1000px;
+    }
+    
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 140px);
@@ -478,166 +483,115 @@
       font-weight: bold;
     }
     
-
- .left-panel {
-  flex: 1 1 350px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center; /* 内部内容居中 */
-}
-
-@media (max-width: 768px) {
-  /* 容器调整，允许换行，减少间距 */
- .main-content {
-  display: flex;
-  justify-content: center; /* 水平居中 */
-  gap: 30px;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto 2rem;
-  flex-wrap: wrap; /* 允许换行 */
-}
-
-  /* 网格变成4列的百分比宽度，间距缩小 */
-  .grid {
-    grid-template-columns: repeat(4, 22vw);
-    gap: 12px;
-    padding: 12px;
-    max-width: 100vw;
-    box-sizing: border-box;
+    @media (max-width: 768px) {
+  /* Adjust header font size and layout */
+  .header h1 {
+    font-size: 2rem;  /* Reduce font size for smaller screens */
+  }
+  
+  /* Game info container adjustments */
+  .game-info-container {
+    flex-direction: column;  /* Stack game info vertically */
+    gap: 1rem;
+    width: 90%;
   }
 
-  /* 卡片高度自动，宽度自适应，正反面绝对定位 */
-  .card {
-    width: 22vw;
-    height: calc(22vw * 1.35);
-    position: relative;
-  }
-  .card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
-
-  /* 玩家面板变成横向滚动，单卡宽度减少 */
  .players-container {
   display: flex;
-  justify-content: center; /* 玩家列表水平居中 */
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-  .player {
-    min-width: 90px;
-    padding: 0.5rem 0.8rem;
-    font-size: 0.85rem;
-  }
-  .player-name {
-    font-size: 0.9rem;
-  }
-  .player-stats {
-    font-size: 0.75rem;
-  }
-
- .game-info-container {
-  display: flex;
-  flex-direction: row;  /* 横向排列 */
-  justify-content: center; /* 居中对齐 */
-  gap: 15px;
-  flex-wrap: wrap;  /* 允许换行，防止屏幕太窄溢出 */
-}
-
- .game-info {
-  flex: 1 1 150px; /* 弹性宽度，最小150px */
-  min-width: 120px;
-  background: rgba(41, 47, 54, 0.7);
-  border-radius: 15px;
-  padding: 1rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-  .game-info h3 {
-    font-size: 0.9rem;
-  }
-  .game-info-value {
-    font-size: 1.4rem;
-  }
-
-  /* 定时器宽度适配 */
-  .timer-container {
-    width: 95%;
-  }
-
-  /* 控制按钮宽度和字体大小 */
-  .controls-container button,
-  .powerups .powerup {
-    font-size: 0.9rem;
-    padding: 10px 20px;
-    min-width: 140px;
-  }
-
-  /* 头部标题字体调整 */
-  .header h1 {
-    font-size: 2rem;
-  }
-  .header p {
-    font-size: 1rem;
-  }
-
-  /* 游戏结束面板适应手机屏幕 */
-  .game-over-content {
-    width: 90vw;
-    padding: 1.5rem;
-  }
-}
-
-
-    .main-content {
-  display: flex;
   justify-content: center;
-  gap: 30px;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto 2rem;
-  flex-wrap: wrap; /* 响应式时换行 */
+  gap: 1rem; /* Space between players */
+  margin-bottom: 1.5rem;
 }
+
+.player {
+  background: rgba(41, 47, 54, 0.8);
+  border-radius: 10px;
+  padding: 0.8rem;
+  width: 120px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+.player.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+  transform: translateY(-5px);
+}
+
+  /* Reduce card size and layout for smaller screens */
+  .grid {
+    grid-template-columns: repeat(4, 70px);  /* Show 2 cards per row */
+    gap: 15px;
+  }
+
+  .card {
+    width: 60px;  /* Adjust card width */
+    height: 100px;  /* Adjust card height */
+  }
+
+  .timer-container {
+    width: 80%;
+    max-width: 500px;
+  }
+
+  /* Adjust button sizes */
+  button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* Ensure the game-over content is centered and readable on mobile */
+  .game-over-content {
+    padding: 2rem;
+    width: 80%;
+    max-width: 400px;
+  }
+
+  .memory-stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* Make the controls container more compact */
+  .controls-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .powerups {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .overlay h2 {
+    font-size: 2rem;  /* Adjust overlay text size */
+  }
+  
+  .overlay p {
+    font-size: 1rem;  /* Adjust overlay description text */
+  }
+}
+
   </style>
 </head>
 <body>
 
-  <!-- Start Overlay -->
+
+  <!-- Start overlay -->
   <div id="startOverlay" class="overlay">
     <h2>Memory Health Challenge</h2>
-    <p>Click to Start Game</p>
+    <p>Click to Start the Game</p>
   </div>
 
   <div class="header">
     <h1>Memory Health Challenge</h1>
     <p>Classic Cooperative Mode (1-4 Players)</p>
-
-    <!-- Custom Player Setup Modal -->
-    <div id="playerSetupModal" class="overlay" style="display:none; flex-direction: column; padding: 20px; max-width: 400px;">
-      <h2>Select Number of Players</h2>
-      <div id="playerCountButtons" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
-        <button class="player-count-btn">1</button>
-        <button class="player-count-btn">2</button>
-        <button class="player-count-btn">3</button>
-        <button class="player-count-btn">4</button>
-      </div>
-      <form id="playerNamesForm" style="display:none; flex-direction: column; gap: 10px;">
-        <!-- Player name inputs dynamically generated -->
-      </form>
-      <button id="confirmPlayersBtn" style="margin-top: 20px; display:none;">Start Game</button>
-    </div>
-
+    
     <div class="timer-container">
       <div class="timer-progress" id="timer"></div>
     </div>
-
-    <div class="main-content">
-
- <div class="main-content">
-  <div class="left-panel">
+    
     <div class="game-info-container">
       <div class="game-info">
         <h3>Team Score</h3>
@@ -652,33 +606,25 @@
         <div class="game-info-value" id="current-player">Player 1</div>
       </div>
       <div class="game-info">
-        <h3>Consecutive Matches</h3>
+        <h3>Combo</h3>
         <div class="game-info-value" id="streak">0</div>
       </div>
     </div>
-
+    
     <div class="players-container" id="players-container">
-      <!-- 玩家信息由JS动态填充 -->
+      <!-- Player information will be dynamically added through JS -->
     </div>
   </div>
 
   <div class="grid-container">
     <div id="grid" class="grid"></div>
   </div>
-</div>
-
-
-    
-  
-  </div>
-
- 
   
   <div class="powerups">
-    <div class="powerup" id="anchor-power">
+    <!-- <div class="powerup" id="anchor-power">
       <span>🔖</span>
-      <span>Memory Anchor (3 turns)</span>
-    </div>
+      <span>Memory Anchor (3 Turns)</span>
+    </div> -->
     <div class="powerup" id="double-power">
       <span>✨</span>
       <span>Double Time (0/3)</span>
@@ -686,13 +632,13 @@
   </div>
   
   <div class="controls-container">
-    <button id="start-btn">Start Game</button>
-    <button id="restart-btn" disabled>Restart</button>
+    <!-- <button id="start-btn">Start Game</button> -->
+    <button id="restart-btn" >Back to Main Page</button>
   </div>
   
-  <!-- <div class="game-events" id="game-events"> -->
+  <div class="game-events" id="game-events">
     <!-- Game events will appear here -->
-  <!-- </div> -->
+  </div>
   
   <div class="game-over" id="game-over">
     <div class="game-over-content">
@@ -706,7 +652,7 @@
         </div>
         <div class="stat-item">
           <div class="stat-label">Average Reaction Time</div>
-          <div class="stat-value" id="stat-reaction">0 sec</div>
+          <div class="stat-value" id="stat-reaction">0 seconds</div>
         </div>
         <div class="stat-item">
           <div class="stat-label">Wrong Attempts</div>
@@ -882,7 +828,7 @@ function renderPlayers() {
       <div class="player-avatar">${gameState.playerAvatars[index]}</div>
       <div class="player-name">${player}</div>
       <div class="player-stats">
-       <span>Matches: ${gameState.playerStats[index].matches}</span>
+      <span>Matches: ${gameState.playerStats[index].matches}</span>
 <span>Accuracy: ${gameState.playerStats[index].accuracy}%</span>
 
       </div>
@@ -892,13 +838,13 @@ function renderPlayers() {
   });
 }
 
-// Set number of players
+// Set up the number of players
 function setupPlayers() {
   const numPlayers = parseInt(prompt("Please enter the number of players (1-4):", "2"));
   if (numPlayers >= 1 && numPlayers <= 4) {
     gameState.players = [];
     for (let i = 1; i <= numPlayers; i++) {
-      const name = prompt(`Please enter the name for Player ${i}:`, `Player ${i}`);
+      const name = prompt(`Please enter the name of Player ${i}:`, `Player ${i}`);
       gameState.players.push(name || `Player ${i}`);
     }
     gameState.currentPlayerIndex = 0;
@@ -911,32 +857,28 @@ function setupPlayers() {
 }
 
 
-
-// 处理卡片点击
+// 2. 修改 handleCardClick 函数，使其在共享计时器下处理玩家回合
 function handleCardClick(e) {
   if (!gameState.gameStarted || gameState.isProcessing) return;
-  
+
   const card = e.currentTarget;
   const index = parseInt(card.dataset.index);
-  
-  // 如果卡片已经翻开或已匹配，则忽略
+
+  // 如果卡片已被翻开或匹配，忽略
   if (card.classList.contains("revealed") || 
       card.classList.contains("matched") ||
       gameState.flippedCards.length >= 2) {
     return;
   }
-  
-  // 翻开卡片
+
   flipCard(card, index);
-  
-  // 检查是否匹配
+
+  // 检查是否翻开了两张卡片
   if (gameState.flippedCards.length === 2) {
     checkForMatch();
   }
-  
-  // 重置计时器
-  resetTimer();
 }
+
 
 // 翻开卡片
 function flipCard(card, index) {
@@ -980,7 +922,7 @@ function checkForMatch() {
       gameState.reactionTime += (Date.now() - gameState.lastClickTime) / 1000;
       
       // 更新积分
-      let points = 2;
+      let points = 50;
       gameState.streak++;
       
       // 检查双倍时刻
@@ -1001,8 +943,8 @@ function checkForMatch() {
         elements.matchSound.play();
       }
       
-      // 显示事件
-      showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair! Earned ${points} points.`);
+     // Display event
+showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair of cards! Earned ${points} points`);
 
       
       // 更新双倍时刻进度
@@ -1018,10 +960,10 @@ function checkForMatch() {
         endGame();
       }
       
-      // 检查是否需要添加新卡片
-      if (gameState.matchedPairs % 5 === 0 && gameState.matchedPairs > 0) {
-        addNewCards();
-      }
+      // // 检查是否需要添加新卡片
+      // if (gameState.matchedPairs % 5 === 0 && gameState.matchedPairs > 0) {
+      //   addNewCards();
+      // }
       
       updateUI();
       renderPlayers();
@@ -1041,8 +983,9 @@ function checkForMatch() {
         Math.round(gameState.playerStats[currentPlayerIdx].matches / 
                   gameState.playerStats[currentPlayerIdx].attempts * 100);
       
-      // 显示事件
-      showEvent(`${gameState.players[currentPlayerIdx]} match failed, next player's turn.`);
+      // Display event
+showEvent(`${gameState.players[currentPlayerIdx]} failed to match, it's the next player's turn`);
+
       
       // 切换到下一个玩家
       nextPlayer();
@@ -1085,62 +1028,62 @@ function updateCurrentPlayer() {
 }
 
 // 添加新卡片
-function addNewCards() {
-  // 获取当前未使用的图片
-  const usedImages = gameState.cards.slice(0, 8);
-  const unusedImages = gameState.cardImages.filter(img => !usedImages.includes(img));
+// function addNewCards() {
+//   // 获取当前未使用的图片
+//   const usedImages = gameState.cards.slice(0, 8);
+//   const unusedImages = gameState.cardImages.filter(img => !usedImages.includes(img));
   
-  if (unusedImages.length < 2) return; // 没有足够的图片可用
+//   if (unusedImages.length < 2) return; // 没有足够的图片可用
   
-  // 选择两张新图片
-  const newImages = unusedImages.slice(0, 2);
+//   // 选择两张新图片
+//   const newImages = unusedImages.slice(0, 2);
   
-  // 添加到卡片组
-  gameState.cards.push(...newImages, ...newImages);
+//   // 添加到卡片组
+//   gameState.cards.push(...newImages, ...newImages);
   
-  // 重新洗牌
-  shuffleArray(gameState.cards);
+//   // 重新洗牌
+//   shuffleArray(gameState.cards);
   
-  // 重新创建游戏板
-  elements.grid.innerHTML = '';
-  gameState.cards.forEach((imagePath, index) => {
-    const card = document.createElement("div");
-    card.className = 'card';
+//   // 重新创建游戏板
+//   elements.grid.innerHTML = '';
+//   gameState.cards.forEach((imagePath, index) => {
+//     const card = document.createElement("div");
+//     card.className = 'card';
     
-    // 检查是否是已匹配的卡片
-    if (index < gameState.matchedPairs * 2) {
-      card.classList.add("matched");
-    }
+//     // 检查是否是已匹配的卡片
+//     if (index < gameState.matchedPairs * 2) {
+//       card.classList.add("matched");
+//     }
     
-    card.dataset.index = index;
-    card.dataset.image = imagePath;
+//     card.dataset.index = index;
+//     card.dataset.image = imagePath;
     
-    // 卡片背面
-    const front = document.createElement("div");
-    front.className = 'card-face card-front';
-    const backImg = document.createElement("img");
-    backImg.src = gameState.cardBack;
-    backImg.alt = '卡片背面';
-    front.appendChild(backImg);
+//     // 卡片背面
+//     const front = document.createElement("div");
+//     front.className = 'card-face card-front';
+//     const backImg = document.createElement("img");
+//     backImg.src = gameState.cardBack;
+//     backImg.alt = '卡片背面';
+//     front.appendChild(backImg);
     
-    // 卡片正面
-    const back = document.createElement("div");
-    back.className = 'card-face card-back';
-    const img = document.createElement("img");
-    img.src = imagePath;
-    img.alt = `Card ${index}`;
-    back.appendChild(img);
+//     // 卡片正面
+//     const back = document.createElement("div");
+//     back.className = 'card-face card-back';
+//     const img = document.createElement("img");
+//     img.src = imagePath;
+//     img.alt = `Card ${index}`;
+//     back.appendChild(img);
     
-    card.appendChild(front);
-    card.appendChild(back);
-    card.addEventListener('click', handleCardClick);
-    elements.grid.appendChild(card);
-  });
+//     card.appendChild(front);
+//     card.appendChild(back);
+//     card.addEventListener('click', handleCardClick);
+//     elements.grid.appendChild(card);
+//   });
   
-  showEvent("新增卡片已添加到游戏中！");
-}
+//   showEvent("新增卡片已添加到游戏中！");
+// }
 
-// 激活双倍时刻
+// Activate double time
 function activateDouble() {
   gameState.doubleActive = true;
   elements.doublePower.classList.add('double-active');
@@ -1148,7 +1091,7 @@ function activateDouble() {
   
   showEvent("Double Time Activated! All match points are doubled!");
   
-  // Disable Double Time after 5 seconds
+  // Close double time after 5 seconds
   setTimeout(() => {
     gameState.doubleActive = false;
     gameState.doubleProgress = 0;
@@ -1160,57 +1103,61 @@ function activateDouble() {
 }
 
 
-// 使用记忆锚点
-function useAnchor() {
-  if (gameState.anchorAvailableIn > 0 || !gameState.gameStarted) return;
+// // // 使用记忆锚点
+// // function useAnchor() {
+// //   if (gameState.anchorAvailableIn > 0 || !gameState.gameStarted) return;
   
-  // 找到第一个未翻开的卡片
-  const cards = Array.from(elements.grid.children);
-  const unflippedCards = cards.filter(card => 
-    !card.classList.contains("revealed") && 
-    !card.classList.contains("matched") &&
-    !card.classList.contains("anchored")
-  );
+// //   // 找到第一个未翻开的卡片
+// //   const cards = Array.from(elements.grid.children);
+// //   // const unflippedCards = cards.filter(card => 
+// //   //   !card.classList.contains("revealed") && 
+// //   //   !card.classList.contains("matched") &&
+// //   //   !card.classList.contains("anchored")
+// //   );
   
-  if (unflippedCards.length > 0) {
-    const randomIndex = Math.floor(Math.random() * unflippedCards.length);
-    const card = unflippedCards[randomIndex];
-    card.classList.add("anchored");
+//   if (unflippedCards.length > 0) {
+//     const randomIndex = Math.floor(Math.random() * unflippedCards.length);
+//     const card = unflippedCards[randomIndex];
+//     card.classList.add("anchored");
     
-    // 2回合后移除锚点
-    setTimeout(() => {
-      if (card.classList.contains("anchored") && !card.classList.contains("matched")) {
-        card.classList.remove("anchored");
-      }
-    }, 2 * gameState.players.length * 2000);
+//     // 2回合后移除锚点
+//     setTimeout(() => {
+//       if (card.classList.contains("anchored") && !card.classList.contains("matched")) {
+//         card.classList.remove("anchored");
+//       }
+//     }, 2 * gameState.players.length * 2000);
     
-    gameState.anchorAvailableIn = 3;
-    updatePowerups();
+//     gameState.anchorAvailableIn = 3;
+//     updatePowerups();
     
-    showEvent(`${gameState.players[gameState.currentPlayerIndex]} used Memory Anchor!`);
+//    showEvent(`${gameState.players[gameState.currentPlayerIndex]} used the Memory Anchor!`);
 
-  }
-}
-// Update power-ups UI
+//   }
+// }
+
+// Update power-up UI
 function updatePowerups() {
-  elements.anchorPower.innerHTML = `<span>🔖</span><span>Memory Anchor (${gameState.anchorAvailableIn} turns)</span>`;
+  // elements.anchorPower.innerHTML = `<span>🔖</span><span>Memory Anchor (${gameState.anchorAvailableIn} turns)</span>`;
   elements.doublePower.innerHTML = `<span>✨</span><span>Double Time (${gameState.doubleProgress}/3)</span>`;
 }
 
 
-// 计时器函数
+// 1. 修改 startTimer 函数，使其成为所有玩家共享的计时器
 function startTimer() {
   clearInterval(gameState.timerInterval);
   elements.timer.style.width = '100%';
   gameState.timerInterval = setInterval(() => {
-    gameState.timeLeft--;
+    gameState.timeLeft--;  // 全局时间倒计时
+    
+    // 更新计时器条
     elements.timer.style.width = `${(gameState.timeLeft / 45) * 100}%`;
     
-    // 时间紧迫时改变颜色
+    // 当时间快用完时改变颜色
     if (gameState.timeLeft <= 10) {
       elements.timer.style.background = 'linear-gradient(90deg, var(--primary) 0%, #ff0000 100%)';
     }
-    
+
+    // 时间耗尽时结束游戏
     if (gameState.timeLeft <= 0) {
       clearInterval(gameState.timerInterval);
       endGame();
@@ -1218,11 +1165,13 @@ function startTimer() {
   }, 1000);
 }
 
+// 3. 游戏重启时重置计时器
 function resetTimer() {
-  gameState.timeLeft = 45;
+  gameState.timeLeft = 45; // 重新设置为45秒的共享时间
   elements.timer.style.width = '100%';
   elements.timer.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%)';
 }
+
 
 // 结束游戏
 function endGame() {
@@ -1234,13 +1183,25 @@ function endGame() {
   const avgReactionTime = gameState.correctMatches > 0 
     ? (gameState.reactionTime / gameState.correctMatches).toFixed(2) 
     : 0;
-  
+
   elements.finalScore.textContent = gameState.score;
   elements.statAccuracy.textContent = `${accuracy}%`;
-  elements.statReaction.textContent = `${avgReactionTime}second`;
+  elements.statReaction.textContent = `${avgReactionTime} seconds`;
   elements.statWrong.textContent = gameState.wrongAttempts;
   elements.statSteps.textContent = gameState.totalSteps;
-  
+
+  // 如果玩家在规定时间内完成，显示“恭喜通关”
+  if (gameState.timeLeft > 0) {
+    elements.gameOver.style.display = 'flex';
+    elements.gameOver.querySelector('h2').textContent = "Congratulations, You Win!";
+    elements.gameOver.querySelector('p').textContent = `Final Team Score: ${gameState.score}`;
+  } else {
+    // 如果时间耗尽，显示Game Over
+    elements.gameOver.style.display = 'flex';
+    elements.gameOver.querySelector('h2').textContent = "Game Over!";
+    elements.gameOver.querySelector('p').textContent = `Final Team Score: ${gameState.score}`;
+  }
+
   // 保存游戏数据
   const gameData = {
     score: gameState.score,
@@ -1252,17 +1213,17 @@ function endGame() {
     mode: "Classic Cooperative Mode"
   };
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
-  
-  elements.gameOver.style.display = 'flex';
 }
 
-// 更新UI
+
+// 4. 更新UI函数，保持共享计时器的逻辑
 function updateUI() {
   elements.score.textContent = gameState.score;
   elements.remaining.textContent = gameState.cards.length / 2 - gameState.matchedPairs;
   elements.streak.textContent = gameState.streak;
   updatePowerups();
 }
+
 
 // 辅助函数：洗牌算法
 function shuffleArray(array) {
@@ -1272,16 +1233,23 @@ function shuffleArray(array) {
   }
 }
 
-// 事件监听器
-elements.startBtn.addEventListener('click', () => {
-  initGame();
-  startTimer();
-});
+ // 事件监听器
+// elements.startBtn.addEventListener('click', () => {
+//   initGame();
+//   startTimer();
+// });
 
 elements.restartBtn.addEventListener('click', () => {
-  initGame();
-  startTimer();
+  // Show confirmation before navigating to the main page
+  const confirmRestart = confirm("Are you sure you want to go back to the main page?");
+  
+  if (confirmRestart) {
+    // Redirect to the main page
+    window.location.href = 'Main.html'; // Change 'Main.html' to your main page URL
+  }
 });
+
+
 
 elements.playAgain.addEventListener('click', () => {
   elements.gameOver.style.display = 'none';
@@ -1289,7 +1257,7 @@ elements.playAgain.addEventListener('click', () => {
   startTimer();
 });
 
-elements.anchorPower.addEventListener('click', useAnchor);
+// elements.anchorPower.addEventListener('click', useAnchor);
 elements.doublePower.addEventListener('click', () => {
   if (gameState.doubleProgress >= 3 && !gameState.doubleActive) {
     activateDouble();
