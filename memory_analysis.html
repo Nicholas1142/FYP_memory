@@ -380,9 +380,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const reactionScore = Math.max(0, Math.min(100, 100 - (avgReactionTime * 20)));
 
     // 更新UI
-    document.getElementById("levelInfo").textContent = `关卡: ${level}`;
+    document.getElementById("levelInfo").textContent = `level: ${level}`;
     document.getElementById("memoryScore").textContent = score;
-    document.getElementById("performanceNote").textContent = `表现评价: ${note}`;
+    document.getElementById("performanceNote").textContent = `Performance Note: ${note}`;
     document.getElementById("timeUsed").textContent = formattedTime;
     document.getElementById("accuracy").textContent = `${memoryAccuracy}%`;
     document.getElementById("reactionTime").textContent = `${avgReactionTime.toFixed(2)}s`;
@@ -399,7 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
             data: {
                 labels: ["Accuracy", "Endurance", "Reaction Speed", "Error Rate", "Overall"],
                 datasets: [{
-                    label: "记忆能力",
+                    label: "Memory Ability",
                     data: [
                         memoryAccuracy,
                         Math.max(0, Math.min(100, (1 - timeUsed / 45) * 100)),
@@ -497,7 +497,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const nextLevelFile = "level " + nextLevelNum + ".html";
             window.location.href = nextLevelFile;
         } else {
-            alert("已经是最高关卡，无法进入下一关！");
+            alert("You have reached the highest level and cannot proceed to the next level!");
             // 也可以禁用按钮：
             const btn = document.getElementById("nextLevelBtn");
             btn.disabled = true;

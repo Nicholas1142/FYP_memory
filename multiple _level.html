@@ -665,6 +665,7 @@
       </div>
       
       <button id="play-again">Play Again</button>
+      <button id="back-to-main">Back to Main Page</button>
     </div>
   </div>
   
@@ -1134,7 +1135,15 @@ function activateDouble() {
 
 //   }
 // }
-
+document.getElementById("back-to-main").addEventListener("click", () => {
+  // Show confirmation before navigating to the main page
+  const confirmBack = confirm("Are you sure you want to go back to the main page?");
+  
+  if (confirmBack) {
+    // Redirect to the main page (update with your main page URL)
+    window.location.href = 'Main.html';  // Change 'Main.html' to your main page URL
+  }
+});
 // Update power-up UI
 function updatePowerups() {
   // elements.anchorPower.innerHTML = `<span>🔖</span><span>Memory Anchor (${gameState.anchorAvailableIn} turns)</span>`;
