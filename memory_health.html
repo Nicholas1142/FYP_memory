@@ -430,12 +430,21 @@
                 overallScoreElement.textContent = `${Math.round(data.overallScore)} / 100`;
                 overallScoreElement.className = getScoreClass(Math.round(data.overallScore));
 
-                const summaryText =
-                    data.abilities.sequence < 70
-                        ? "Your short-term memory and reaction speed are good, but sequential memory is weaker. Consider focusing on improvement."
-                        : "All memory abilities are balanced. Keep it up!";
-                document.getElementById("summary-text").textContent =
-                    "Summary Analysis:" + summaryText;
+              const overallScore = Math.round(data.overallScore);  // 获取总分
+
+                    // 生成Summary Analysis
+                    let summaryText = "Summary Analysis: ";
+
+                    if (overallScore <= 40) {
+                        summaryText += "Memory health is not satisfactory. You may need to focus on improving your memory abilities.";
+                    } else if (overallScore <= 70) {
+                        summaryText += "Memory health is satisfactory. With a bit more focus, you can further improve.";
+                    } else if (overallScore <= 100) {
+                        summaryText += "Memory health is excellent! Keep up the great work!";
+                    }
+
+                    // 更新Summary Analysis文本
+                    document.getElementById("summary-text").textContent = summaryText;
 
                 const abilities = data.abilities;
                 const listItems = document.querySelectorAll(".ability-list li");

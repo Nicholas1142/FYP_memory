@@ -394,6 +394,66 @@
           display: none;
         }
       }
+
+ /* 使模态框中的内容保持居中 */
+#helpModal .modal-content {
+  max-width: 500px;
+  background-color: #1e1e1e;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  text-align: center; /* 确保文本居中 */
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  animation: slideDown 0.4s;
+}
+
+/* 更新关闭按钮样式 */
+#helpModal .close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+/* 改变关闭按钮的颜色 */
+#helpModal .close:hover {
+  color: white;
+}
+
+/* 按钮样式居中 */
+#helpModal button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  display: block;  /* 使按钮成为块级元素 */
+  width: 100%; /* 使按钮宽度占满父元素 */
+  text-align: center;
+}
+
+/* 更改按钮hover样式 */
+#helpModal button:hover {
+  background-color: var(--secondary-color);
+}
+
+/* 确保 modal 中的内容居中 */
+#helpModal .modal-content p {
+  margin: 10px 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8); /* 提高可读性 */
+}
+
+
     </style>
   </head>
   <body>
@@ -475,16 +535,34 @@
           <i class="fas fa-users"></i> Multiplayer
         </button>
       </div>
+
+
       <div class="footer-icons">
-        <button class="icon-button" title="Help">
-          <i class="fas fa-question"></i>
-        </button>
+       <button class="icon-button" title="Help" onclick="toggleHelpModal()">
+  <i class="fas fa-question"></i>
+</button>
+
         <!-- <button class="icon-button" title="Leaderboard">
           <i class="fas fa-trophy"></i>
         </button> -->
         <!-- <button class="icon-button" title="Sound">
           <i class="fas fa-volume-up"></i>
         </button> -->
+
+        <!-- 帮助弹窗 -->
+<div id="helpModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="toggleHelpModal()">&times;</span>
+    <h2 style="color: var(--accent-color);">How to Play the Game?</h2>
+    <p>Welcome to MemoryMaster! The goal of the game is to improve your memory through challenges in different levels.</p>
+    <p>1. Choose a difficulty level.</p>
+    <p>2. Complete the memory challenge as quickly as possible.</p>
+    <p>3. Based on accuracy and speed, your performance will be rated.</p>
+    <button class="btn" onclick="toggleHelpModal()">Close</button>
+  </div>
+</div>
+
+
         
       </div>
     </div>
@@ -620,6 +698,21 @@
           editModal.style.display = "none";
         }
       };
+
+      // 切换帮助弹窗的显示和隐藏
+function toggleHelpModal() {
+  const helpModal = document.getElementById('helpModal');
+  helpModal.style.display = helpModal.style.display === 'block' ? 'none' : 'block';
+}
+
+// 点击弹窗外部区域时关闭弹窗
+window.onclick = function(event) {
+  const helpModal = document.getElementById('helpModal');
+  if (event.target === helpModal) {
+    helpModal.style.display = 'none';
+  }
+};
+
     </script>
   </body>
   </html>
