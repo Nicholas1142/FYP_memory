@@ -484,95 +484,40 @@
     }
     
     @media (max-width: 768px) {
-  /* Adjust header font size and layout */
-  .header h1 {
-    font-size: 2rem;  /* Reduce font size for smaller screens */
-  }
-  
-  /* Game info container adjustments */
-  .game-info-container {
-    flex-direction: column;  /* Stack game info vertically */
-    gap: 1rem;
-    width: 90%;
-  }
-
- .players-container {
-  display: flex;
-  justify-content: center;
-  gap: 1rem; /* Space between players */
-  margin-bottom: 1.5rem;
-}
-
-.player {
-  background: rgba(41, 47, 54, 0.8);
-  border-radius: 10px;
-  padding: 0.8rem;
-  width: 120px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  border: 2px solid transparent;
-}
-
-.player.active {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
-  transform: translateY(-5px);
-}
-
-  /* Reduce card size and layout for smaller screens */
-  .grid {
-    grid-template-columns: repeat(4, 70px);  /* Show 2 cards per row */
-    gap: 15px;
-  }
-
-  .card {
-    width: 60px;  /* Adjust card width */
-    height: 100px;  /* Adjust card height */
-  }
-
-  .timer-container {
-    width: 80%;
-    max-width: 500px;
-  }
-
-  /* Adjust button sizes */
-  button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-
-  /* Ensure the game-over content is centered and readable on mobile */
-  .game-over-content {
-    padding: 2rem;
-    width: 80%;
-    max-width: 400px;
-  }
-
-  .memory-stats {
-    grid-template-columns: 1fr;
-  }
-
-  /* Make the controls container more compact */
-  .controls-container {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .powerups {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .overlay h2 {
-    font-size: 2rem;  /* Adjust overlay text size */
-  }
-  
-  .overlay p {
-    font-size: 1rem;  /* Adjust overlay description text */
-  }
-}
-
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      
+      .card {
+        width: 100%;
+        height: 0;
+        padding-bottom: 140%;
+        position: relative;
+      }
+      
+      .card-face {
+        position: absolute;
+      }
+      
+      .game-info-container {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .game-info {
+        min-width: calc(50% - 20px);
+      }
+      
+      .players-container {
+        gap: 0.5rem;
+      }
+      
+      .player {
+        width: 100px;
+        padding: 0.5rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -632,8 +577,8 @@
   </div>
   
   <div class="controls-container">
-    <!-- <button id="start-btn">Start Game</button> -->
-    <button id="restart-btn" >Back to Main Page</button>
+    <button id="start-btn">Start Game</button>
+    <button id="restart-btn" disabled>Back to Main Page</button>
   </div>
   
   <div class="game-events" id="game-events">
@@ -665,7 +610,6 @@
       </div>
       
       <button id="play-again">Play Again</button>
-      <button id="back-to-main">Back to Main Page</button>
     </div>
   </div>
   
@@ -1135,15 +1079,7 @@ function activateDouble() {
 
 //   }
 // }
-document.getElementById("back-to-main").addEventListener("click", () => {
-  // Show confirmation before navigating to the main page
-  const confirmBack = confirm("Are you sure you want to go back to the main page?");
-  
-  if (confirmBack) {
-    // Redirect to the main page (update with your main page URL)
-    window.location.href = 'Main.html';  // Change 'Main.html' to your main page URL
-  }
-});
+
 // Update power-up UI
 function updatePowerups() {
   // elements.anchorPower.innerHTML = `<span>🔖</span><span>Memory Anchor (${gameState.anchorAvailableIn} turns)</span>`;
@@ -1242,11 +1178,11 @@ function shuffleArray(array) {
   }
 }
 
- // 事件监听器
-// elements.startBtn.addEventListener('click', () => {
-//   initGame();
-//   startTimer();
-// });
+// 事件监听器
+elements.startBtn.addEventListener('click', () => {
+  initGame();
+  startTimer();
+});
 
 elements.restartBtn.addEventListener('click', () => {
   // Show confirmation before navigating to the main page
@@ -1254,7 +1190,7 @@ elements.restartBtn.addEventListener('click', () => {
   
   if (confirmRestart) {
     // Redirect to the main page
-    window.location.href = 'Main.html'; // Change 'Main.html' to your main page URL
+    window.location.href = 'index.html'; // Change 'Main.html' to your main page URL
   }
 });
 
@@ -1281,9 +1217,6 @@ elements.startOverlay.addEventListener('click', () => {
 
 // 初始UI更新
 updateUI();
-
-
-// localStorage.clear();  // 清空所有的 localStorage 数据
   </script>
 </body>
 </html>
