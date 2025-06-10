@@ -31,12 +31,12 @@
       margin: 40px 0 20px;
     }
     .header h1 {
-      font-size: 72px; color: orange;
+      font-size: 60px; color: orange;
       text-shadow: 4px 4px 8px black;
     }
     .info-container {
       display: flex; justify-content: center;
-      gap: 120px; font-size: 32px;
+      gap: 120px; font-size: 25px;
       text-shadow: 2px 2px 4px black;
       margin-bottom: 10px;
     }
@@ -56,11 +56,12 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(4, 130px);
+      grid-template-columns: repeat(4, 105px);
       gap: 25px;
     }
     .card {
-      width: 130px; height: 180px;
+      width: 100px; 
+      height: 150px;
       perspective: 1000px; position: relative;
       border-radius: 12px; box-shadow: 0 6px 12px rgba(0,0,0,0.5);
       transition: transform 0.6s; transform-style: preserve-3d;
@@ -107,40 +108,40 @@
     }
 
   @media (max-width: 600px) {
-  .header h1 {
-    font-size: 35px;
-  }
-   .info-container {
-    font-size: 19px;
-    gap: 17px;          /* Increase gap */
-    flex-direction: row; /* Align horizontally */
-    justify-content: center; /* Center alignment */
-    align-items: center; /* Vertical center alignment */
-   }
-  .sequence-container {
-    font-size: 18px;
-  }
-  .card {
-    width: 80px;
-    height: 130px;
-  }
-  .grid {
-    grid-template-columns: repeat(3, 100px);
-    gap: 10px;
-  }
-  #startBtn {
-    padding: 12px 40px;
-    font-size: 20px;
-  }
-  /* Optional: Hide background video and music */
-  /* .video-background {
-    display: none;
-  } */
-   
-  #bgMusic {
-    display: none;
-  }
-}
+      .header h1 {
+        font-size: 35px;
+      }
+      .info-container {
+        font-size: 19px;
+        gap: 17px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
+      .sequence-container {
+        font-size: 18px;
+      }
+      .card {
+        width: 80px;
+        height: 120px;
+      }
+      .grid {
+        grid-template-columns: repeat(4, 85px);
+        gap: 10px;
+      }
+      #startBtn {
+        padding: 12px 40px;
+        font-size: 20px;
+      }
+      #bgMusic {
+        display: none;
+      }
+      #backBtn {
+        padding: 8px 20px;
+        font-size: 16px;
+        margin-bottom: 30px;
+      }
+    }
   </style>
 </head>
 <body>
