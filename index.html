@@ -571,6 +571,18 @@
     </div>
 
     <script>
+
+      // 与分析页一致的 Summary 文本生成逻辑
+function generateSummary(score) {
+  if (score <= 40) {
+    return "Summary Analysis: Memory health is not satisfactory. You may need to focus on improving your memory abilities.";
+  } else if (score <= 70) {
+    return "Summary Analysis: Memory health is satisfactory. With a bit more focus, you can further improve.";
+  } else {
+    return "Summary Analysis: Memory health is excellent! Keep up the great work!";
+  }
+}
+
       document.addEventListener('DOMContentLoaded', () => {
         // 读取localStorage中的玩家昵称和头像
         const playerName = localStorage.getItem('playerName') || 'Guest';
@@ -604,19 +616,18 @@
         let memoryScore = '0';
         let summaryText = 'Summary Analysis: -';
         const memoryDataJson = localStorage.getItem('memoryGameResult');
+
         if (memoryDataJson) {
           try {
             const memoryData = JSON.parse(memoryDataJson);
             if (memoryData && memoryData.overallScore !== undefined) {
               memoryScore = Math.round(memoryData.overallScore);
             }
-            if (memoryData && memoryData.abilities) {
-              if (memoryData.abilities.sequence < 70) {
-                summaryText = "Summary Analysis: Your short-term memory and reaction speed are good, but sequential memory is weaker. Consider focusing on improvement.";
-              } else {
-                summaryText = "Summary Analysis: All memory abilities are balanced. Keep it up!";
-              }
-            }
+           if (memoryData && memoryData.overallScore !== undefined) {
+  const rounded = Math.round(memoryData.overallScore);
+  summaryText = generateSummary(rounded);
+}
+
           } catch {}
         }
 

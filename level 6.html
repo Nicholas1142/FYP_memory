@@ -668,7 +668,31 @@ function saveGameResults(gameData) {
 
 
 function generateAbilitiesFrom(gameData) {
-  return {}; // 统一由 saveGameResults 构造
+  const {
+    accuracy = 0,
+    reactionTime = 0,
+    wrongAttempts = 0,
+    totalSteps = 1,
+    timeUsed = 90,
+    correctMatches = 0
+  } = gameData;
+
+  function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
+    if (correctMatches === 0) return 0;
+    const earlySteps = Math.min(6, totalSteps); // First 6 steps (first 3 pairs)
+    const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
+    const score = Math.max(40, 100 - earlyErrorRate * 100);
+    return Math.round(score);
+  }
+
+  return {
+    shortTerm: calculateShortTermScore(totalSteps, wrongAttempts, correctMatches),
+    attention: Math.round(accuracy * 100),
+    reaction: Math.max(0, 100 - reactionTime * 20),
+    sequence: totalSteps <= 14 ? 80 : 50,
+    resistance: Math.max(0, 100 - wrongAttempts * 4),
+    endurance: Math.max(0, Math.min(100, (1 - (timeUsed / 45)) * 100))
+  };
 }
 
 function calculateAverage(prev, current) {
