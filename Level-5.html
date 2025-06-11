@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Level 5 - Flash Memory Challenge</title>
+  <style>
+  body {
+      font-family: 'Creepster', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: orange;
+      text-align: center;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+    .overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10000; cursor: pointer;
+    }
+    .overlay h2 {
+      color: #ff6347; font-size: 48px;
+      text-shadow: 2px 2px 4px black;
+    }
+    .header {
+      margin: 0px 0 20px;
+      max-width: 1000px;
+      width: 90vw;
+    }
+    .header h1 {
+      font-size: 60px; /* Reduce the font size */
+      color: orange;
+      text-shadow: 4px 4px 8px black;
+      margin-bottom: 12px;
+    }
+    .info-container {
+      display: flex; justify-content: center;
+      gap: 60px; /* Reduce the gap */
+      font-size: 30px; /* Reduce the font size */
+      text-shadow: 2px 2px 4px black;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      max-width: 900px;
+      width: 90vw;
+    }
+    .sequence-container {
+      margin-bottom: 20px;
+      font-size: 26px; color: #ffcc66;
+      text-shadow: 1px 1px 2px black;
+      max-width: 900px;
+      width: 90vw;
+    }
+    .sequence-box {
+      font-size: 28px; color: #ff6347;
+      font-weight: bold;
+    }
+    .grid-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 60px;
+      max-width: 900px;
+      width: 90vw;
+      overflow-x: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      gap: 10px;
+      justify-content: center;
+    }
+    .card {
+      width: 90px;
+      height: 125px;
+      perspective: 1000px;
+      position: relative;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      background-color: #555;
+      cursor: pointer;
+    }
+    .card-face {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      backface-visibility: hidden;
+      border-radius: 12px;
+    }
+    .card-front {
+      background-color: #555;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+      overflow: hidden;
+    }
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      border-radius: 12px;
+    }
+    .card.revealed {
+      transform: rotateY(180deg);
+      background-color: black !important;
+    }
+    .card.revealed img {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+  .header h1 {
+    font-size: 35px;
+  }
+   .info-container {
+    font-size: 19px;
+    gap: 17px;          /* Increase the gap */
+    flex-direction: row; /* Align horizontally */
+    justify-content: center; /* Center alignment */
+    align-items: center; /* Vertical center alignment */
+   }
+  .sequence-container {
+    font-size: 18px;
+  }
+  .card {
+    width: 80px;
+    height: 110px;
+  }
+  .grid {
+    grid-template-columns: repeat(4, 100px);
+    gap: 10px;
+  }
+  #startBtn {
+    padding: 12px 40px;
+    font-size: 20px;
+  }
+  /* Optional: Hide background video and music */
+  /* .video-background {
+    display: none;
+  } */
+   
+  #bgMusic {
+    display: none;
+  }
+}
+
+
+#backBtn {
+      margin: 0 auto 40px auto;
+      display: block;
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+      transition: background-color 0.3s ease;
+    }
+    #backBtn:hover {
+      background-color: #e5533d;
+    }
+
+  </style>
+</head>
+<body>
+
+ <!-- Overlay at the top of the body -->
+<div id="startOverlay" class="overlay" style="flex-direction: column; cursor: default; padding: 20px;">
+  <div style="max-width: 600px; color: #ffcc33; font-size: 24px; line-height: 1.5;padding:20px;  text-align: left; margin-bottom: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px; color: #ff6347;">Game Rules</h2>
+<p>1. You have 30 seconds to match all the pairs of cards.</p>
+<p>2. Click two cards to flip them. If they match, they will be removed.</p>
+<p>3. Correct matches add 2 seconds; incorrect matches deduct 0.5 seconds from your time.</p>
+<p>4. The game ends when time runs out or all pairs are matched.</p>
+<p>5. Minimize errors to improve your score. Good luck!</p>
+
+  </div>
+
+  <button id="startBtn" style="
+    padding: 15px 50px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #ff6347;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(255, 99, 71, 0.7);
+    transition: background-color 0.3s ease;
+  ">Click Start</button>
+</div>
+  
+
+  <audio id="bgMusic" src="Sound/background music.mp3" loop autoplay></audio>
+  <audio id="flipSound" src="Sound/flip.mp3"></audio>
+  <audio id="matchSound" src="Sound/match.mp3"></audio>
+
+  <video class="video-background" autoplay loop muted
+         style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;">
+    <source src="background.mp4" type="video/mp4">
+  </video>
+
+  <div class="header">
+    <h1>Level 5 - Flash Memory Challenge</h1>
+    <div class="info-container">
+      <p>Time Left: <span id="timer">30</span> seconds</p>
+      <p>Wrong Attempts: <span id="wrongAttempts">0</span></p>
+    </div>
+  </div>
+
+  <div class="sequence-container">
+    <div id="sequenceDisplay" class="sequence-box"></div>
+  </div>
+
+  <div class="grid-container">
+    <div id="grid" class="grid"></div>
+  </div>
+<button id="backBtn">BACK </button>
+  <script>
+    const grid = document.getElementById("grid");
+    const startOverlay = document.getElementById("startOverlay");
+    const timerDisplay = document.getElementById("timer");
+    const wrongAttemptsDisplay = document.getElementById("wrongAttempts");
+    const flipSound = document.getElementById("flipSound");
+    const matchSound = document.getElementById("matchSound");
+
+let totalPairs = 8;
+let cardValues = [];
+let selectedCards = [];
+let maxTime = 30;        // Max time
+let timeLeft = maxTime;  // Initial time is 30 seconds
+let timer = null;
+let isProcessing = true;    
+let matchedPairs = 0;
+let totalSteps = 0;
+let correctMatches = 0;
+let wrongAttempts = 0;
+let reactionTime = 0;
+let lastClickTime = null;
+
+let consecutiveSuccess = 0;  // New: consecutive success counter
+
+localStorage.setItem('currentLevel', 'level 5'); // Example: Current level is Level 5
+
+
+
+const backBtn = document.getElementById("backBtn");
+
+backBtn.addEventListener("click", () => {
+  const confirmLeave = confirm("Are you sure you want to return to the homepage? Your current game progress will not be saved.");
+  if (confirmLeave) {
+    window.location.href = "Level section.html"; // Replace with your homepage URL
+  }
+});
+
+
+    // Step 1: Set up the card layout on page load (see grey backs initially)
+    function setupCards() {
+      grid.innerHTML = "";
+      cardValues = [];
+      for (let i = 1; i <= totalPairs; i++) cardValues.push(i, i);
+      cardValues.sort(() => Math.random() - 0.5);
+      cardValues.forEach(num => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.value = num;
+        // front/back
+        const front = document.createElement("div");
+        front.classList.add("card-face", "card-front");
+        const back = document.createElement("div");
+        back.classList.add("card-face", "card-back");
+        const img = document.createElement("img");
+        img.src = `./images/${num}.png`;
+        img.alt = `Number ${num}`;
+        back.appendChild(img);
+        card.append(front, back);
+        grid.append(card);
+        // Card flip logic
+        card.addEventListener("click", () => {
+          if (isProcessing) return;
+          flipCard(card);
+        });
+      });
+    }
+
+
+   startOverlay.addEventListener("click", () => {
+  startOverlay.style.display = "none";
+  // Show all cards faces first
+  revealAllCards();
+
+  // After 3 seconds, flip them back and start the game and timer
+  setTimeout(() => {
+    hideAllCards();
+    isProcessing = false; // Allow flipping cards
+    startTimer();
+  }, 3000);
+});
+
+// Show all cards faces
+function revealAllCards() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(card => {
+    card.classList.add("revealed");
+  });
+}
+
+// Flip all cards back
+function hideAllCards() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(card => {
+    card.classList.remove("revealed");
+  });
+}
+
+
+function flipCard(card) {
+  if (card.classList.contains("revealed") || selectedCards.includes(card)) return;
+  card.classList.add("revealed");
+  flipSound.currentTime = 0;
+  flipSound.play();
+  selectedCards.push(card);
+  if (selectedCards.length === 1) lastClickTime = Date.now();
+  else {
+    isProcessing = true;
+    totalSteps++;
+    const [c1, c2] = selectedCards;
+    const v1 = c1.dataset.value, v2 = c2.dataset.value;
+    reactionTime += (Date.now() - lastClickTime) / 1000;
+    if (v1 === v2) {
+      correctMatches++;
+      matchSound.currentTime = 0;
+      matchSound.play();
+      matchedPairs++;
+      // If matched, add 2 seconds, max time won't exceed maxTime
+      timeLeft = Math.min(maxTime, timeLeft + 2);
+      timerDisplay.textContent = timeLeft;
+
+      selectedCards = [];
+      isProcessing = false;
+      if (matchedPairs === totalPairs) setTimeout(endGame, 500);
+    } else {
+      wrongAttempts++;
+      wrongAttemptsDisplay.textContent = wrongAttempts;
+      // If mismatched, subtract 0.5 seconds, but not below 0
+      timeLeft = Math.max(0, timeLeft - 0.5);
+      timerDisplay.textContent = timeLeft;
+
+      setTimeout(() => {
+        selectedCards.forEach(c => c.classList.remove("revealed"));
+        selectedCards = [];
+        isProcessing = false;
+      }, 800);
+    }
+  }
+}
+
+
+
+ function startTimer() {
+  timerDisplay.textContent = timeLeft;
+  timer = setInterval(() => {
+    timeLeft--;
+    if (timeLeft < 0) timeLeft = 0;
+    timerDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  clearInterval(timer);
+  const finalTimeLeft = timeLeft;
+  const timeUsed = 45 - finalTimeLeft;
+
+  const minutes = Math.floor(timeUsed / 60).toString().padStart(2, '0');
+  const seconds = (timeUsed % 60).toString().padStart(2, '0');
+  const formattedTime = `${minutes}:${seconds}`;
+
+  const accuracy = correctMatches / totalSteps || 0;
+  const score = Math.max(50, 100 - wrongAttempts * 5);
+  const note = wrongAttempts <= 1 
+    ? "very excellent" 
+    : wrongAttempts <= 3 
+    ? "good" 
+    : "Need to strengthen";
+
+  const avgReaction = reactionTime > 0 ? (reactionTime / correctMatches) : 0;
+
+  const gameData = {
+    level: "Level 5 - Flash Memory Challenge",
+    levelId: "insane",   // **Level ID must match the level selection page**
+    timeUsed,
+    formattedTime,
+    wrongAttempts,
+    accuracy: parseFloat(accuracy.toFixed(2)),
+    score,
+    note,
+    totalSteps,
+    correctMatches,
+    reactionTime: parseFloat(avgReaction.toFixed(2))
+  };
+
+  // Save data
+  saveGameResults(gameData);
+
+  // Redirect to analysis page
+  window.location.href = "memory_analysis.html";
+}
+
+
+  document.addEventListener("DOMContentLoaded", setupCards);
+
+ function saveGameResults(gameData) {
+  const abilities = generateAbilitiesFrom(gameData);
+
+  // Read existing data
+  let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
+
+  if (!existingResult) {
+    existingResult = {
+      overallScore: gameData.score,
+      abilities: abilities,
+      levels: []
+    };
+  }
+
+  // Check if current level data exists, update or add it
+  const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
+  const newLevelData = {
+    level: gameData.level,
+    levelId: gameData.levelId,
+    time: gameData.timeUsed,
+    formattedTime: gameData.formattedTime,
+    errors: gameData.wrongAttempts,
+    accuracy: gameData.accuracy,
+    score: gameData.score,
+    note: gameData.note
+  };
+
+  if (idx > -1) {
+    existingResult.levels[idx] = newLevelData; // Update the level data
+  } else {
+    existingResult.levels.push(newLevelData);  // Add new level data
+  }
+
+  // Update overall score, e.g., take the average of all levels
+  const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
+  existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
+
+  // You can update abilities as needed, currently using the last one
+  existingResult.abilities = abilities;
+
+  // Save back to localStorage
+  localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
+
+  // Optionally save single game detailed data
+  localStorage.setItem("memoryGameData", JSON.stringify(gameData));
+
+  // Update best time
+  updateBestTime(gameData.levelId, gameData.formattedTime);
+}
+
+function updateBestTime(levelId, newTime) {
+  const bestTimesKey = "bestTimes"; // Store the best time for all levels, format: { levelId: "mm:ss", ... }
+  let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
+
+  const prevBest = bestTimes[levelId];
+  if (!prevBest || timeToSeconds(newTime) < timeToSeconds(prevBest)) {
+    bestTimes[levelId] = newTime;
+  }
+  localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
+}
+
+// Utility function to convert time string to seconds
+function timeToSeconds(timeStr) {
+  if (!timeStr || timeStr === '--:--') return Infinity;
+  const [minutes, seconds] = timeStr.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
+
+
+
+function generateAbilitiesFrom(gameData) {
+  const {
+    accuracy = 0,
+    reactionTime = 0,
+    wrongAttempts = 0,
+    totalSteps = 1,
+    timeUsed = 45,
+    correctMatches = 0
+  } = gameData;
+
+  function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
+    if (correctMatches === 0) return 0;
+    const earlySteps = Math.min(6, totalSteps); // First 6 steps (first 3 pairs)
+    const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
+    const score = Math.max(40, 100 - earlyErrorRate * 100);
+    return Math.round(score);
+  }
+
+  return {
+    shortTerm: calculateShortTermScore(totalSteps, wrongAttempts, correctMatches),
+    attention: Math.round(accuracy * 100),
+    reaction: Math.max(0, 100 - reactionTime * 45),
+    sequence: totalSteps <= 14 ? 80 : 50,
+    resistance: Math.max(0, 100 - wrongAttempts * 4),
+    endurance: Math.max(0, Math.min(100, (1 - (timeUsed / 45)) * 100))
+  };
+}
+
+// localStorage.clear();  // 清空所有的 localStorage 数据
+</script>
+</body>
+</html>
