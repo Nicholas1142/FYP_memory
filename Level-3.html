@@ -283,6 +283,8 @@ let wrongAttempts = 0;
 let reactionTime = 0;
 let lastClickTime = null;
 
+localStorage.setItem('currentLevel', 'Level-3');
+
 // 显示初始卡片（亮面）
 function setupCards() {
   grid.innerHTML = "";
@@ -461,17 +463,6 @@ function timeToSeconds(timeStr) {
   const [minutes, seconds] = timeStr.split(':').map(Number);
   return minutes * 60 + seconds;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

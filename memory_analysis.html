@@ -476,34 +476,28 @@ document.addEventListener("DOMContentLoaded", function () {
         window.requestAnimationFrame(step);
     }
 
-    // Play Again按钮跳转对应关卡
-    document.getElementById("playAgainBtn").addEventListener("click", () => {
-        const level = localStorage.getItem("currentLevel") || "level1";
-        window.location.href = level + ".html";
-    });
+   document.getElementById("playAgainBtn").addEventListener("click", () => {
+   
+    const currentLevel = localStorage.getItem("currentLevel") || "Level-1";
+    
+    window.location.href = `${currentLevel}.html`;
+  });
 
-    // Next Level按钮跳转下一关逻辑
-    document.getElementById("nextLevelBtn").addEventListener("click", () => {
-        // 从level字符串提取数字部分，如 "Level 3 - xxx" -> 3
-        const levelText = level;
-        const match = levelText.match(/Level\s*(\d+)/i);
-        let currentLevelNum = 1;
-        if (match && match[1]) {
-            currentLevelNum = parseInt(match[1], 10);
-        }
-        const maxLevel = 6;
-        if (currentLevelNum < maxLevel) {
-            const nextLevelNum = currentLevelNum + 1;
-            const nextLevelFile = "level " + nextLevelNum + ".html";
-            window.location.href = nextLevelFile;
-        } else {
-            alert("You have reached the highest level and cannot proceed to the next level!");
-            // 也可以禁用按钮：
-            const btn = document.getElementById("nextLevelBtn");
-            btn.disabled = true;
-            btn.style.cursor = "not-allowed";
-            btn.style.opacity = 0.5;
-        }
+ document.getElementById("nextLevelBtn").addEventListener("click", () => {
+      const match = level.match(/Level[-\s]*(\d+)/i);
+      const currentLevelNum = match ? parseInt(match[1], 10) : 1;
+      const maxLevel = 6;
+
+      if (currentLevelNum < maxLevel) {
+        const nextLevelFile = `Level-${currentLevelNum + 1}.html`;
+        window.location.href = nextLevelFile;
+      } else {
+        alert("You have reached the highest level and cannot proceed to the next level!");
+        const btn = document.getElementById("nextLevelBtn");
+        btn.disabled = true;
+        btn.style.cursor = "not-allowed";
+        btn.style.opacity = 0.5;
+      }
     });
 });
 
