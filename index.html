@@ -1,6 +1,17 @@
   <!DOCTYPE html>
   <html lang="zh">
   <head>
+
+    <script>
+  // 登录验证：如果未登录则跳转回 login.html
+  document.addEventListener("DOMContentLoaded", () => {
+    const playerName = localStorage.getItem("playerName");
+    if (!playerName) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Memory Game Dashboard</title>
@@ -455,6 +466,8 @@
 
 
     </style>
+
+    
   </head>
   <body>
     <!-- Navigation Bar -->
