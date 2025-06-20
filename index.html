@@ -485,7 +485,10 @@
           <i class="fas fa-user-circle nav-icon"></i>
           <span class="nav-label">Profile</span>
         </div>
-      </div>
+
+<div class="nav-item" onclick="confirmLogout()">
+  <i class="fas fa-sign-out-alt nav-icon"></i>
+  <span class="nav-label">Logout</span>
     </nav>
 
     <!-- Profile Modal -->
@@ -739,6 +742,20 @@ window.onclick = function(event) {
     helpModal.style.display = 'none';
   }
 };
+
+function confirmLogout() {
+    const ok = window.confirm(
+      "Are you sure you want to log out?\n" +
+      "Your history will be deleted immediately."
+    );
+    if (!ok) return;
+    // 用户点击 “确定” 之后才执行真正的登出
+    localStorage.removeItem('playerName');
+    localStorage.removeItem('playerAvatar');
+    localStorage.removeItem('bestTimes');
+    localStorage.removeItem('memoryGameResult');
+    window.location.href = 'login.html';
+  }
 
     </script>
   </body>
