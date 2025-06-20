@@ -318,7 +318,7 @@
     <div class="btn-container">
         <button class="btn" id="btn-home">Back to Homepage</button>
         <button class="btn" id="btn-download">Download Data</button>
-        <button class="btn" id="btn-clear">Clear Record</button>
+        <!-- <button class="btn" id="btn-clear">Clear Record</button> -->
 
     </div>
 
@@ -546,27 +546,27 @@
 
 
         // 清除记录函数
-function clearRecord() {
-    // 从 localStorage 中删除记忆游戏记录
-    localStorage.removeItem("memoryGameResult");
+// function clearRecord() {
+//     // 从 localStorage 中删除记忆游戏记录
+//     localStorage.removeItem("memoryGameResult");
 
-    // 清除记录后更新页面内容（例如：清除得分和表格数据）
-    document.getElementById("overall-score").textContent = "-";
-    document.getElementById("summary-text").textContent = "Summary Analysis: No data available";
+//     // 清除记录后更新页面内容（例如：清除得分和表格数据）
+//     document.getElementById("overall-score").textContent = "-";
+//     document.getElementById("summary-text").textContent = "Summary Analysis: No data available";
 
-    // 清空能力列表
-    const listItems = document.querySelectorAll(".ability-list li");
-    listItems.forEach(item => {
-        item.textContent = "Data not available";
-    });
+//     // 清空能力列表
+//     const listItems = document.querySelectorAll(".ability-list li");
+//     listItems.forEach(item => {
+//         item.textContent = "Data not available";
+//     });
 
-    // 清空表格数据
-    const tbody = document.querySelector(".record-table tbody");
-    tbody.innerHTML = ""; // 清空表格行
-}
+//     // 清空表格数据
+//     const tbody = document.querySelector(".record-table tbody");
+//     tbody.innerHTML = ""; // 清空表格行
+// }
 
 // 触发清除记录的按钮事件
-document.getElementById("btn-clear").addEventListener("click", clearRecord);
+// document.getElementById("btn-clear").addEventListener("click", clearRecord);
 
 // localStorage.clear();  // 清空所有的 localStorage 数据
     </script>
