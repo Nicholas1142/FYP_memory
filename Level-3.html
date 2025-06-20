@@ -151,30 +151,41 @@
       display: block;
     }
 
-    /* 响应式 */
-    @media (max-width: 600px) {
+   @media (max-width: 600px) {
       .header h1 {
-        font-size: 36px;
+        font-size: 35px;
       }
       .info-container {
-        font-size: 16px;
-        gap: 20px;
-        flex-direction: column;
+        font-size: 19px;
+        gap: 17px;
+        flex-direction: row;
+        justify-content: center;
         align-items: center;
       }
       .sequence-container {
-        font-size: 20px;
+        font-size: 18px;
       }
       .card {
         width: 80px;
-        height: 100px;
+        height: 120px;
       }
       .grid {
-         grid-template-columns: repeat(3, 80px);
-        gap: 15px;
+        grid-template-columns: repeat(4, 85px);
+        gap: 10px;
+      }
+      #startBtn {
+        padding: 12px 40px;
+        font-size: 20px;
+      }
+      #bgMusic {
+        display: none;
+      }
+      #backBtn {
+        padding: 8px 20px;
+        font-size: 16px;
+        margin-bottom: 30px;
       }
     }
-
     #backBtn {
       margin: 0 auto 40px auto;
       display: block;
