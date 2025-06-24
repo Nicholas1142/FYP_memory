@@ -15,7 +15,8 @@
       margin: 0;
       color: orange;
       text-align: center;
-      overflow: hidden;
+      overflow-x: hidden;  /* 禁掉左右滚 */
+  overflow-y: auto;    /* 保留上下滚 */
     }
     .overlay {
       position: fixed; top: 0; left: 0;
@@ -108,7 +109,7 @@
       background-color: #e5533d;
     }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 600px) {
       .header h1 {
         font-size: 35px;
       }
