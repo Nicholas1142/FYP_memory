@@ -360,10 +360,10 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // 读取游戏数据
+
     const gameData = JSON.parse(localStorage.getItem("memoryGameData")) || {};
     const {
-        level = "Level 1 - 普通匹配模式",
+        level = "Level 1 - Normal Matching Mode",
         timeUsed = 0,
         formattedTime = "00:00",
         wrongAttempts = 0,

@@ -215,7 +215,7 @@
   </style>
 </head>
 <body>
-  <!-- 游戏规则+开始按钮遮罩 -->
+  
   <div id="startOverlay" class="overlay">
     <div style="max-width: 600px; color: #ffcc33; font-size: 19px; padding:20px; line-height: 1.5; text-align: left;">
       <h2 style="text-align: center; margin-bottom: 20px;">Game Rules</h2>
@@ -243,7 +243,7 @@
     </div>
   </div>
 
-  <!-- 黑屏遮罩 -->
+  
   <div id="blackOverlay"></div>
 
   <audio id="bgMusic" src="Sound/background music.mp3" loop autoplay></audio>
@@ -298,7 +298,7 @@ let lastClickTime = null;
 
 localStorage.setItem('currentLevel', 'Level-3');
 
-// 显示初始卡片（亮面）
+
 function setupCards() {
   grid.innerHTML = "";
   cardValues = [];
@@ -382,7 +382,7 @@ function flipCard(card) {
       else isProcessing = false;
     } else {
        wrongAttempts++;
-    wrongAttemptsDisplay.textContent = wrongAttempts;  // 更新显示
+    wrongAttemptsDisplay.textContent = wrongAttempts;  
     setTimeout(() => {
       selectedCards.forEach(c => c.classList.remove("revealed"));
       selectedCards = [];
@@ -429,7 +429,7 @@ function endGame() {
 
   const gameData = {
     level: "Level 3 - Memory Interference Mode",
-    levelId: "hard",   // **关卡ID，必须与level selection页面对应**
+    levelId: "hard",   
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -441,18 +441,18 @@ function endGame() {
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // 保存数据
+  
   saveGameResults(gameData);
 
-  // 跳转分析页
+  
   window.location.href = "memory_analysis.html";
 }
 
 
 
-// 更新 localStorage 中的最佳时间
+
 function updateBestTime(levelId, newTime) {
-  const bestTimesKey = "bestTimes"; // 存储所有关卡的最好时间，格式：{ levelId: "mm:ss", ... }
+  const bestTimesKey = "bestTimes"; 
   let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
 
   const prevBest = bestTimes[levelId];
@@ -462,7 +462,7 @@ function updateBestTime(levelId, newTime) {
   localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
 }
 
-// 工具函数，时间字符串转秒数
+
 function timeToSeconds(timeStr) {
   if (!timeStr || timeStr === '--:--') return Infinity;
   const [minutes, seconds] = timeStr.split(':').map(Number);
@@ -470,7 +470,7 @@ function timeToSeconds(timeStr) {
 }
 
 
-// 工具函数，时间字符串转秒数
+
 function timeToSeconds(timeStr) {
   if (!timeStr || timeStr === '--:--') return Infinity;
   const [minutes, seconds] = timeStr.split(':').map(Number);
@@ -483,7 +483,7 @@ function timeToSeconds(timeStr) {
 function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
-  // 读取已有数据
+  
   let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
 
   if (!existingResult) {
@@ -494,7 +494,7 @@ function saveGameResults(gameData) {
     };
   }
 
-  // 检查是否已有当前关卡数据，更新或添加
+  
   const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
   const newLevelData = {
     level: gameData.level,
@@ -508,25 +508,25 @@ function saveGameResults(gameData) {
   };
 
   if (idx > -1) {
-    existingResult.levels[idx] = newLevelData; // 更新该关卡数据
+    existingResult.levels[idx] = newLevelData; 
   } else {
-    existingResult.levels.push(newLevelData);  // 添加新关卡数据
+    existingResult.levels.push(newLevelData);  
   }
 
-  // 更新整体分数，举例取所有关卡平均分
+  
   const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
   existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
 
-  // abilities 你可以根据需要更新，暂时用最后一次的
+  
   existingResult.abilities = abilities;
 
-  // 保存回 localStorage
+  
   localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
 
-  // 保存单次游戏详细数据（可选）
+  
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  // 更新最佳时间
+  
   updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
@@ -571,7 +571,7 @@ const backBtn = document.getElementById("backBtn");
 backBtn.addEventListener("click", () => {
   const confirmLeave = confirm("Are you sure you want to return to the homepage? Your current game progress will not be saved.");
   if (confirmLeave) {
-    window.location.href = "Level section.html"; // Replace with your homepage URL
+    window.location.href = "Level section.html"; 
   }
 });
   </script>

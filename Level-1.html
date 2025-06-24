@@ -196,7 +196,7 @@
 </head>
 <body>
 
-  <!-- Rules and Start overlay -->
+ 
   <div id="startOverlay" class="overlay" style="display: flex;">
     <div style="max-width: 600px; color: #ffcc33; font-size: 19px; line-height: 1.5;padding:20px; text-align: left;">
       <h2 style="text-align: center; margin-bottom: 20px;">Game Rules</h2>
@@ -252,7 +252,7 @@
     let selectedCards = [];
     let timeLeft = 45;
     let timer = null;
-    let isProcessing = true;    // 点击前不允许翻牌
+    let isProcessing = true;    
     let matchedPairs = 0;
     let totalSteps = 0;
     let correctMatches = 0;
@@ -260,24 +260,24 @@
     let reactionTime = 0;
     let lastClickTime = null;
 
-    localStorage.setItem('currentLevel', 'evel-1'); // 举例，当前是第3关
+    localStorage.setItem('currentLevel', 'Level-1'); 
 
 
-    // 点击开始按钮，隐藏遮罩，允许翻牌，启动计时器
+  
     startBtn.addEventListener("click", () => {
       startOverlay.style.display = "none";
-      isProcessing = false;      // 允许翻牌
-      startTimer();              // 启动倒计时
+      isProcessing = false;      
+      startTimer();              
     });
 
     backBtn.addEventListener("click", () => {
       const confirmLeave = confirm("Are you sure you want to return to the level selection page? Your current game progress will not be saved.");
       if (confirmLeave) {
-        window.location.href = "Level section.html"; // 修改成你主页地址
+        window.location.href = "Level section.html"; 
       }
     });
 
-    // 页面加载时先生成卡片布局（看到灰色背面）
+    
     function setupCards() {
       grid.innerHTML = "";
       cardValues = [];
@@ -287,7 +287,7 @@
         const card = document.createElement("div");
         card.classList.add("card");
         card.dataset.value = num;
-        // front/back
+     
         const front = document.createElement("div");
         front.classList.add("card-face", "card-front");
         const back = document.createElement("div");
@@ -298,7 +298,7 @@
         back.appendChild(img);
         card.append(front, back);
         grid.append(card);
-        // 点击逻辑
+        
         card.addEventListener("click", () => {
           if (isProcessing) return;
           flipCard(card);
@@ -372,7 +372,7 @@
 
       const gameData = {
         level: "Level 1 - Normal Matching Mode",
-        levelId: "easy",   // **关卡ID，必须与level selection页面对应**
+        levelId: "easy",  
         timeUsed,
         formattedTime,
         wrongAttempts,
@@ -384,10 +384,10 @@
         reactionTime: parseFloat(avgReaction.toFixed(2))
       };
 
-      // 保存数据
+     
       saveGameResults(gameData);
 
-      // 跳转分析页
+      
       window.location.href = "memory_analysis.html";
     }
 
@@ -480,7 +480,7 @@
       };
     }
 
-    // localStorage.clear();  // 清空所有的 localStorage 数据
+    // localStorage.clear();  
   </script>
 </body>
 </html>

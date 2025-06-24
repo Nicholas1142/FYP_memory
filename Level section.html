@@ -90,7 +90,7 @@
  
 
   <div id="level-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl px-4">
-    <!-- JS 生成卡片 -->
+  
   </div>
 
   <button onclick="goBack()" class="mt-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full hover:from-blue-600 hover:to-blue-700 shadow-lg transition-all duration-300 hover:shadow-xl flex items-center">
@@ -101,14 +101,14 @@
   </button>
 
   <script>
-  // 格式化时间字符串（MM:SS）转秒数
+  
   function timeToSeconds(timeStr) {
     if (!timeStr || timeStr === '--:--') return Infinity;
     const [minutes, seconds] = timeStr.split(':').map(Number);
     return minutes * 60 + seconds;
   }
 
-  // 秒数格式化为 MM:SS
+  
   function formatTime(seconds) {
     if (seconds === Infinity) return '--:--';
     const mins = Math.floor(seconds / 60);
@@ -116,7 +116,7 @@
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
-  // 从localStorage读取所有已完成关卡记录，格式示例：
+
   // { levelId: "easy", bestTime: "01:23", completed: true }
   function loadLevelRecords() {
     const recordsJson = localStorage.getItem('levels');
@@ -128,7 +128,7 @@
     }
   }
 
-  // 更新 levels 数组，将本地存储的成绩应用到对应关卡
+ 
   function applySavedRecordsToLevels(levels, savedRecords) {
     if (!savedRecords) return;
     savedRecords.forEach(saved => {
@@ -136,13 +136,13 @@
       if (idx >= 0) {
         levels[idx].bestTime = saved.bestTime || null;
         levels[idx].completed = !!saved.completed;
-        levels[idx].unlocked = saved.unlocked ?? levels[idx].unlocked; // 保持或更新解锁状态
+        levels[idx].unlocked = saved.unlocked ?? levels[idx].unlocked; 
       }
     });
   }
 
 
-  // 初始化关卡数据
+  
   const levels = [
     { id: 'easy', name: 'Level-1', grid: '4x4', unlocked: true, bestTime: null, completed: false, file: 'Level-1.html', color: 'from-green-400 to-green-500' },
     { id: 'medium', name: 'Level-2', grid: '3x4', unlocked: false, bestTime: null, completed: false, file: 'Level-2.html', color: 'from-yellow-400 to-yellow-500' },
@@ -152,8 +152,8 @@
     { id: 'legendary', name: 'Level-6', grid: '3x4', unlocked: false, bestTime: null, completed: false, file: 'Level-6.html', color: 'from-yellow-500 to-yellow-600' }
   ];
 
-  // 载入本地存储的关卡数据，覆盖levels的bestTime和completed状态
- // 新增：从 localStorage 读取 bestTimes
+  
+ 
 function loadBestTimes() {
   const bestTimesJson = localStorage.getItem('bestTimes');
   if (!bestTimesJson) return {};
@@ -166,14 +166,13 @@ function loadBestTimes() {
 
 const bestTimes = loadBestTimes();
 
-// 用 bestTimes 更新 levels 的 bestTime 和完成状态
 levels.forEach((lvl, index) => {
   if (bestTimes[lvl.id]) {
     lvl.bestTime = bestTimes[lvl.id];
-    lvl.completed = true;  // 有完成时间，标记完成
-    lvl.unlocked = true;   // 自己肯定解锁
+    lvl.completed = true;  
+    lvl.unlocked = true;   
 
-    // 解锁下一关（如果存在）
+    
     if (index + 1 < levels.length) {
       levels[index + 1].unlocked = true;
     }
@@ -181,11 +180,10 @@ levels.forEach((lvl, index) => {
 });
 
 
-// localStorage.setItem('bestTimes', JSON.stringify({})); // Clears only best times.
+// localStorage.setItem('bestTimes', JSON.stringify({})); 
 
 
 
-  // 渲染关卡卡片
   const container = document.getElementById('level-container');
   container.innerHTML = '';
   levels.forEach((level, index) => {
@@ -243,7 +241,7 @@ levels.forEach((lvl, index) => {
     if (level.unlocked && level.file !== '#') {
       card.addEventListener('click', (e) => {
         if (!e.target.closest('button')) {
-          // 直接跳转，无需更新完成状态（由关卡页面保存）
+       
           window.location.href = level.file + `?level=${level.id}`;
         }
       });
@@ -268,7 +266,7 @@ levels.forEach((lvl, index) => {
     container.appendChild(card);
   });
 
-  // 返回菜单
+ 
   function goBack() {
     window.location.href = '\index.html';
   }

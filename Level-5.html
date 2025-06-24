@@ -239,8 +239,8 @@
 let totalPairs = 8;
 let cardValues = [];
 let selectedCards = [];
-let maxTime = 30;        // Max time
-let timeLeft = maxTime;  // Initial time is 30 seconds
+let maxTime = 30;        
+let timeLeft = maxTime;  
 let timer = null;
 let isProcessing = true;    
 let matchedPairs = 0;
@@ -250,9 +250,9 @@ let wrongAttempts = 0;
 let reactionTime = 0;
 let lastClickTime = null;
 
-let consecutiveSuccess = 0;  // New: consecutive success counter
+let consecutiveSuccess = 0;  
 
-localStorage.setItem('currentLevel', 'Level-5'); // Example: Current level is Level 5
+localStorage.setItem('currentLevel', 'Level-5'); 
 
 
 
@@ -261,12 +261,12 @@ const backBtn = document.getElementById("backBtn");
 backBtn.addEventListener("click", () => {
   const confirmLeave = confirm("Are you sure you want to return to the homepage? Your current game progress will not be saved.");
   if (confirmLeave) {
-    window.location.href = "Level section.html"; // Replace with your homepage URL
+    window.location.href = "Level section.html"; 
   }
 });
 
 
-    // Step 1: Set up the card layout on page load (see grey backs initially)
+    
     function setupCards() {
       grid.innerHTML = "";
       cardValues = [];
@@ -298,18 +298,18 @@ backBtn.addEventListener("click", () => {
 
    startOverlay.addEventListener("click", () => {
   startOverlay.style.display = "none";
-  // Show all cards faces first
+ 
   revealAllCards();
 
-  // After 3 seconds, flip them back and start the game and timer
+  
   setTimeout(() => {
     hideAllCards();
-    isProcessing = false; // Allow flipping cards
+    isProcessing = false; 
     startTimer();
   }, 3000);
 });
 
-// Show all cards faces
+
 function revealAllCards() {
   const cards = document.querySelectorAll(".card");
   cards.forEach(card => {
@@ -317,7 +317,7 @@ function revealAllCards() {
   });
 }
 
-// Flip all cards back
+
 function hideAllCards() {
   const cards = document.querySelectorAll(".card");
   cards.forEach(card => {
@@ -403,7 +403,7 @@ function endGame() {
 
   const gameData = {
     level: "Level 5 - Flash Memory Challenge",
-    levelId: "insane",   // **Level ID must match the level selection page**
+    levelId: "insane",   
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -428,7 +428,6 @@ function endGame() {
  function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
-  // Read existing data
   let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
 
   if (!existingResult) {
@@ -439,7 +438,7 @@ function endGame() {
     };
   }
 
-  // Check if current level data exists, update or add it
+  
   const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
   const newLevelData = {
     level: gameData.level,
@@ -453,25 +452,25 @@ function endGame() {
   };
 
   if (idx > -1) {
-    existingResult.levels[idx] = newLevelData; // Update the level data
+    existingResult.levels[idx] = newLevelData; 
   } else {
-    existingResult.levels.push(newLevelData);  // Add new level data
+    existingResult.levels.push(newLevelData);  
   }
 
-  // Update overall score, e.g., take the average of all levels
+ 
   const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
   existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
 
-  // You can update abilities as needed, currently using the last one
+  
   existingResult.abilities = abilities;
 
-  // Save back to localStorage
+ 
   localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
 
-  // Optionally save single game detailed data
+  
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  // Update best time
+  
   updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
@@ -486,7 +485,7 @@ function updateBestTime(levelId, newTime) {
   localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
 }
 
-// Utility function to convert time string to seconds
+
 function timeToSeconds(timeStr) {
   if (!timeStr || timeStr === '--:--') return Infinity;
   const [minutes, seconds] = timeStr.split(':').map(Number);
@@ -507,7 +506,7 @@ function generateAbilitiesFrom(gameData) {
 
   function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
     if (correctMatches === 0) return 0;
-    const earlySteps = Math.min(6, totalSteps); // First 6 steps (first 3 pairs)
+    const earlySteps = Math.min(6, totalSteps); 
     const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
     const score = Math.max(40, 100 - earlyErrorRate * 100);
     return Math.round(score);

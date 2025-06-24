@@ -213,7 +213,7 @@
     let selectedCards = [];
     let timeLeft = 45;
     let timer = null;
-    let isProcessing = true;    // Disallow flipping before processing
+    let isProcessing = true;    
     let matchedPairs = 0;
     let totalSteps = 0;
     let correctMatches = 0;
@@ -226,13 +226,13 @@ const backBtn = document.getElementById("backBtn");
 backBtn.addEventListener("click", () => {
   const confirmLeave = confirm("Are you sure you want to return to the homepage? Your current game progress will not be saved.");
   if (confirmLeave) {
-    window.location.href = "Level section.html"; // Replace with your homepage URL
+    window.location.href = "Level section.html"; 
   }
 });
 
 localStorage.setItem('currentLevel', 'Level-2'); 
 
-    // Step 1: Set up the card layout on page load (see grey backs initially)
+   
   function setupCards_Level12() {
   grid.innerHTML = "";
   cardValues = [];
@@ -240,7 +240,7 @@ localStorage.setItem('currentLevel', 'Level-2');
   cardValues.sort(() => Math.random() - 0.5);
 
   cardValues.forEach(value => {
-    const baseId = value.slice(0, -1); // Get the numeric part
+    const baseId = value.slice(0, -1); 
     const card = document.createElement("div");
     card.classList.add("card");
     card.dataset.value = baseId;
@@ -252,7 +252,7 @@ localStorage.setItem('currentLevel', 'Level-2');
     back.classList.add("card-face", "card-back");
 
     const img = document.createElement("img");
-    img.src = `./images/${value}.png`; // e.g., 1a.png, 1b.png
+    img.src = `./images/${value}.png`; 
     img.alt = `Card ${value}`;
 
     back.appendChild(img);
@@ -267,11 +267,11 @@ localStorage.setItem('currentLevel', 'Level-2');
 }
 
 
-    // Step 2: Start the game after clicking on the overlay
+    
     startOverlay.addEventListener("click", () => {
       startOverlay.style.display = "none";
-      isProcessing = false;      // Allow card flipping
-      startTimer();              // Start the countdown timer
+      isProcessing = false;      
+      startTimer();              
     });
 
     function flipCard(card) {
@@ -340,7 +340,7 @@ localStorage.setItem('currentLevel', 'Level-2');
 
   const gameData = {
     level: "level 2 - Match the Class",
-    levelId: "medium",   // **Level ID must match the level selection page**
+    levelId: "medium",   
     timeUsed,
     formattedTime,
     wrongAttempts,
@@ -352,10 +352,10 @@ localStorage.setItem('currentLevel', 'Level-2');
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // Save data
+  
   saveGameResults(gameData);
 
-  // Redirect to analysis page
+  
   window.location.href = "memory_analysis.html";
 }
 
@@ -365,7 +365,7 @@ localStorage.setItem('currentLevel', 'Level-2');
  function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
-  // Read existing data
+  
   let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
 
   if (!existingResult) {
@@ -376,7 +376,7 @@ localStorage.setItem('currentLevel', 'Level-2');
     };
   }
 
-  // Check if current level data exists, update or add it
+  
   const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
   const newLevelData = {
     level: gameData.level,
@@ -390,30 +390,30 @@ localStorage.setItem('currentLevel', 'Level-2');
   };
 
   if (idx > -1) {
-    existingResult.levels[idx] = newLevelData; // Update the level data
+    existingResult.levels[idx] = newLevelData; 
   } else {
-    existingResult.levels.push(newLevelData);  // Add new level data
+    existingResult.levels.push(newLevelData);  
   }
 
-  // Update overall score, e.g., take the average of all levels
+  
   const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
   existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
 
-  // You can update abilities as needed, currently using the last one
+
   existingResult.abilities = abilities;
 
-  // Save back to localStorage
+  
   localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
 
-  // Optionally save single game detailed data
+  
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  // Update best time
+
   updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
 function updateBestTime(levelId, newTime) {
-  const bestTimesKey = "bestTimes"; // Store the best time for all levels, format: { levelId: "mm:ss", ... }
+  const bestTimesKey = "bestTimes"; 
   let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
 
   const prevBest = bestTimes[levelId];
@@ -423,7 +423,7 @@ function updateBestTime(levelId, newTime) {
   localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
 }
 
-// Utility function to convert time string to seconds
+
 function timeToSeconds(timeStr) {
   if (!timeStr || timeStr === '--:--') return Infinity;
   const [minutes, seconds] = timeStr.split(':').map(Number);
@@ -444,7 +444,7 @@ function generateAbilitiesFrom(gameData) {
 
   function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
     if (correctMatches === 0) return 0;
-    const earlySteps = Math.min(6, totalSteps); // First 6 steps (first 3 pairs)
+    const earlySteps = Math.min(6, totalSteps); 
     const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
     const score = Math.max(40, 100 - earlyErrorRate * 100);
     return Math.round(score);
@@ -460,7 +460,7 @@ function generateAbilitiesFrom(gameData) {
   };
 }
 
-// localStorage.clear();  // 清空所有的 localStorage 数据
+// localStorage.clear();  
   </script>
 </body>
 </html>
