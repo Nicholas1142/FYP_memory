@@ -404,6 +404,8 @@
         .nav-label {
           display: none;
         }
+
+        
       }
 
  /* 使模态框中的内容保持居中 */
@@ -464,7 +466,47 @@
   color: rgba(255, 255, 255, 0.8); /* 提高可读性 */
 }
 
+/* 手机端帮助弹窗优化 */
+@media (max-width: 768px) {
+  /* 弹窗背景不变，直接调整里面的 .modal-content */
+  #helpModal .modal-content {
+    width: 90vw;          /* 宽度 90% 视口宽 */
+    max-width: 90vw;      
+    margin: 30vh auto;    /* 上下各 10% 视口高，左右自动居中 */
+    padding: 20px;        /* 内边距稍微放宽 */
+    box-sizing: border-box;
+    height: auto;         
+    max-height: 80vh;     /* 最多占 80% 视口高 */
+    overflow-y: auto;     /* 内容超出可滚动 */
+  }
 
+  /* 标题稍微缩小 */
+  #helpModal .modal-content h2 {
+    font-size: 1.4rem;    /* 约 22px */
+    margin-bottom: 1rem;
+  }
+
+  /* 段落文字略微放大，更易阅读 */
+  #helpModal .modal-content p {
+    font-size: 1rem;      /* 约 16px */
+    line-height: 1.5;
+    margin: 0.5rem 0;
+  }
+
+  /* 按钮宽度占满，字体也稍微放大 */
+  #helpModal .modal-content button {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1rem;
+  }
+
+  /* 关闭叉叉不要离边缘太近 */
+  #helpModal .close {
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+  }
+}
     </style>
 
     
