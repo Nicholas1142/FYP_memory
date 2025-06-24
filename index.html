@@ -3,7 +3,7 @@
   <head>
 
     <script>
-  // 登录验证：如果未登录则跳转回 login.html
+  
   document.addEventListener("DOMContentLoaded", () => {
     const playerName = localStorage.getItem("playerName");
     if (!playerName) {
@@ -47,7 +47,7 @@
         z-index: -1;
         filter: brightness(0.6);
       }
-      /* Navigation Bar */
+      
       .navbar {
         position: fixed;
         top: 0;
@@ -111,7 +111,7 @@
         transform: scale(1.1);
         box-shadow: 0 0 10px var(--accent-color);
       }
-      /* Main Content */
+   
       .container {
         text-align: center;
         position: relative;
@@ -121,7 +121,7 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
-        padding-top: 70px; /* Account for navbar */
+        padding-top: 70px; 
       }
       .title {
         font-size: 5rem;
@@ -178,7 +178,7 @@
       .btn.multiplayer {
         background: linear-gradient(135deg, #ff6b6b, #ffa502);
       }
-      /* Memory Health Indicator */
+      
       .memory-health {
         position: absolute;
         top: 20px;
@@ -232,7 +232,7 @@
         background-color: var(--primary-color);
         transform: translateY(-3px) scale(1.1);
       }
-      /* Modal Styling */
+      
       .modal {
         display: none;
         position: fixed;
@@ -317,7 +317,7 @@
       .stat-value {
         font-weight: 600;
       }
-      /* 新增 summary 样式 */
+  
       .summary-text {
         margin-top: 10px;
         padding: 12px 15px;
@@ -329,7 +329,7 @@
         line-height: 1.3;
         min-height: 50px;
       }
-      /* Edit Profile Modal Styles */
+    
       #editProfileModal .modal-content {
         max-width: 400px;
       }
@@ -386,7 +386,7 @@
         color: inherit;
         text-decoration: none;
       }
-      /* Responsive Design */
+      
       @media (max-width: 768px) {
         .title {
           font-size: 3rem;
@@ -408,7 +408,6 @@
         
       }
 
- /* 使模态框中的内容保持居中 */
 #helpModal .modal-content {
   max-width: 500px;
   background-color: #1e1e1e;
@@ -416,13 +415,13 @@
   padding: 30px;
   border-radius: 15px;
   color: white;
-  text-align: center; /* 确保文本居中 */
+  text-align: center; 
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
   position: relative;
   animation: slideDown 0.4s;
 }
 
-/* 更新关闭按钮样式 */
+
 #helpModal .close {
   color: #aaa;
   font-size: 28px;
@@ -434,12 +433,12 @@
   transition: color 0.3s;
 }
 
-/* 改变关闭按钮的颜色 */
+
 #helpModal .close:hover {
   color: white;
 }
 
-/* 按钮样式居中 */
+
 #helpModal button {
   margin-top: 20px;
   padding: 10px 20px;
@@ -448,59 +447,59 @@
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  display: block;  /* 使按钮成为块级元素 */
-  width: 100%; /* 使按钮宽度占满父元素 */
+  display: block;  
+  width: 100%; 
   text-align: center;
 }
 
-/* 更改按钮hover样式 */
+
 #helpModal button:hover {
   background-color: var(--secondary-color);
 }
 
-/* 确保 modal 中的内容居中 */
+
 #helpModal .modal-content p {
   margin: 10px 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8); /* 提高可读性 */
+  color: rgba(255, 255, 255, 0.8); 
 }
 
-/* 手机端帮助弹窗优化 */
+
 @media (max-width: 768px) {
-  /* 弹窗背景不变，直接调整里面的 .modal-content */
+
   #helpModal .modal-content {
-    width: 90vw;          /* 宽度 90% 视口宽 */
+    width: 90vw;          
     max-width: 90vw;      
-    margin: 30vh auto;    /* 上下各 10% 视口高，左右自动居中 */
-    padding: 20px;        /* 内边距稍微放宽 */
+    margin: 30vh auto;    
+    padding: 20px;        
     box-sizing: border-box;
     height: auto;         
-    max-height: 80vh;     /* 最多占 80% 视口高 */
-    overflow-y: auto;     /* 内容超出可滚动 */
+    max-height: 80vh;     
+    overflow-y: auto;     
   }
 
-  /* 标题稍微缩小 */
+
   #helpModal .modal-content h2 {
-    font-size: 1.4rem;    /* 约 22px */
+    font-size: 1.4rem;    
     margin-bottom: 1rem;
   }
 
-  /* 段落文字略微放大，更易阅读 */
+  
   #helpModal .modal-content p {
-    font-size: 1rem;      /* 约 16px */
+    font-size: 1rem;      
     line-height: 1.5;
     margin: 0.5rem 0;
   }
 
-  /* 按钮宽度占满，字体也稍微放大 */
+    
   #helpModal .modal-content button {
     width: 100%;
     padding: 12px 0;
     font-size: 1rem;
   }
 
-  /* 关闭叉叉不要离边缘太近 */
+  
   #helpModal .close {
     top: 10px;
     right: 10px;
@@ -512,7 +511,7 @@
     
   </head>
   <body>
-    <!-- Navigation Bar -->
+    
     <nav class="navbar">
       <div class="logo">
         <i class="fas fa-brain"></i>
@@ -533,7 +532,7 @@
   <span class="nav-label">Logout</span>
     </nav>
 
-    <!-- Profile Modal -->
+    
     <div id="profileModal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="toggleProfileModal()">&times;</span>
@@ -556,7 +555,7 @@
       </div>
     </div>
 
-    <!-- Edit Profile Modal -->
+   
     <div id="editProfileModal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeEditModal()">&times;</span>
@@ -610,7 +609,7 @@
           <i class="fas fa-volume-up"></i>
         </button> -->
 
-        <!-- 帮助弹窗 -->
+       
 <div id="helpModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="toggleHelpModal()">&times;</span>
@@ -630,7 +629,7 @@
 
     <script>
 
-      // 与分析页一致的 Summary 文本生成逻辑
+    
 function generateSummary(score) {
   if (score <= 40) {
     return "Summary Analysis: Memory health is not satisfactory. You may need to focus on improving your memory abilities.";
@@ -642,11 +641,11 @@ function generateSummary(score) {
 }
 
       document.addEventListener('DOMContentLoaded', () => {
-        // 读取localStorage中的玩家昵称和头像
+      
         const playerName = localStorage.getItem('playerName') || 'Guest';
         const playerAvatar = localStorage.getItem('playerAvatar') || 'https://i.imgur.com/6VBx3io.png';
 
-        // 读取关卡信息，默认第一关
+       
         const bestTimesJson = localStorage.getItem('bestTimes');
         let bestTimes = {};
         if (bestTimesJson) {
@@ -670,7 +669,7 @@ function generateSummary(score) {
         if (highestLevelIndex === -1) highestLevelIndex = 0;
         const highestLevelName = levelNames[levelOrder[highestLevelIndex]] || 'Level 1';
 
-        // 读取 memory score 和 abilities summary
+       
         let memoryScore = '0';
         let summaryText = 'Summary Analysis: -';
         const memoryDataJson = localStorage.getItem('memoryGameResult');
@@ -689,7 +688,7 @@ function generateSummary(score) {
           } catch {}
         }
 
-        // 设置 Profile 显示内容
+      
         updateProfileDisplay(playerName, playerAvatar, highestLevelName, memoryScore, summaryText);
       });
 
@@ -720,7 +719,7 @@ function generateSummary(score) {
         document.getElementById('editProfileModal').style.display = 'none';
       }
 
-      // 头像文件选择后预览
+      
       document.getElementById('editAvatar').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -732,7 +731,7 @@ function generateSummary(score) {
         reader.readAsDataURL(file);
       });
 
-      // 保存编辑信息
+      
       document.getElementById('editProfileForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -744,22 +743,22 @@ function generateSummary(score) {
           return;
         }
 
-        // 保存昵称
+        
         localStorage.setItem('playerName', newName);
 
-        // 保存头像，只有当是本地文件的 base64 才更新
+        
         if (avatarPreviewSrc.startsWith('data:image')) {
           localStorage.setItem('playerAvatar', avatarPreviewSrc);
         }
-        // 如果是默认链接或外链，不覆盖
+        
 
-        // 更新Profile显示
+       
         updateProfileDisplay(newName, avatarPreviewSrc, document.getElementById('profileLevel').textContent, document.getElementById('profileScore').textContent.split(' ')[0], document.getElementById('profileSummary').textContent);
 
         closeEditModal();
       });
 
-      // 点击modal外区域关闭弹窗
+      
       window.onclick = function(event) {
         const profileModal = document.getElementById("profileModal");
         const editModal = document.getElementById("editProfileModal");
@@ -771,13 +770,13 @@ function generateSummary(score) {
         }
       };
 
-      // 切换帮助弹窗的显示和隐藏
+      
 function toggleHelpModal() {
   const helpModal = document.getElementById('helpModal');
   helpModal.style.display = helpModal.style.display === 'block' ? 'none' : 'block';
 }
 
-// 点击弹窗外部区域时关闭弹窗
+
 window.onclick = function(event) {
   const helpModal = document.getElementById('helpModal');
   if (event.target === helpModal) {
@@ -791,7 +790,7 @@ function confirmLogout() {
       "Your history will be deleted immediately."
     );
     if (!ok) return;
-    // 用户点击 “确定” 之后才执行真正的登出
+    
     localStorage.removeItem('playerName');
     localStorage.removeItem('playerAvatar');
     localStorage.removeItem('bestTimes');
