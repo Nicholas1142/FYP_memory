@@ -223,11 +223,11 @@
 
 
 
-        /* Icon styles */
+      
         .icon {
             font-size: 1.5rem;
         }
-        /* Score colors */
+      
         .good-score {
             color: var(--success-color);
         }
@@ -237,7 +237,7 @@
         .poor-score {
             color: var(--danger-color);
         }
-        /* Button styles */
+       
         .btn-container {
             text-align: center;
             margin-bottom: 25px;
@@ -266,7 +266,7 @@
     <div class="container">
         <h1>Memory Health Analysis Report</h1>
 
-        <!-- Section 1: Memory Ability Analysis -->
+      
         <div class="section">
             <h2><span class="icon">🧠</span> Memory Ability Analysis</h2>
             <div class="score-box">
@@ -282,7 +282,7 @@
             </ul>
         </div>
 
-        <!-- Section 2: Level Performance Data -->
+   
         <div class="section">
             <h2><span class="icon">📊</span> Level Performance Data</h2>
             <div style="overflow-x: auto;">
@@ -298,13 +298,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Dynamic rows inserted here -->
+                        
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Section 3: Charts Area -->
+       
         <div class="section">
             <h2><span class="icon">📈</span> Memory Ability Visualization</h2>
             <div class="chart-container">
@@ -333,14 +333,14 @@
         }
 
         function goHome() {
-            window.location.href = "index.html"; // Change to your homepage URL
+            window.location.href = "index.html"; 
         }
 
-        // JSON to CSV helper function
+       
         function jsonToCsv(data) {
             let csv = "";
 
-            // Write ability scores (rounded to integers)
+         
             csv += "Ability Type,Score\n";
             csv += `Short-term Memory,${Math.round(data.abilities.shortTerm)}\n`;
             csv += `Attention,${Math.round(data.abilities.attention)}\n`;
@@ -348,10 +348,10 @@
             csv += `Sequential Memory,${Math.round(data.abilities.sequence)}\n`;
             csv += `Distraction Resistance,${Math.round(data.abilities.resistance)}\n\n`;
 
-            // Write level data headers
+      
             csv += "Level,Time(s),Mistakes,Accuracy(%),Score,Notes\n";
 
-            // Sort levels by number ascending
+           
             data.levels.sort((a, b) => {
                 const numA = parseInt(a.level.match(/\d+/)[0]);
                 const numB = parseInt(b.level.match(/\d+/)[0]);
@@ -382,7 +382,7 @@
                 return;
             }
 
-            const csvData = "\uFEFF" + jsonToCsv(dataObj);  // Add BOM to prevent encoding issues
+            const csvData = "\uFEFF" + jsonToCsv(dataObj);  
             const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
             const url = URL.createObjectURL(blob);
 
@@ -475,9 +475,9 @@
                 overallScoreElement.textContent = `${Math.round(data.overallScore)} / 100`;
                 overallScoreElement.className = getScoreClass(Math.round(data.overallScore));
 
-              const overallScore = Math.round(data.overallScore);  // 获取总分
+              const overallScore = Math.round(data.overallScore);  
 
-                    // 生成Summary Analysis
+                   
                     let summaryText = "Summary Analysis: ";
 
                     if (overallScore <= 40) {
@@ -488,7 +488,7 @@
                         summaryText += "Memory health is excellent! Keep up the great work!";
                     }
 
-                    // 更新Summary Analysis文本
+                    
                     document.getElementById("summary-text").textContent = summaryText;
 
                 const abilities = data.abilities;
@@ -512,7 +512,7 @@
                 const tbody = document.querySelector(".record-table tbody");
                 tbody.innerHTML = "";
 
-                // Sort levels by number ascending
+                
                 data.levels.sort((a, b) => {
                     const numA = parseInt(a.level.match(/\d+/)[0]);
                     const numB = parseInt(b.level.match(/\d+/)[0]);
@@ -545,30 +545,28 @@
 
 
 
-        // 清除记录函数
+      
 // function clearRecord() {
-//     // 从 localStorage 中删除记忆游戏记录
+
 //     localStorage.removeItem("memoryGameResult");
 
-//     // 清除记录后更新页面内容（例如：清除得分和表格数据）
+
 //     document.getElementById("overall-score").textContent = "-";
 //     document.getElementById("summary-text").textContent = "Summary Analysis: No data available";
 
-//     // 清空能力列表
+
 //     const listItems = document.querySelectorAll(".ability-list li");
 //     listItems.forEach(item => {
 //         item.textContent = "Data not available";
 //     });
 
-//     // 清空表格数据
 //     const tbody = document.querySelector(".record-table tbody");
-//     tbody.innerHTML = ""; // 清空表格行
+//     tbody.innerHTML = ""; 
 // }
 
-// 触发清除记录的按钮事件
 // document.getElementById("btn-clear").addEventListener("click", clearRecord);
 
-// localStorage.clear();  // 清空所有的 localStorage 数据
+// localStorage.clear();  
     </script>
 </body>
 </html>

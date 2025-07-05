@@ -379,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const avgReactionTime = reactionTime ? parseFloat(reactionTime) : 0;
     const reactionScore = Math.max(0, Math.min(100, 100 - (avgReactionTime * 20)));
 
-    // 更新UI
+  
     document.getElementById("levelInfo").textContent = `level: ${level}`;
     document.getElementById("memoryScore").textContent = score;
     document.getElementById("performanceNote").textContent = `Performance Note: ${note}`;
@@ -391,7 +391,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("wrongAttempts").textContent = wrongAttempts;
     document.getElementById("reactionScore").textContent = Math.round(reactionScore);
 
-    // 创建雷达图
     const ctx = document.getElementById("memoryRadarChart").getContext("2d");
     if (ctx) {
         new Chart(ctx, {
@@ -459,7 +458,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 分数动画
+   
     animateValue("memoryScore", 0, score, 1500);
 
     function animateValue(id, start, end, duration) {
@@ -501,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// localStorage.clear();  // 清空所有的 localStorage 数据
+// localStorage.clear();  
 </script>
 </body>
 </html>

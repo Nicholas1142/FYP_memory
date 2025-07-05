@@ -269,10 +269,10 @@ body {
   }
    .info-container {
     font-size: 19px;
-    gap: 17px;          /* 调大间距 */
-    flex-direction: row; /* 横排 */
-    justify-content: center; /* 居中 */
-    align-items: center; /* 垂直居中 */
+    gap: 17px;         
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: center; 
    }
   .sequence-container {
     font-size: 18px;
@@ -289,7 +289,7 @@ body {
     padding: 12px 40px;
     font-size: 20px;
   }
-  /* 可选：隐藏背景视频和音乐 */
+  
   /* .video-background {
     display: none;
   } */
@@ -324,7 +324,7 @@ body {
 
 
 
-<!-- Overlay for game rules and start button -->
+
 <div id="startOverlay" class="overlay" style="display:flex; flex-direction: column; background: rgba(0,0,0,0.9); cursor: default; z-index: 10000;">
   <div style="max-width: 600px; color: #ffcc33; font-size: 19px; line-height: 1.5; text-align: left;  padding: 20px; margin-bottom: 20px; ">
     <h2 style="text-align: center; margin-bottom: 20px;">Game Rules</h2>
@@ -383,7 +383,7 @@ const sequenceDisplay = document.getElementById("sequenceDisplay");
 const roundNumberDisplay = document.getElementById("roundNumber");
 const timerDisplay = document.getElementById("timer");
 
-// 原本每轮设置时间的数组，可以保留 pairs 设置，但忽略 time
+
 let rounds = [
   { pairs: [[1, 2], [3, 4]] },
   { pairs: [[1, 2], [3, 4], [5, 6], [7, 8]] },
@@ -391,7 +391,7 @@ let rounds = [
 ];
 
 let currentRound = 0;
-let totalTimeLimit = 90; // 总时间
+let totalTimeLimit = 90; 
 let totalTimeLeft = totalTimeLimit;
 let totalTimeUsed = 0;
 
@@ -427,7 +427,7 @@ const backBtn = document.getElementById("backBtn");
 backBtn.addEventListener("click", () => {
   const confirmLeave = confirm("Are you sure you want to return to the level selection page? Your current game progress will not be saved.");
   if (confirmLeave) {
-    window.location.href = "Level section.html"; // 替换为你的主页地址
+    window.location.href = "Level section.html"; 
   }
 });
 
@@ -439,7 +439,7 @@ function displaySequence() {
 
   setTimeout(() => {
     hideCards();
-    startTimer();  // 10秒展示后，隐藏卡片，再启动计时器
+    startTimer();  
   }, 5000);
 }
 
@@ -521,7 +521,7 @@ function flipCard(card) {
     } else {
       endGame();
     }
-  }, 600); // 等待 600ms 翻牌动画完成再进入下一轮
+  }, 600); 
 }
 
     } else {
@@ -536,7 +536,7 @@ function flipCard(card) {
 }
 
 function startTimer() {
-  if (timerRunning) return; // 避免重复启动计时器
+  if (timerRunning) return; 
   timerRunning = true;
 
   timer = setInterval(() => {
@@ -551,7 +551,7 @@ function startTimer() {
 }
 
 function startTimer() {
-  if (timerRunning) return; // 避免重复启动计时器
+  if (timerRunning) return; 
   timerRunning = true;
 
   timer = setInterval(() => {
@@ -616,7 +616,7 @@ function formatSecondsToMMSS(seconds) {
 function saveGameResults(gameData) {
   const abilities = generateAbilitiesFrom(gameData);
 
-  // 读取已有数据
+  
   let existingResult = JSON.parse(localStorage.getItem("memoryGameResult"));
 
   if (!existingResult) {
@@ -627,7 +627,7 @@ function saveGameResults(gameData) {
     };
   }
 
-  // 检查是否已有当前关卡数据，更新或添加
+  
   const idx = existingResult.levels.findIndex(lvl => lvl.levelId === gameData.levelId);
   const newLevelData = {
     level: gameData.level,
@@ -641,25 +641,25 @@ function saveGameResults(gameData) {
   };
 
   if (idx > -1) {
-    existingResult.levels[idx] = newLevelData; // 更新该关卡数据
+    existingResult.levels[idx] = newLevelData; 
   } else {
-    existingResult.levels.push(newLevelData);  // 添加新关卡数据
+    existingResult.levels.push(newLevelData);  
   }
 
-  // 更新整体分数，举例取所有关卡平均分
+  
   const totalScore = existingResult.levels.reduce((acc, lvl) => acc + lvl.score, 0);
   existingResult.overallScore = Math.round(totalScore / existingResult.levels.length);
 
-  // abilities 你可以根据需要更新，暂时用最后一次的
+  
   existingResult.abilities = abilities;
 
-  // 保存回 localStorage
+
   localStorage.setItem("memoryGameResult", JSON.stringify(existingResult));
 
-  // 保存单次游戏详细数据（可选）
+  
   localStorage.setItem("memoryGameData", JSON.stringify(gameData));
 
-  // 更新最佳时间
+  
   updateBestTime(gameData.levelId, gameData.formattedTime);
 }
 
@@ -677,7 +677,7 @@ function generateAbilitiesFrom(gameData) {
 
   function calculateShortTermScore(totalSteps, wrongAttempts, correctMatches) {
     if (correctMatches === 0) return 0;
-    const earlySteps = Math.min(6, totalSteps); // First 6 steps (first 3 pairs)
+    const earlySteps = Math.min(6, totalSteps); 
     const earlyErrorRate = Math.min(1, wrongAttempts / earlySteps);
     const score = Math.max(40, 100 - earlyErrorRate * 100);
     return Math.round(score);
@@ -706,13 +706,13 @@ const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", () => {
   startOverlay.style.display = "none";
   startRound();
-  // 开始计时器时，要判断计时器是否已经在运行，避免多次启动
+ 
   if (!timerRunning) startTimer();
 });
 
-// 更新 localStorage 中的最佳时间
+
 function updateBestTime(levelId, newTime) {
-  const bestTimesKey = "bestTimes"; // 存储所有关卡的最好时间，格式：{ levelId: "mm:ss", ... }
+  const bestTimesKey = "bestTimes"; 
   let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
 
   const prevBest = bestTimes[levelId];
@@ -722,7 +722,7 @@ function updateBestTime(levelId, newTime) {
   localStorage.setItem(bestTimesKey, JSON.stringify(bestTimes));
 }
 
-// 工具函数，时间字符串转秒数
+
 function timeToSeconds(timeStr) {
   if (!timeStr || timeStr === '--:--') return Infinity;
   const [minutes, seconds] = timeStr.split(':').map(Number);
@@ -758,10 +758,10 @@ function setupInitialGrid() {
   });
 }
 window.addEventListener("DOMContentLoaded", () => {
-  setupInitialGrid();  // 显示静态卡片
+  setupInitialGrid();  
 });
 
-// localStorage.clear();  // 清空所有的 localStorage 数据
+// localStorage.clear();  
     </script>
 
     

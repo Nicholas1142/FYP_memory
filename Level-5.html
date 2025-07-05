@@ -35,15 +35,15 @@
       width: 90vw;
     }
     .header h1 {
-      font-size: 60px; /* Reduce the font size */
+      font-size: 60px; 
       color: orange;
       text-shadow: 4px 4px 8px black;
       margin-bottom: 12px;
     }
     .info-container {
       display: flex; justify-content: center;
-      gap: 60px; /* Reduce the gap */
-      font-size: 30px; /* Reduce the font size */
+      gap: 60px; 
+      font-size: 30px; 
       text-shadow: 2px 2px 4px black;
       margin-bottom: 10px;
       flex-wrap: wrap;
@@ -124,10 +124,10 @@
   }
    .info-container {
     font-size: 19px;
-    gap: 17px;          /* Increase the gap */
-    flex-direction: row; /* Align horizontally */
-    justify-content: center; /* Center alignment */
-    align-items: center; /* Vertical center alignment */
+    gap: 17px;          
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: center; 
    }
   .sequence-container {
     font-size: 18px;
@@ -144,7 +144,7 @@
     padding: 12px 40px;
     font-size: 20px;
   }
-  /* Optional: Hide background video and music */
+  
   /* .video-background {
     display: none;
   } */
@@ -176,7 +176,7 @@
 </head>
 <body>
 
- <!-- Overlay at the top of the body -->
+
 <div id="startOverlay" class="overlay" style="flex-direction: column; cursor: default; padding: 20px;">
   <div style="max-width: 600px; color: #ffcc33; font-size: 19px; line-height: 1.5;padding:20px;  text-align: left; margin-bottom: 20px;">
     <h2 style="text-align: center; margin-bottom: 20px; color: #ff6347;">Game Rules</h2>
@@ -276,7 +276,7 @@ backBtn.addEventListener("click", () => {
         const card = document.createElement("div");
         card.classList.add("card");
         card.dataset.value = num;
-        // front/back
+    
         const front = document.createElement("div");
         front.classList.add("card-face", "card-front");
         const back = document.createElement("div");
@@ -287,7 +287,7 @@ backBtn.addEventListener("click", () => {
         back.appendChild(img);
         card.append(front, back);
         grid.append(card);
-        // Card flip logic
+        
         card.addEventListener("click", () => {
           if (isProcessing) return;
           flipCard(card);
@@ -344,7 +344,7 @@ function flipCard(card) {
       matchSound.currentTime = 0;
       matchSound.play();
       matchedPairs++;
-      // If matched, add 2 seconds, max time won't exceed maxTime
+  
       timeLeft = Math.min(maxTime, timeLeft + 2);
       timerDisplay.textContent = timeLeft;
 
@@ -354,7 +354,7 @@ function flipCard(card) {
     } else {
       wrongAttempts++;
       wrongAttemptsDisplay.textContent = wrongAttempts;
-      // If mismatched, subtract 0.5 seconds, but not below 0
+   
       timeLeft = Math.max(0, timeLeft - 0.5);
       timerDisplay.textContent = timeLeft;
 
@@ -415,10 +415,10 @@ function endGame() {
     reactionTime: parseFloat(avgReaction.toFixed(2))
   };
 
-  // Save data
+
   saveGameResults(gameData);
 
-  // Redirect to analysis page
+
   window.location.href = "memory_analysis.html";
 }
 
@@ -475,7 +475,7 @@ function endGame() {
 }
 
 function updateBestTime(levelId, newTime) {
-  const bestTimesKey = "bestTimes"; // Store the best time for all levels, format: { levelId: "mm:ss", ... }
+  const bestTimesKey = "bestTimes"; 
   let bestTimes = JSON.parse(localStorage.getItem(bestTimesKey)) || {};
 
   const prevBest = bestTimes[levelId];
@@ -522,7 +522,7 @@ function generateAbilitiesFrom(gameData) {
   };
 }
 
-// localStorage.clear();  // 清空所有的 localStorage 数据
+// localStorage.clear();  
 </script>
 </body>
 </html>
