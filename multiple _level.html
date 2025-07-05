@@ -484,14 +484,14 @@
     }
     
      @media (max-width: 768px) {
-  /* Adjust header font size and layout */
+ 
   .header h1 {
-    font-size: 2rem;  /* Reduce font size for smaller screens */
+    font-size: 2rem;  
   }
   
-  /* Game info container adjustments */
+  
   .game-info-container {
-    flex-direction: column;  /* Stack game info vertically */
+    flex-direction: column;  
     gap: 1rem;
     width: 90%;
   }
@@ -499,7 +499,7 @@
  .players-container {
   display: flex;
   justify-content: center;
-  gap: 1rem; /* Space between players */
+  gap: 1rem; 
   margin-bottom: 1.5rem;
 }
 
@@ -520,15 +520,15 @@
   transform: translateY(-5px);
 }
 
-  /* Reduce card size and layout for smaller screens */
+
   .grid {
-    grid-template-columns: repeat(4, 70px);  /* Show 2 cards per row */
+    grid-template-columns: repeat(4, 70px);  
     gap: 15px;
   }
 
   .card {
-    width: 60px;  /* Adjust card width */
-    height: 100px;  /* Adjust card height */
+    width: 60px;  
+    height: 100px;  
   }
 
   .timer-container {
@@ -536,13 +536,13 @@
     max-width: 500px;
   }
 
-  /* Adjust button sizes */
+  
   button {
     padding: 10px 20px;
     font-size: 0.9rem;
   }
 
-  /* Ensure the game-over content is centered and readable on mobile */
+  
   .game-over-content {
     padding: 2rem;
     width: 80%;
@@ -553,7 +553,7 @@
     grid-template-columns: 1fr;
   }
 
-  /* Make the controls container more compact */
+ 
   .controls-container {
     flex-direction: column;
     gap: 1rem;
@@ -565,11 +565,11 @@
   }
 
   .overlay h2 {
-    font-size: 2rem;  /* Adjust overlay text size */
+    font-size: 2rem;  
   }
   
   .overlay p {
-    font-size: 1rem;  /* Adjust overlay description text */
+    font-size: 1rem; 
   }
 }
   </style>
@@ -577,7 +577,7 @@
 <body>
 
 
-  <!-- Start overlay -->
+
   <div id="startOverlay" class="overlay">
     <h2>Memory Health Challenge</h2>
     <p>Click to Start the Game</p>
@@ -611,7 +611,7 @@
     </div>
     
     <div class="players-container" id="players-container">
-      <!-- Player information will be dynamically added through JS -->
+      
     </div>
   </div>
 
@@ -631,12 +631,12 @@
   </div>
   
   <div class="controls-container">
-    <!-- <button id="start-btn">Start Game</button> -->
+   
     <button id="restart-btn" disabled>Back to Main Page</button>
   </div>
   
   <div class="game-events" id="game-events">
-    <!-- Game events will appear here -->
+    
   </div>
   
   <div class="game-over" id="game-over">
@@ -672,7 +672,7 @@
   <audio id="matchSound" src="Sound/match.mp3"></audio>
 
   <script>
-   // 游戏状态
+
 const gameState = {
   players: ['Player 1', 'Player 2', 'Player 3', 'Player 4'],
   playerAvatars: ['👨💻', '👩🔬', '🧑🎨', '👨🚀'],
@@ -708,7 +708,7 @@ const gameState = {
   playerStats: []
 };
 
-// DOM 元素
+
 const elements = {
   grid: document.getElementById("grid"),
   startOverlay: document.getElementById("startOverlay"),
@@ -734,26 +734,26 @@ const elements = {
   statSteps: document.getElementById("stat-steps")
 };
 
-// 初始化游戏
+
 function initGame() {
-  // 创建卡片组 (8对)
+ 
   const pairs = gameState.cardImages.slice(0, 8);
   gameState.cards = [...pairs, ...pairs];
   
-  // 洗牌
+  
   shuffleArray(gameState.cards);
   
-  // 清空游戏板
+  
   elements.grid.innerHTML = '';
   
-  // 创建卡片元素
+ 
   gameState.cards.forEach((imagePath, index) => {
     const card = document.createElement("div");
     card.className = 'card';
     card.dataset.index = index;
     card.dataset.image = imagePath;
     
-    // 卡片背面 - 使用wood.png
+    
     const front = document.createElement("div");
     front.className = 'card-face card-front';
     const backImg = document.createElement("img");
@@ -761,7 +761,7 @@ function initGame() {
     backImg.alt = '卡片背面';
     front.appendChild(backImg);
     
-    // 卡片正面
+    
     const back = document.createElement("div");
     back.className = 'card-face card-back';
     const img = document.createElement("img");
@@ -773,11 +773,11 @@ function initGame() {
     card.appendChild(back);
     elements.grid.appendChild(card);
     
-    // 点击逻辑
+    
     card.addEventListener('click', handleCardClick);
   });
   
-  // 重置游戏状态
+ 
   gameState.flippedCards = [];
   gameState.matchedPairs = 0;
   gameState.score = 0;
@@ -793,7 +793,7 @@ function initGame() {
   gameState.reactionTime = 0;
   gameState.lastClickTime = null;
   
-  // 初始化玩家统计
+  
   gameState.playerStats = gameState.players.map(() => ({
     matches: 0,
     attempts: 0,
@@ -801,11 +801,11 @@ function initGame() {
     contribution: 0
   }));
   
-  // 更新UI
+  
   updateUI();
   renderPlayers();
   
-  // 如果是第一次开始，设置玩家数量
+  
   if (!gameState.gameStarted) {
     setupPlayers();
   }
@@ -815,7 +815,7 @@ function initGame() {
   elements.restartBtn.disabled = false;
 }
 
-// 渲染玩家信息
+
 function renderPlayers() {
   elements.playersContainer.innerHTML = '';
   
@@ -838,7 +838,7 @@ function renderPlayers() {
   });
 }
 
-// Set up the number of players
+
 function setupPlayers() {
   const numPlayers = parseInt(prompt("Please enter the number of players (1-4):", "2"));
   if (numPlayers >= 1 && numPlayers <= 4) {
@@ -857,14 +857,14 @@ function setupPlayers() {
 }
 
 
-// 2. 修改 handleCardClick 函数，使其在共享计时器下处理玩家回合
+
 function handleCardClick(e) {
   if (!gameState.gameStarted || gameState.isProcessing) return;
 
   const card = e.currentTarget;
   const index = parseInt(card.dataset.index);
 
-  // 如果卡片已被翻开或匹配，忽略
+
   if (card.classList.contains("revealed") || 
       card.classList.contains("matched") ||
       gameState.flippedCards.length >= 2) {
@@ -873,14 +873,14 @@ function handleCardClick(e) {
 
   flipCard(card, index);
 
-  // 检查是否翻开了两张卡片
+  
   if (gameState.flippedCards.length === 2) {
     checkForMatch();
   }
 }
 
 
-// 翻开卡片
+
 function flipCard(card, index) {
   card.classList.add("revealed");
   if (elements.flipSound) {
@@ -896,14 +896,14 @@ function flipCard(card, index) {
   }
 }
 
-// 检查是否匹配
+
 function checkForMatch() {
   const [card1, card2] = gameState.flippedCards;
   const currentPlayerIdx = gameState.currentPlayerIndex;
   
-  // 检查图片路径是否匹配
+  
   if (card1.card.dataset.image === card2.card.dataset.image) {
-    // 匹配成功
+    
     setTimeout(() => {
       card1.card.classList.add("matched");
       card2.card.classList.add("matched");
@@ -911,43 +911,43 @@ function checkForMatch() {
       gameState.matchedPairs++;
       gameState.correctMatches++;
       
-      // 更新当前玩家统计
+      
       gameState.playerStats[currentPlayerIdx].matches++;
       gameState.playerStats[currentPlayerIdx].attempts++;
       gameState.playerStats[currentPlayerIdx].accuracy = 
         Math.round(gameState.playerStats[currentPlayerIdx].matches / 
                   gameState.playerStats[currentPlayerIdx].attempts * 100);
       
-      // 计算反应时间
+     
       gameState.reactionTime += (Date.now() - gameState.lastClickTime) / 1000;
       
-      // 更新积分
+      
       let points = 50;
       gameState.streak++;
       
-      // 检查双倍时刻
+    
       if (gameState.doubleActive) {
         points *= 2;
       }
       
-      // 检查连续匹配奖励
+      
       if (gameState.streak >= 3) {
         points += Math.floor(gameState.streak / 3);
       }
       
       gameState.score += points;
       
-      // 播放匹配音效
+     
       if (elements.matchSound) {
         elements.matchSound.currentTime = 0;
         elements.matchSound.play();
       }
       
-     // Display event
+    
 showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair of cards! Earned ${points} points`);
 
       
-      // 更新双倍时刻进度
+      
       if (!gameState.doubleActive) {
         gameState.doubleProgress++;
         if (gameState.doubleProgress >= 3) {
@@ -955,12 +955,12 @@ showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair of
         }
       }
       
-      // 检查游戏是否结束
+      
       if (gameState.matchedPairs === 8) {
         endGame();
       }
       
-      // // 检查是否需要添加新卡片
+      
       // if (gameState.matchedPairs % 5 === 0 && gameState.matchedPairs > 0) {
       //   addNewCards();
       // }
@@ -969,7 +969,7 @@ showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair of
       renderPlayers();
     }, 500);
   } else {
-    // 不匹配
+   
     setTimeout(() => {
       card1.card.classList.remove("revealed");
       card2.card.classList.remove("revealed");
@@ -977,34 +977,33 @@ showEvent(`${gameState.players[currentPlayerIdx]} successfully matched a pair of
       gameState.streak = 0;
       gameState.wrongAttempts++;
       
-      // 更新当前玩家统计
+      
       gameState.playerStats[currentPlayerIdx].attempts++;
       gameState.playerStats[currentPlayerIdx].accuracy = 
         Math.round(gameState.playerStats[currentPlayerIdx].matches / 
                   gameState.playerStats[currentPlayerIdx].attempts * 100);
       
-      // Display event
+    
 showEvent(`${gameState.players[currentPlayerIdx]} failed to match, it's the next player's turn`);
 
-      
-      // 切换到下一个玩家
+     
       nextPlayer();
       updateUI();
       renderPlayers();
     }, 800);
   }
   
-  // 更新回合计数
+  
   gameState.turns++;
   
-  // 更新记忆锚点可用性
+  
   if (gameState.anchorAvailableIn > 0) {
     gameState.anchorAvailableIn--;
     updatePowerups();
   }
 }
 
-// 显示游戏事件
+
 function showEvent(text) {
   const eventEl = document.createElement('div');
   eventEl.className = 'event';
@@ -1016,41 +1015,40 @@ function showEvent(text) {
   }, 3000);
 }
 
-// 切换到下一个玩家
+
 function nextPlayer() {
   gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
   updateCurrentPlayer();
 }
 
-// 更新当前玩家显示
+
 function updateCurrentPlayer() {
   elements.currentPlayer.textContent = gameState.players[gameState.currentPlayerIndex];
 }
 
-// 添加新卡片
 // function addNewCards() {
-//   // 获取当前未使用的图片
+
 //   const usedImages = gameState.cards.slice(0, 8);
 //   const unusedImages = gameState.cardImages.filter(img => !usedImages.includes(img));
   
-//   if (unusedImages.length < 2) return; // 没有足够的图片可用
+//   if (unusedImages.length < 2) return; 
   
-//   // 选择两张新图片
+
 //   const newImages = unusedImages.slice(0, 2);
   
-//   // 添加到卡片组
+
 //   gameState.cards.push(...newImages, ...newImages);
   
-//   // 重新洗牌
+
 //   shuffleArray(gameState.cards);
   
-//   // 重新创建游戏板
+
 //   elements.grid.innerHTML = '';
 //   gameState.cards.forEach((imagePath, index) => {
 //     const card = document.createElement("div");
 //     card.className = 'card';
     
-//     // 检查是否是已匹配的卡片
+
 //     if (index < gameState.matchedPairs * 2) {
 //       card.classList.add("matched");
 //     }
@@ -1058,7 +1056,7 @@ function updateCurrentPlayer() {
 //     card.dataset.index = index;
 //     card.dataset.image = imagePath;
     
-//     // 卡片背面
+
 //     const front = document.createElement("div");
 //     front.className = 'card-face card-front';
 //     const backImg = document.createElement("img");
@@ -1066,7 +1064,7 @@ function updateCurrentPlayer() {
 //     backImg.alt = '卡片背面';
 //     front.appendChild(backImg);
     
-//     // 卡片正面
+
 //     const back = document.createElement("div");
 //     back.className = 'card-face card-back';
 //     const img = document.createElement("img");
@@ -1083,7 +1081,7 @@ function updateCurrentPlayer() {
 //   showEvent("新增卡片已添加到游戏中！");
 // }
 
-// Activate double time
+
 function activateDouble() {
   gameState.doubleActive = true;
   elements.doublePower.classList.add('double-active');
@@ -1091,7 +1089,7 @@ function activateDouble() {
   
   showEvent("Double Time Activated! All match points are doubled!");
   
-  // Close double time after 5 seconds
+  
   setTimeout(() => {
     gameState.doubleActive = false;
     gameState.doubleProgress = 0;
@@ -1103,11 +1101,11 @@ function activateDouble() {
 }
 
 
-// // // 使用记忆锚点
+
 // // function useAnchor() {
 // //   if (gameState.anchorAvailableIn > 0 || !gameState.gameStarted) return;
   
-// //   // 找到第一个未翻开的卡片
+
 // //   const cards = Array.from(elements.grid.children);
 // //   // const unflippedCards = cards.filter(card => 
 // //   //   !card.classList.contains("revealed") && 
@@ -1120,7 +1118,7 @@ function activateDouble() {
 //     const card = unflippedCards[randomIndex];
 //     card.classList.add("anchored");
     
-//     // 2回合后移除锚点
+
 //     setTimeout(() => {
 //       if (card.classList.contains("anchored") && !card.classList.contains("matched")) {
 //         card.classList.remove("anchored");
@@ -1142,22 +1140,21 @@ function updatePowerups() {
 }
 
 
-// 1. 修改 startTimer 函数，使其成为所有玩家共享的计时器
+
 function startTimer() {
   clearInterval(gameState.timerInterval);
   elements.timer.style.width = '100%';
   gameState.timerInterval = setInterval(() => {
-    gameState.timeLeft--;  // 全局时间倒计时
+    gameState.timeLeft--;  
     
-    // 更新计时器条
     elements.timer.style.width = `${(gameState.timeLeft / 45) * 100}%`;
     
-    // 当时间快用完时改变颜色
+    
     if (gameState.timeLeft <= 10) {
       elements.timer.style.background = 'linear-gradient(90deg, var(--primary) 0%, #ff0000 100%)';
     }
 
-    // 时间耗尽时结束游戏
+   
     if (gameState.timeLeft <= 0) {
       clearInterval(gameState.timerInterval);
       endGame();
@@ -1165,20 +1162,20 @@ function startTimer() {
   }, 1000);
 }
 
-// 3. 游戏重启时重置计时器
+
 function resetTimer() {
-  gameState.timeLeft = 45; // 重新设置为45秒的共享时间
+  gameState.timeLeft = 45; 
   elements.timer.style.width = '100%';
   elements.timer.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%)';
 }
 
 
-// 结束游戏
+
 function endGame() {
   clearInterval(gameState.timerInterval);
   gameState.gameStarted = false;
   
-  // 计算记忆健康指标
+  
   const accuracy = (gameState.correctMatches / gameState.totalSteps * 100).toFixed(1);
   const avgReactionTime = gameState.correctMatches > 0 
     ? (gameState.reactionTime / gameState.correctMatches).toFixed(2) 
@@ -1190,19 +1187,19 @@ function endGame() {
   elements.statWrong.textContent = gameState.wrongAttempts;
   elements.statSteps.textContent = gameState.totalSteps;
 
-  // 如果玩家在规定时间内完成，显示“恭喜通关”
+  
   if (gameState.timeLeft > 0) {
     elements.gameOver.style.display = 'flex';
     elements.gameOver.querySelector('h2').textContent = "Congratulations, You Win!";
     elements.gameOver.querySelector('p').textContent = `Final Team Score: ${gameState.score}`;
   } else {
-    // 如果时间耗尽，显示Game Over
+    
     elements.gameOver.style.display = 'flex';
     elements.gameOver.querySelector('h2').textContent = "Game Over!";
     elements.gameOver.querySelector('p').textContent = `Final Team Score: ${gameState.score}`;
   }
 
-  // 保存游戏数据
+  
   const gameData = {
     score: gameState.score,
     accuracy: parseFloat(accuracy),
@@ -1216,7 +1213,7 @@ function endGame() {
 }
 
 
-// 4. 更新UI函数，保持共享计时器的逻辑
+
 function updateUI() {
   elements.score.textContent = gameState.score;
   elements.remaining.textContent = gameState.cards.length / 2 - gameState.matchedPairs;
@@ -1225,7 +1222,7 @@ function updateUI() {
 }
 
 
-// 辅助函数：洗牌算法
+
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -1233,18 +1230,18 @@ function shuffleArray(array) {
   }
 }
 
-// // 事件监听器
+
 // elements.startBtn.addEventListener('click', () => {
 //   initGame();
 //   startTimer();
 // });
 
 elements.restartBtn.addEventListener('click', () => {
-  // Show confirmation before navigating to the main page
+  
   const confirmRestart = confirm("Are you sure you want to go back to the main page?");
   
   if (confirmRestart) {
-    // Redirect to the main page
+   
     window.location.href = 'index.html'; // Change 'Main.html' to your main page URL
   }
 });
@@ -1270,16 +1267,15 @@ elements.startOverlay.addEventListener('click', () => {
   startTimer();
 });
 
-// 在结算界面点击 "Back to Main Menu" 返回主页面
+
 document.getElementById('backToMenuBtn').addEventListener('click', () => {
   const confirmBack = confirm("Are you sure you want to go back to the main page?");
   
   if (confirmBack) {
-    window.location.href = 'index.html';  // 返回主页面，修改为你的主页 URL
+    window.location.href = 'index.html';  
   }
 });
 
-// 初始UI更新
 updateUI();
   </script>
 </body>
